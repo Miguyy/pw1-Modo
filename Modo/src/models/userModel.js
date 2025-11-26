@@ -1,0 +1,28 @@
+//------------------ USER CLASS ----------------------
+//----------------------------------------------------------
+export default class User {
+  id = 0
+  name = ''
+  email = ''
+  password = ''
+  avatar = null
+  createdAt = new Date()
+  points = 0
+  priority = ''
+  role = ''
+  habits = []
+
+  constructor({ id, name, email, password, avatar, createdAt, points, priority, habits = [] }) {
+    this.id = Number(id)
+    this.name = name
+    this.email = email
+    this.password = password
+    this.avatar = avatar
+    this.createdAt = createdAt ? new Date(createdAt) : new Date()
+    this.points = points
+    this.priority = priority ? priority : 1
+    this.habits = habits
+
+    this.role = this.priority === 2 ? 'admin' : 'user'
+  }
+}
