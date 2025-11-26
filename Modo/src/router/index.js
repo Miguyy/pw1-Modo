@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import RegisterView from '../views/RegisterView.vue'
 import LoginView from '../views/LoginView.vue'
 import LandingPageView from '../views/LandingPageView.vue'
+import HabitManagerView from '../views/HabitManagerView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -22,9 +23,9 @@ const router = createRouter({
       component: LoginView,
     },
     {
-      /* path: '/habitsmanager',
+      path: '/habitsmanager',
       name: 'habitsmanager',
-      component: HabitsManagerView, */
+      component: HabitManagerView,
     },
   ],
 })

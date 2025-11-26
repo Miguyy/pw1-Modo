@@ -16,7 +16,7 @@
         id="login-password-user"
       />
 
-      <button>Login</button>
+      <button @click.prevent="loginUser">Login</button>
 
       <p class="login-register">
         Don't have an account?
