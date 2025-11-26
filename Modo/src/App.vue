@@ -1,9 +1,9 @@
-<script></script>
+<script setup>
+  import NavBar from './components/NavBar.vue'
+</script>
 
 <template>
-  <nav>
-    <RouterLink to="/">Home</RouterLink>
-  </nav>
+    <NavBar />
   <main>
     <router-view></router-view>
   </main>
