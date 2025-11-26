@@ -1,0 +1,163 @@
+/*---------------REGISTER---------------*/
+/*---------------------------------------------*/
+.register-container {
+  display: flex;
+  min-height: 100vh;
+  flex-wrap: wrap;
+}
+
+.register-form {
+  flex: 1;
+  min-width: 320px;
+  max-width: 480px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+}
+
+.register-image {
+  flex: 1;
+  min-width: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #333;
+}
+
+.register-form input {
+  width: 100%;
+  height: 50px;
+  border-radius: 12px;
+  border: 3px solid #434343;
+  background: #d9d9d9;
+  padding: 0 12px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.register-form button {
+  height: 50px;
+  border-radius: 12px;
+  border: none;
+  background: #434343;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.register-login {
+  font-size: 14px;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #434343;
+}
+
+.register-text {
+  color: #434343;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+/*---------------REGISTER RESPONSIVENESS---------------*/
+/*---------------------------------------------*/
+@media (max-width: 768px) {
+  .register-container {
+    flex-direction: column;
+  }
+
+  .register-image {
+    display: none;
+  }
+
+  .register-form {
+    max-width: 100%;
+    padding: 20px;
+  }
+}
+
+/*---------------LOGIN---------------*/
+/*---------------------------------------------*/
+.login-container {
+  display: flex;
+  min-height: 100vh;
+  flex-wrap: wrap;
+}
+
+.login-form {
+  flex: 1;
+  min-width: 320px;
+  max-width: 480px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  justify-content: center;
+}
+
+.login-image {
+  flex: 1;
+  min-width: 320px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #333;
+}
+
+.login-form input {
+  width: 100%;
+  height: 50px;
+  border-radius: 12px;
+  border: 3px solid #434343;
+  background: #d9d9d9;
+  padding: 0 12px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.login-form button {
+  height: 50px;
+  border-radius: 12px;
+  border: none;
+  background: #434343;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-register {
+  font-size: 14px;
+  text-align: center;
+  font-family: Arial, Helvetica, sans-serif;
+  color: #434343;
+}
+
+.login-text {
+  color: #434343;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+/*---------------LOGIN RESPONSIVENESS---------------*/
+/*---------------------------------------------*/
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .login-image {
+    display: none;
+  }
+
+  .login-form {
+    max-width: 100%;
+    padding: 20px;
+  }
+}
