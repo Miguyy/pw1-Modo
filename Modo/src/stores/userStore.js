@@ -9,7 +9,8 @@ export const useUserStore = defineStore('userStore', {
   }),
 
   getters: {
-    currentUser: (state) => state.users.find((u) => u.id === state.loggedUserId),
+    currentUser: (state) =>
+      state.users.find((u) => u.id === state.loggedUserId),
   },
 
   actions: {
@@ -20,11 +21,16 @@ export const useUserStore = defineStore('userStore', {
       })
 
       this.users.push(newUser)
-      this.nextId += 1
+      this.nextId++
     },
 
     loginByEmail(email, password) {
-      const user = this.users.find((u) => u.email === email && u.password === password)
+      const user = this.users.find(
+        (u) =>
+          u.email.toLowerCase() === email.trim().toLowerCase() &&
+          u.password === password
+      )
+
       if (!user) return false
 
       this.loggedUserId = user.id
@@ -34,18 +40,16 @@ export const useUserStore = defineStore('userStore', {
     logout() {
       this.loggedUserId = null
     },
+  },
 
-    loadFromLocalStorage() {
-      const storedUsers = localStorage.getItem('users')
-      if (storedUsers) {
-        this.users = JSON.parse(storedUsers)
-        const maxId = this.users.reduce((max, u) => Math.max(max, Number(u.id)), -1)
-        this.nextId = maxId + 1
-      }
-    },
 
-    saveToLocalStorage() {
-      localStorage.setItem('users', JSON.stringify(this.users))
-    },
+  persist: {
+    enabled: true,
+    strategies: [
+      {
+        storage: localStorage,
+        key: "userStore",
+      },
+    ],
   },
 })
