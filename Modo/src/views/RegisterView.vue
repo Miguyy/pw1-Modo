@@ -1,7 +1,16 @@
 <template>
-  <div class="register-container">
+  <div
+    class="register-container"
+    style="background: linear-gradient(113deg, #ededed 0.02%, #97dbb4 24.02%, #355d4c 100.02%)"
+  >
     <div class="register-form">
-      <p class="register-text">Sign up to build better habits and achieve your objectives.</p>
+      <div class="register-image">
+        <a href="/"><img src="../images/M.png" alt="Register Image" class="register-img" /></a>
+      </div>
+      <p class="register-text">
+        Sign up to build <span class="highlight2">better</span> habits and
+        <span class="highlight2">achieve</span> your objectives.
+      </p>
 
       <input v-model="name" type="text" placeholder="Enter your username" id="reg-name-user" />
       <input
@@ -23,18 +32,11 @@
         Already have an account?
         <a
           href="/login"
-          style="
-            text-decoration: none;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: bold;
-            color: #434343;
-          "
+          style="text-decoration: none; font-family: Heebo; font-weight: bold; color: #f19640"
           >Login</a
         >
       </p>
     </div>
-
-    <div class="register-image"></div>
   </div>
 </template>
 
