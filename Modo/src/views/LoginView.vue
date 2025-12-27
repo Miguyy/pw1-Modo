@@ -1,7 +1,15 @@
 <template>
-  <div class="login-container">
+  <div
+    class="login-container"
+    style="background: linear-gradient(113deg, #ededed 0.02%, #97dbb4 24.02%, #355d4c 100.02%)"
+  >
     <div class="login-form">
-      <p class="login-text">Log in to stay on top of your tasks and objectives.</p>
+      <div class="register-image">
+        <a href="/"><img src="../images/M.png" alt="Register Image" class="register-img" /></a>
+      </div>
+      <p class="login-text">
+        Log in to stay <span class="highlight2">on top</span> of your tasks and objectives.
+      </p>
 
       <input
         v-model="email"
@@ -22,18 +30,11 @@
         Don't have an account?
         <a
           href="/signin"
-          style="
-            text-decoration: none;
-            font-family: Arial, Helvetica, sans-serif;
-            font-weight: bold;
-            color: #434343;
-          "
+          style="text-decoration: none; font-family: Heebo; font-weight: bold; color: #f19640"
           >Sign Up</a
         >
       </p>
     </div>
-
-    <div class="login-image"></div>
   </div>
 </template>
 
