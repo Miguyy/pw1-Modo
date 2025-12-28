@@ -1,0 +1,397 @@
+{
+  "users": [
+    {
+      "id": "0",
+      "name": "Alice Johnson",
+      "email": "alice@mail.com",
+      "password": "alice123",
+      "avatar": null,
+      "createdAt": "2024-01-10",
+      "points": 120,
+      "priority": 1,
+      "habits": []
+    },
+    {
+      "id": "1",
+      "name": "Bob Smith",
+      "email": "bob@mail.com",
+      "password": "bob123",
+      "avatar": null,
+      "createdAt": "2024-01-12",
+      "points": 300,
+      "priority": 2,
+      "habits": []
+    },
+    {
+      "id": "2",
+      "name": "Clara Evans",
+      "email": "clara@mail.com",
+      "password": "clara123",
+      "avatar": null,
+      "createdAt": "2024-02-01",
+      "points": 90,
+      "priority": 1,
+      "habits": []
+    },
+    {
+      "id": "3",
+      "name": "Daniel Wright",
+      "email": "daniel@mail.com",
+      "password": "daniel123",
+      "avatar": null,
+      "createdAt": "2024-02-05",
+      "points": 45,
+      "priority": 1,
+      "habits": []
+    },
+    {
+      "id": "4",
+      "name": "Emma Brown",
+      "email": "emma@mail.com",
+      "password": "emma123",
+      "avatar": null,
+      "createdAt": "2024-02-10",
+      "points": 210,
+      "priority": 1,
+      "habits": []
+    },
+    {
+      "id": "5",
+      "name": "Frank Miller",
+      "email": "frank@mail.com",
+      "password": "frank123",
+      "avatar": null,
+      "createdAt": "2024-02-15",
+      "points": 500,
+      "priority": 2,
+      "habits": []
+    },
+    {
+      "id": "6",
+      "name": "Grace Lee",
+      "email": "grace@mail.com",
+      "password": "grace123",
+      "avatar": null,
+      "createdAt": "2024-02-20",
+      "points": 75,
+      "priority": 1,
+      "habits": []
+    },
+    {
+      "id": "7",
+      "name": "Henry Davis",
+      "email": "henry@mail.com",
+      "password": "henry123",
+      "avatar": null,
+      "createdAt": "2024-02-22",
+      "points": 160,
+      "priority": 1,
+      "habits": []
+    },
+    {
+      "id": "8",
+      "name": "Isabella Moore",
+      "email": "isabella@mail.com",
+      "password": "isabella123",
+      "avatar": null,
+      "createdAt": "2024-03-01",
+      "points": 260,
+      "priority": 1,
+      "habits": []
+    },
+    {
+      "id": "9",
+      "name": "Jack Wilson",
+      "email": "jack@mail.com",
+      "password": "jack123",
+      "avatar": null,
+      "createdAt": "2024-03-05",
+      "points": 30,
+      "priority": 1,
+      "habits": []
+    },
+    {
+      "id": "91a6",
+      "name": "miguyy",
+      "email": "miguyy@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1
+    },
+    {
+      "id": 10,
+      "name": "Joana",
+      "email": "joaninha@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1
+    },
+    {
+      "id": 10,
+      "name": "puto",
+      "email": "puto@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1
+    },
+    {
+      "id": 10,
+      "name": "jorge",
+      "email": "jorge@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1
+    },
+    {
+      "id": 0,
+      "name": "lino",
+      "email": "lino@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1
+    },
+    {
+      "id": 2,
+      "name": "miguel",
+      "email": "miguel@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1
+    }
+  ],
+  "habits": [
+    {
+      "id": "170000000001",
+      "user_id": 0,
+      "type": "check",
+      "description": "Drink 2L of water",
+      "category": "Health",
+      "priority": "high",
+      "repeat": {
+        "frequency": "daily",
+        "days": []
+      },
+      "target_minutes": null,
+      "remaining_minutes": null,
+      "timer_last_started_at": null,
+      "target_count": null,
+      "increment_value": 1,
+      "current_progress": {
+        "checked": false
+      },
+      "completed": false,
+      "created_at": "2024-03-01T08:00:00.000Z"
+    },
+    {
+      "id": "170000000002",
+      "user_id": 0,
+      "type": "count",
+      "description": "Read pages of a book",
+      "category": "Personal Development",
+      "priority": "medium",
+      "repeat": {
+        "frequency": "daily",
+        "days": []
+      },
+      "target_minutes": null,
+      "remaining_minutes": null,
+      "timer_last_started_at": null,
+      "target_count": 20,
+      "increment_value": 1,
+      "current_progress": {
+        "count": 5
+      },
+      "completed": false,
+      "created_at": "2024-03-01T09:00:00.000Z"
+    },
+    {
+      "id": "170000000003",
+      "user_id": 0,
+      "type": "time",
+      "description": "Meditate",
+      "category": "Mindfulness",
+      "priority": "low",
+      "repeat": {
+        "frequency": "daily",
+        "days": []
+      },
+      "target_minutes": 15,
+      "remaining_minutes": 15,
+      "timer_last_started_at": null,
+      "target_count": null,
+      "increment_value": 1,
+      "current_progress": {
+        "minutes": 0
+      },
+      "completed": false,
+      "created_at": "2024-03-02T07:30:00.000Z"
+    },
+    {
+      "id": "170000000004",
+      "user_id": 1,
+      "type": "check",
+      "description": "Go to the gym",
+      "category": "Fitness",
+      "priority": "high",
+      "repeat": {
+        "frequency": "weekly",
+        "days": [
+          "monday",
+          "wednesday",
+          "friday"
+        ]
+      },
+      "target_minutes": null,
+      "remaining_minutes": null,
+      "timer_last_started_at": null,
+      "target_count": null,
+      "increment_value": 1,
+      "current_progress": {
+        "checked": true
+      },
+      "completed": true,
+      "created_at": "2024-03-03T18:00:00.000Z"
+    },
+    {
+      "id": "170000000005",
+      "user_id": 1,
+      "type": "count",
+      "description": "Do push-ups",
+      "category": "Fitness",
+      "priority": "medium",
+      "repeat": {
+        "frequency": "daily",
+        "days": []
+      },
+      "target_minutes": null,
+      "remaining_minutes": null,
+      "timer_last_started_at": null,
+      "target_count": 50,
+      "increment_value": 5,
+      "current_progress": {
+        "count": 20
+      },
+      "completed": false,
+      "created_at": "2024-03-04T07:00:00.000Z"
+    },
+    {
+      "id": "170000000006",
+      "user_id": 1,
+      "type": "time",
+      "description": "Study JavaScript",
+      "category": "Education",
+      "priority": "high",
+      "repeat": {
+        "frequency": "daily",
+        "days": []
+      },
+      "target_minutes": 60,
+      "remaining_minutes": 45,
+      "timer_last_started_at": null,
+      "target_count": null,
+      "increment_value": 1,
+      "current_progress": {
+        "minutes": 15
+      },
+      "completed": false,
+      "created_at": "2024-03-04T10:00:00.000Z"
+    },
+    {
+      "id": "170000000007",
+      "user_id": 0,
+      "type": "check",
+      "description": "Write daily journal",
+      "category": "Mindfulness",
+      "priority": "low",
+      "repeat": {
+        "frequency": "daily",
+        "days": []
+      },
+      "target_minutes": null,
+      "remaining_minutes": null,
+      "timer_last_started_at": null,
+      "target_count": null,
+      "increment_value": 1,
+      "current_progress": {
+        "checked": false
+      },
+      "completed": false,
+      "created_at": "2024-03-05T21:00:00.000Z"
+    },
+    {
+      "id": "170000000008",
+      "user_id": 0,
+      "type": "count",
+      "description": "Practice guitar chords",
+      "category": "Hobby",
+      "priority": "medium",
+      "repeat": {
+        "frequency": "weekly",
+        "days": [
+          "tuesday",
+          "thursday"
+        ]
+      },
+      "target_minutes": null,
+      "remaining_minutes": null,
+      "timer_last_started_at": null,
+      "target_count": 30,
+      "increment_value": 5,
+      "current_progress": {
+        "count": 10
+      },
+      "completed": false,
+      "created_at": "2024-03-06T17:00:00.000Z"
+    },
+    {
+      "id": "170000000009",
+      "user_id": 1,
+      "type": "time",
+      "description": "Evening walk",
+      "category": "Health",
+      "priority": "low",
+      "repeat": {
+        "frequency": "daily",
+        "days": []
+      },
+      "target_minutes": 30,
+      "remaining_minutes": 30,
+      "timer_last_started_at": null,
+      "target_count": null,
+      "increment_value": 1,
+      "current_progress": {
+        "minutes": 0
+      },
+      "completed": false,
+      "created_at": "2024-03-06T19:00:00.000Z"
+    },
+    {
+      "id": "170000000010",
+      "user_id": 0,
+      "type": "check",
+      "description": "Plan tasks for tomorrow",
+      "category": "Productivity",
+      "priority": "medium",
+      "repeat": {
+        "frequency": "daily",
+        "days": []
+      },
+      "target_minutes": null,
+      "remaining_minutes": null,
+      "timer_last_started_at": null,
+      "target_count": null,
+      "increment_value": 1,
+      "current_progress": {
+        "checked": false
+      },
+      "completed": false,
+      "created_at": "2024-03-06T22:00:00.000Z"
+    }
+  ]
+}
