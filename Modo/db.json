@@ -1,10 +1,10 @@
 {
   "users": [
     {
-      "id": "0",
+      "id": 0,
       "name": "Alice Johnson",
       "email": "alice@mail.com",
-      "password": "alice123",
+      "password": "Alice@2024Secure",
       "avatar": null,
       "createdAt": "2024-01-10",
       "points": 120,
@@ -12,10 +12,10 @@
       "habits": []
     },
     {
-      "id": "1",
+      "id": 1,
       "name": "Bob Smith",
       "email": "bob@mail.com",
-      "password": "bob123",
+      "password": "Bob!Secure2024",
       "avatar": null,
       "createdAt": "2024-01-12",
       "points": 300,
@@ -23,10 +23,10 @@
       "habits": []
     },
     {
-      "id": "2",
+      "id": 2,
       "name": "Clara Evans",
       "email": "clara@mail.com",
-      "password": "clara123",
+      "password": "Clara#Strong12",
       "avatar": null,
       "createdAt": "2024-02-01",
       "points": 90,
@@ -34,10 +34,10 @@
       "habits": []
     },
     {
-      "id": "3",
+      "id": 3,
       "name": "Daniel Wright",
       "email": "daniel@mail.com",
-      "password": "daniel123",
+      "password": "Daniel!Pass2024",
       "avatar": null,
       "createdAt": "2024-02-05",
       "points": 45,
@@ -45,10 +45,10 @@
       "habits": []
     },
     {
-      "id": "4",
+      "id": 4,
       "name": "Emma Brown",
       "email": "emma@mail.com",
-      "password": "emma123",
+      "password": "Emma$Password12",
       "avatar": null,
       "createdAt": "2024-02-10",
       "points": 210,
@@ -56,10 +56,10 @@
       "habits": []
     },
     {
-      "id": "5",
+      "id": 5,
       "name": "Frank Miller",
       "email": "frank@mail.com",
-      "password": "frank123",
+      "password": "Frank@2024Strong",
       "avatar": null,
       "createdAt": "2024-02-15",
       "points": 500,
@@ -67,10 +67,10 @@
       "habits": []
     },
     {
-      "id": "6",
+      "id": 6,
       "name": "Grace Lee",
       "email": "grace@mail.com",
-      "password": "grace123",
+      "password": "Grace#Secure2024",
       "avatar": null,
       "createdAt": "2024-02-20",
       "points": 75,
@@ -78,10 +78,10 @@
       "habits": []
     },
     {
-      "id": "7",
+      "id": 7,
       "name": "Henry Davis",
       "email": "henry@mail.com",
-      "password": "henry123",
+      "password": "Henry$StrongPass",
       "avatar": null,
       "createdAt": "2024-02-22",
       "points": 160,
@@ -89,10 +89,10 @@
       "habits": []
     },
     {
-      "id": "8",
+      "id": 8,
       "name": "Isabella Moore",
       "email": "isabella@mail.com",
-      "password": "isabella123",
+      "password": "Isabella!2024Pwd",
       "avatar": null,
       "createdAt": "2024-03-01",
       "points": 260,
@@ -100,10 +100,10 @@
       "habits": []
     },
     {
-      "id": "9",
+      "id": 9,
       "name": "Jack Wilson",
       "email": "jack@mail.com",
-      "password": "jack123",
+      "password": "Jack#Secure2024",
       "avatar": null,
       "createdAt": "2024-03-05",
       "points": 30,
@@ -111,63 +111,61 @@
       "habits": []
     },
     {
-      "id": "91a6",
-      "name": "miguyy",
-      "email": "miguyy@gmail.com",
-      "password": "M1guelito!",
-      "avatar": null,
-      "points": 0,
-      "priority": 1
-    },
-    {
       "id": 10,
-      "name": "Joana",
-      "email": "joaninha@gmail.com",
-      "password": "M1guelito!",
+      "name": "Joana Silva",
+      "email": "joana@gmail.com",
+      "password": "Joana@Strong2024",
       "avatar": null,
       "points": 0,
-      "priority": 1
+      "priority": 1,
+      "habits": []
     },
     {
-      "id": 10,
-      "name": "puto",
-      "email": "puto@gmail.com",
-      "password": "M1guelito!",
-      "avatar": null,
-      "points": 0,
-      "priority": 1
-    },
-    {
-      "id": 10,
-      "name": "jorge",
-      "email": "jorge@gmail.com",
-      "password": "M1guelito!",
-      "avatar": null,
-      "points": 0,
-      "priority": 1
-    },
-    {
-      "id": 0,
-      "name": "lino",
-      "email": "lino@gmail.com",
-      "password": "M1guelito!",
-      "avatar": null,
-      "points": 0,
-      "priority": 1
-    },
-    {
-      "id": 2,
-      "name": "miguel",
+      "id": 11,
+      "name": "Miguel Santos",
       "email": "miguel@gmail.com",
-      "password": "M1guelito!",
+      "password": "Miguel!2024Pwd",
       "avatar": null,
       "points": 0,
-      "priority": 1
+      "priority": 1,
+      "habits": []
+    },
+    {
+      "id": 12,
+      "name": "Lino Costa",
+      "email": "lino@gmail.com",
+      "password": "Lino@Secure123",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "habits": []
+    },
+    {
+      "id": "c946",
+      "name": "Manu",
+      "email": "manuel@gmail.com",
+      "password": "^M1guelito!",
+      "avatar": null,
+      "createdAt": "2025-12-28T15:17:23.623Z",
+      "points": 0,
+      "priority": 1,
+      "habits": []
+    },
+    {
+      "id": "0a0d",
+      "name": "Linda",
+      "email": "lindaglahy@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "createdAt": "2025-12-28T15:21:26.548Z",
+      "points": 0,
+      "priority": 1,
+      "habits": []
     }
   ],
   "habits": [
     {
-      "id": "170000000001",
+      "id": "1",
       "user_id": 0,
       "type": "check",
       "description": "Drink 2L of water",
@@ -189,7 +187,7 @@
       "created_at": "2024-03-01T08:00:00.000Z"
     },
     {
-      "id": "170000000002",
+      "id": "2",
       "user_id": 0,
       "type": "count",
       "description": "Read pages of a book",
@@ -211,7 +209,7 @@
       "created_at": "2024-03-01T09:00:00.000Z"
     },
     {
-      "id": "170000000003",
+      "id": "3",
       "user_id": 0,
       "type": "time",
       "description": "Meditate",
@@ -233,7 +231,7 @@
       "created_at": "2024-03-02T07:30:00.000Z"
     },
     {
-      "id": "170000000004",
+      "id": "4",
       "user_id": 1,
       "type": "check",
       "description": "Go to the gym",
@@ -259,7 +257,7 @@
       "created_at": "2024-03-03T18:00:00.000Z"
     },
     {
-      "id": "170000000005",
+      "id": "5",
       "user_id": 1,
       "type": "count",
       "description": "Do push-ups",
@@ -281,7 +279,7 @@
       "created_at": "2024-03-04T07:00:00.000Z"
     },
     {
-      "id": "170000000006",
+      "id": "6",
       "user_id": 1,
       "type": "time",
       "description": "Study JavaScript",
@@ -303,7 +301,7 @@
       "created_at": "2024-03-04T10:00:00.000Z"
     },
     {
-      "id": "170000000007",
+      "id": "7",
       "user_id": 0,
       "type": "check",
       "description": "Write daily journal",
@@ -325,7 +323,7 @@
       "created_at": "2024-03-05T21:00:00.000Z"
     },
     {
-      "id": "170000000008",
+      "id": "8",
       "user_id": 0,
       "type": "count",
       "description": "Practice guitar chords",
@@ -350,7 +348,7 @@
       "created_at": "2024-03-06T17:00:00.000Z"
     },
     {
-      "id": "170000000009",
+      "id": "9",
       "user_id": 1,
       "type": "time",
       "description": "Evening walk",
@@ -372,7 +370,7 @@
       "created_at": "2024-03-06T19:00:00.000Z"
     },
     {
-      "id": "170000000010",
+      "id": "10",
       "user_id": 0,
       "type": "check",
       "description": "Plan tasks for tomorrow",
