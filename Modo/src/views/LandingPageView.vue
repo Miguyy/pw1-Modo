@@ -44,7 +44,7 @@ import NavBar from '../Components/NavBar.vue'
             Turn your goals into quests to beat <br />procrastination and boost your productivity!
           </p>
           <div class="ms-auto">
-            <RouterLink class="letsStart-btn" to="/login"> Let's start </RouterLink>
+            <RouterLink class="letsStart-btn" to="/signin"> Let's start </RouterLink>
           </div>
           <div class="hero-image">
             <img src="../images/people.png" alt="Hero Image" />

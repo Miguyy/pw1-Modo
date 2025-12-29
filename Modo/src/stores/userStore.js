@@ -9,8 +9,7 @@ export const useUserStore = defineStore('userStore', {
   }),
 
   getters: {
-    currentUser: (state) =>
-      state.users.find((u) => u.id === state.loggedUserId),
+    currentUser: (state) => state.users.find((u) => u.id === state.loggedUserId),
   },
 
   actions: {
@@ -26,9 +25,7 @@ export const useUserStore = defineStore('userStore', {
 
     loginByEmail(email, password) {
       const user = this.users.find(
-        (u) =>
-          u.email.toLowerCase() === email.trim().toLowerCase() &&
-          u.password === password
+        (u) => u.email.toLowerCase() === email.trim().toLowerCase() && u.password === password,
       )
 
       if (!user) return false
@@ -42,13 +39,12 @@ export const useUserStore = defineStore('userStore', {
     },
   },
 
-
   persist: {
     enabled: true,
     strategies: [
       {
         storage: localStorage,
-        key: "userStore",
+        key: 'userStore',
       },
     ],
   },
