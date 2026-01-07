@@ -1,69 +1,83 @@
-<!-- src/views/HabitManagerView.vue -->
 <template>
   <NavBar />
   <div class="container py-4">
-    <h2 class="mb-4">Habit Manager</h2>
+    <div class="row g-3 align-items-start">
+      <div class="col-lg-3">
+        <div class="weather-box p-3">
+          <Weather />
+        </div>
+      </div>
 
-    <!-- CREATE FORM -->
-    <div class="card p-3 mb-4">
-      <form @submit.prevent="handleAdd">
-        <div class="row g-2">
-          <div class="col-md-6">
-            <label>Description</label>
-            <input v-model="form.description" class="form-control" required />
-          </div>
-
-          <div class="col-md-2">
-            <label>Priority</label>
-            <select v-model="form.priority" class="form-select">
-              <option value="low">Low</option>
-              <option value="medium">Medium</option>
-              <option value="high">High</option>
-            </select>
-          </div>
-
-          <div class="col-md-2">
-            <label>Type</label>
-            <select v-model="form.type" class="form-select">
-              <option value="check">Check</option>
-              <option value="count">Count</option>
-              <option value="time">Time</option>
-            </select>
-          </div>
-
-          <div class="col-md-2 text-end">
-            <button class="btn btn-primary">Create</button>
-          </div>
-
-          <!-- COUNT EXTRA FIELDS -->
-          <div v-if="form.type === 'count'" class="col-12 mt-2">
-            <div class="row g-2">
-              <div class="col-md-2">
-                <label>Target</label>
-                <input type="number" v-model.number="form.target_count" class="form-control" />
-              </div>
-              <div class="col-md-2">
-                <label>Increment</label>
-                <input type="number" v-model.number="form.increment_value" class="form-control" />
-              </div>
-            </div>
-          </div>
-
-          <!-- TIME EXTRA FIELDS -->
-          <div v-if="form.type === 'time'" class="col-12 mt-2">
+      <div class="col-lg-8" style="margin-top: 55px">
+        <div class="card p-3 mb-0">
+          <form @submit.prevent="handleAdd">
             <div class="row g-2">
               <div class="col-md-6">
-                <label>Target Minutes</label>
-                <input type="number" v-model.number="form.target_minutes" class="form-control" />
+                <label>Description</label>
+                <input v-model="form.description" class="form-control" required />
+              </div>
+
+              <div class="col-md-2">
+                <label>Priority</label>
+                <select v-model="form.priority" class="form-select">
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+
+              <div class="col-md-2">
+                <label>Type</label>
+                <select v-model="form.type" class="form-select">
+                  <option value="check">Check</option>
+                  <option value="count">Count</option>
+                  <option value="time">Time</option>
+                </select>
+              </div>
+
+              <div class="col-md-2 text-end d-flex align-items-end">
+                <button class="btn btn-primary w-100" type="submit">Create</button>
+              </div>
+
+              <!-- COUNT EXTRA FIELDS -->
+              <div v-if="form.type === 'count'" class="col-12 mt-2">
+                <div class="row g-2">
+                  <div class="col-md-2">
+                    <label>Target</label>
+                    <input type="number" v-model.number="form.target_count" class="form-control" />
+                  </div>
+                  <div class="col-md-2">
+                    <label>Increment</label>
+                    <input
+                      type="number"
+                      v-model.number="form.increment_value"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- TIME EXTRA FIELDS -->
+              <div v-if="form.type === 'time'" class="col-12 mt-2">
+                <div class="row g-2">
+                  <div class="col-md-6">
+                    <label>Target Minutes</label>
+                    <input
+                      type="number"
+                      v-model.number="form.target_minutes"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
+          </form>
         </div>
-      </form>
+      </div>
     </div>
 
-    <!-- HABIT LIST -->
-    <div class="row">
+    <!-- Habits list: full width below -->
+    <div class="row mt-4">
       <div v-for="habit in userHabits" :key="habit.id" class="col-md-4 mb-3">
         <div class="card p-3 h-100">
           <div class="d-flex justify-content-between">
@@ -151,7 +165,7 @@
       </div>
     </div>
 
-    <!-- TIMER MODAL -->
+    <!-- TIMER MODAL (kept as-is) -->
     <div class="modal fade" id="timerModal" tabindex="-1" ref="timerModalEl">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -182,13 +196,11 @@ import { useHabitStore } from '@/stores/habitStore'
 import { useUserStore } from '@/stores/userStore'
 import * as bootstrap from 'bootstrap'
 import NavBar from '../Components/NavBar.vue'
+import Weather from '@/Components/Weather.vue'
 
 const habitStore = useHabitStore()
 const userStore = useUserStore()
 
-/* -------------------------
-   FORM MODEL
--------------------------- */
 const form = ref({
   description: '',
   type: 'check',
@@ -198,9 +210,6 @@ const form = ref({
   target_minutes: 15,
 })
 
-/* -------------------------
-   LOAD DATA ON MOUNT
--------------------------- */
 onMounted(() => {
   habitStore.loadFromLocalStorage()
   habitStore.reconcileRunningTimers()
@@ -213,9 +222,6 @@ const userHabits = computed(() => {
   return habitStore.getHabitsByUser(currentUser.value.id)
 })
 
-/* -------------------------
-   HANDLERS (USAR SEMPRE IDs)
--------------------------- */
 function handleAdd() {
   if (!currentUser.value) return alert('Please log in first')
 
@@ -254,9 +260,7 @@ function timePercent(h) {
   return Math.round(((h.current_progress.minutes || 0) / h.target_minutes) * 100)
 }
 
-/* -------------------------
-   TIMER MODAL
--------------------------- */
+/* TIMER MODAL */
 const timerModalEl = ref(null)
 const timerInstance = ref(null)
 const activeTimerHabit = ref(null)
@@ -264,10 +268,8 @@ const activeRemaining = ref(0)
 
 function openTimer(id) {
   const habit = habitStore.getHabitById(id)
-
   activeTimerHabit.value = habit
   activeRemaining.value = habit.remaining_minutes ?? habit.target_minutes ?? 0
-
   if (!timerInstance.value && timerModalEl.value) {
     timerInstance.value = new bootstrap.Modal(timerModalEl.value)
   }
@@ -276,7 +278,6 @@ function openTimer(id) {
 
 function startTimerButton() {
   if (!activeTimerHabit.value) return
-
   habitStore.startTimer(activeTimerHabit.value.id)
   const h = habitStore.getHabitById(activeTimerHabit.value.id)
   activeRemaining.value = h.remaining_minutes ?? h.target_minutes
@@ -284,7 +285,6 @@ function startTimerButton() {
 
 function pauseTimerButton() {
   if (!activeTimerHabit.value) return
-
   habitStore.pauseTimer(activeTimerHabit.value.id)
   activeRemaining.value = habitStore.getHabitById(activeTimerHabit.value.id).remaining_minutes ?? 0
 }
@@ -298,7 +298,36 @@ function onCloseTimerModal() {
 </script>
 
 <style scoped>
-.card {
+.weather-box {
+  background: #355d4c;
+  color: #fff;
+  border-radius: 10px;
+  min-height: 160px;
+  margin-top: 40px;
+}
+
+.weather-box input {
+  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  border-radius: 8px;
+  padding: 6px 8px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+}
+
+.weather-box button {
+  background: #f19640;
+  border: none;
+  color: #fff;
+}
+
+.card.p-3.mb-0 {
+  min-height: 120px;
+}
+
+.card.p-3.h-100 {
   border-radius: 10px;
 }
 </style>
