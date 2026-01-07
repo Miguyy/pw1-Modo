@@ -3,6 +3,7 @@ export default class Habit {
     id = Date.now(),
     user_id = null,
     type = 'check', // "time" | "count" | "check"
+    location = null,
     description = '',
     category = '',
     priority = 'low',
@@ -30,6 +31,7 @@ export default class Habit {
     this.type = type
     this.description = description
     this.category = category
+    this.location = location
     this.priority = priority
     this.repeat = repeat
 
@@ -66,6 +68,7 @@ export default class Habit {
   toJSON() {
     return {
       ...this,
+      location: this.location,
       created_at: this.created_at ? this.created_at.toISOString() : null,
     }
   }
