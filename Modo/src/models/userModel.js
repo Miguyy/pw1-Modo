@@ -13,7 +13,7 @@ export default class User {
   habits = []
 
   constructor({ id, name, email, password, avatar, createdAt, points, priority, habits = [] }) {
-    this.id = Number(id)
+    this.id = id
     this.name = name
     this.email = email
     this.password = password
@@ -24,5 +24,18 @@ export default class User {
     this.habits = habits
 
     this.role = this.priority === 2 ? 'admin' : 'user'
+  }
+  toJSON() {
+    return {
+      id: this.id,
+      name: this.name,
+      email: this.email,
+      password: this.password,
+      avatar: this.avatar,
+      createdAt: this.createdAt.toISOString(),
+      points: this.points,
+      priority: this.priority,
+      habits: this.habits,
+    }
   }
 }

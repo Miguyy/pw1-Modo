@@ -39,48 +39,46 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/userStore'
 
 export default {
   name: 'LoginView',
-  setup() {
-    const email = ref('')
-    const password = ref('')
-    const router = useRouter()
-    const userStore = useUserStore()
-
+  data() {
+    return {
+      email: '',
+      password: '',
+      userStore: null,
+    }
+  },
+  created() {
+    this.userStore = useUserStore()
     const storedUsers = localStorage.getItem('users')
-    if (storedUsers) {
-      userStore.users = JSON.parse(storedUsers)
+    if (storedUsers && (!this.userStore.users || this.userStore.users.length === 0)) {
+      try {
+        this.userStore.users = JSON.parse(storedUsers)
+      } catch {
+        console.log('Failed to parse users from localStorage')
+      }
     }
 
-    const loginUser = () => {
-      if (!email.value || !password.value) {
+    this.userStore.fetchUsers().catch(() => {})
+  },
+  methods: {
+    async loginUser() {
+      if (!this.email || !this.password) {
         alert('Please fill in both email and password.')
         return
       }
 
-      const user = userStore.users.find(
-        (u) => u.email === email.value && u.password === password.value,
-      )
+      const ok = await this.userStore.loginByEmail(this.email, this.password)
 
-      if (!user) {
+      if (!ok) {
         alert('Invalid email or password.')
         return
       }
 
-      userStore.loggedUserId = user.id
-
-      router.push('/habitsmanager')
-    }
-
-    return {
-      email,
-      password,
-      loginUser,
-    }
+      this.$router.push('/habitsmanager')
+    },
   },
 }
 </script>
