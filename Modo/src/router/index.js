@@ -5,7 +5,6 @@ import RegisterView from '../views/RegisterView.vue'
 import LoginView from '../views/LoginView.vue'
 import LandingPageView from '../views/LandingPageView.vue'
 import HabitManagerView from '../views/HabitManagerView.vue'
-import HabitsCreationView from '@/views/HabitsCreationView.vue'
 import SettingsView from '@/views/SettingsView.vue'
 import StatisticsView from '@/views/StatisticsView.vue'
 import AdminPanelView from '@/views/AdminPanelView.vue'
@@ -37,12 +36,7 @@ const router = createRouter({
       component: HabitManagerView,
       meta: { requiresLogin: true },
     },
-    {
-      path: '/habitscreation',
-      name: 'habitscreation',
-      component: HabitsCreationView,
-      meta: { requiresLogin: true },
-    },
+
     {
       path: '/settings',
       name: 'settings',
