@@ -41,72 +41,76 @@
 </template>
 
 <script>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/userStore'
 
 export default {
   name: 'RegisterView',
-  setup() {
-    const name = ref('')
-    const email = ref('')
-    const password = ref('')
-
-    const userStore = useUserStore()
-    const router = useRouter()
+  data() {
+    return {
+      name: '',
+      email: '',
+      password: '',
+      userStore: null,
+    }
+  },
+  created() {
+    this.userStore = useUserStore()
 
     const storedUsers = localStorage.getItem('users')
-    if (storedUsers) {
-      userStore.users = JSON.parse(storedUsers)
-      const maxId = userStore.users.reduce((max, u) => Math.max(max, Number(u.id)), -1)
-      userStore.nextId = maxId + 1
+    if (storedUsers && (!this.userStore.users || this.userStore.users.length === 0)) {
+      try {
+        this.userStore.users = JSON.parse(storedUsers)
+        const maxId = this.userStore.users.reduce((max, u) => Math.max(max, Number(u.id)), -1)
+        this.userStore.nextId = maxId + 1
+      } catch {
+        console.log('Failed to parse users from localStorage')
+      }
     }
 
-    const registerUser = () => {
-      if (!name.value || !email.value || !password.value) {
+    this.userStore.fetchUsers().catch(() => {})
+  },
+  methods: {
+    async registerUser() {
+      if (!this.name || !this.email || !this.password) {
         alert('Please fill in all fields.')
         return
       }
 
       const passwordChar = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/
-      if (!passwordChar.test(password.value)) {
+      if (!passwordChar.test(this.password)) {
         alert(
           'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.',
         )
         return
       }
 
-      if (userStore.users.some((user) => user.email === email.value)) {
+      if (this.userStore.users.some((user) => user.email === this.email)) {
         alert('Email is already registered.')
         return
       }
 
-      userStore.addUser({
-        name: name.value,
-        email: email.value,
-        password: password.value,
-        avatar: null,
-        points: 0,
-        priority: 1,
-      })
+      try {
+        await this.userStore.addUser({
+          name: this.name,
+          email: this.email,
+          password: this.password,
+          avatar: null,
+          points: 0,
+          priority: 1,
+        })
 
-      localStorage.setItem('users', JSON.stringify(userStore.users))
+        localStorage.setItem('users', JSON.stringify(this.userStore.users))
 
-      alert('User registered successfully!')
-
-      name.value = ''
-      email.value = ''
-      password.value = ''
-
-      router.push('/login')
-    }
-
-    return {
-      name,
-      email,
-      password,
-      registerUser,
-    }
+        alert('User registered successfully!')
+        this.name = ''
+        this.email = ''
+        this.password = ''
+        this.$router.push('/login')
+      } catch (e) {
+        console.error(e)
+        alert('Failed to register user.')
+      }
+    },
   },
 }
 </script>

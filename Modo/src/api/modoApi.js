@@ -67,6 +67,10 @@ function deleteHabit(id) {
   return del(`/habits/${id}`)
 }
 
+function patch(endpoint, data) {
+  return request(endpoint, { method: 'PATCH', body: data })
+}
+
 export {
   usersList,
   createUser,
@@ -76,4 +80,5 @@ export {
   createHabit,
   updateHabit,
   deleteHabit,
+  patch,
 }
