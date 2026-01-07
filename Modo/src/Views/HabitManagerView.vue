@@ -35,6 +35,14 @@
                 </select>
               </div>
 
+              <div class="col-md-2">
+                <label>Location</label>
+                <select v-model="form.location" class="form-select">
+                  <option value="inside">Inside</option>
+                  <option value="outside">Outside</option>
+                </select>
+              </div>
+
               <div class="col-md-2 text-end d-flex align-items-end">
                 <button class="btn btn-primary w-100" type="submit">Create</button>
               </div>
@@ -81,7 +89,12 @@
       <div v-for="habit in userHabits" :key="habit.id" class="col-md-4 mb-3">
         <div class="card p-3 h-100">
           <div class="d-flex justify-content-between">
-            <strong>{{ habit.description }}</strong>
+            <div>
+              <strong>{{ habit.description }}</strong>
+              <div>
+                <small class="text-muted">Location: {{ habit.location }}</small>
+              </div>
+            </div>
             <small class="text-muted">{{ habit.priority }}</small>
           </div>
 
@@ -204,6 +217,7 @@ const userStore = useUserStore()
 const form = ref({
   description: '',
   type: 'check',
+  location: 'inside',
   priority: 'low',
   target_count: 1,
   increment_value: 1,
@@ -230,12 +244,14 @@ function handleAdd() {
     description: form.value.description,
     type: form.value.type,
     priority: form.value.priority,
+    location: form.value.location,
     target_count: form.value.type === 'count' ? form.value.target_count : null,
     increment_value: form.value.type === 'count' ? form.value.increment_value : 1,
     target_minutes: form.value.type === 'time' ? form.value.target_minutes : null,
   })
 
   form.value.description = ''
+  form.value.location = 'inside'
 }
 
 function deleteHabit(id) {
