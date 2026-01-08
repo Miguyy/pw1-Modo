@@ -273,17 +273,31 @@ export const useHabitStore = defineStore('habitStore', {
 
     _awardPointsFor(habit) {
       try {
+        if (!habit || habit.points_awarded) return
+
         const userStore = useUserStore()
         const uid = String(habit.user_id)
         const user = userStore.getUserById
           ? userStore.getUserById(uid)
           : userStore.users.find((u) => String(u.id) === uid)
         if (!user) return
+
         const points = PRIORITY_POINTS[habit.priority] ?? PRIORITY_POINTS.low
         user.points = (Number(user.points) || 0) + points
+
+        habit.points_awarded = true
+
+        this.saveToLocalStorage()
         if (userStore.saveToLocalStorage) userStore.saveToLocalStorage()
+
+        apiPatch(`/users/${user.id}`, { points: user.points }).catch((err) =>
+          console.warn('Failed to patch user points on API:', err),
+        )
+        apiPatch(`/habits/${habit.id}`, { points_awarded: true }).catch((err) =>
+          console.warn('Failed to patch habit.points_awarded on API:', err),
+        )
       } catch (e) {
-        console.error('Erro ao atribuir pontos:', e)
+        console.error('Error awarding points:', e)
       }
     },
 
