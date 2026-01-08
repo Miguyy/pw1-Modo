@@ -22,6 +22,9 @@ export default class Habit {
     current_progress = null,
     completed = false,
 
+    // flag
+    points_awarded = false,
+
     created_at = null,
   } = {}) {
     // Preserve IDs exactly as provided (mock server uses strings)
@@ -54,6 +57,9 @@ export default class Habit {
     // progress
     this.current_progress = current_progress ?? this.defaultProgress()
     this.completed = !!completed
+
+    // flag
+    this.points_awarded = !!points_awarded
 
     this.created_at = created_at ? new Date(created_at) : new Date()
   }

@@ -93,7 +93,7 @@ const logout = () => {
           class="rounded-circle me-2"
           style="width: 40px; height: 40px; object-fit: cover"
         />
-
+        <span class="me-3 fw-semibold">Points: {{ user.points }} </span>
         <span class="me-3 fw-semibold">{{ user.name }}</span>
 
         <button class="btn btn-outline-danger btn-sm" @click="logout">Logout</button>

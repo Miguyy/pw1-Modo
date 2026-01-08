@@ -260,7 +260,7 @@
       "email": "testeresponsividade@gmail.com",
       "password": "M1guelito!",
       "avatar": null,
-      "points": 0,
+      "points": 295,
       "priority": 1,
       "createdAt": "2026-01-07T16:20:31.756Z",
       "habits": [
@@ -281,7 +281,22 @@
         "3269",
         "b8be",
         "9e35",
-        "65d5"
+        "65d5",
+        "698b",
+        "69dc"
+      ]
+    },
+    {
+      "id": "f4be",
+      "name": "SPRINT",
+      "email": "sprint@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 5,
+      "priority": 1,
+      "createdAt": "2026-01-08T09:55:13.450Z",
+      "habits": [
+        "fc5a"
       ]
     }
   ],
@@ -751,7 +766,8 @@
       "increment_value": 1,
       "target_minutes": null,
       "created_at": "2026-01-07T16:20:58.835Z",
-      "remaining_minutes": null
+      "remaining_minutes": null,
+      "points_awarded": true
     },
     {
       "id": "7aa3",
@@ -775,7 +791,8 @@
       "increment_value": 1,
       "target_minutes": null,
       "created_at": "2026-01-07T21:01:57.105Z",
-      "remaining_minutes": null
+      "remaining_minutes": null,
+      "points_awarded": true
     },
     {
       "id": "c793",
@@ -969,6 +986,46 @@
       "target_minutes": null,
       "created_at": "2026-01-08T08:59:07.990Z",
       "remaining_minutes": null
+    },
+    {
+      "id": "698b",
+      "user_id": "76a8",
+      "description": "time",
+      "type": "time",
+      "priority": "medium",
+      "location": "inside",
+      "target_count": null,
+      "increment_value": 1,
+      "target_minutes": 15,
+      "created_at": "2026-01-08T09:42:11.901Z",
+      "remaining_minutes": 15
+    },
+    {
+      "id": "69dc",
+      "user_id": "76a8",
+      "description": "time2",
+      "type": "time",
+      "priority": "medium",
+      "location": "inside",
+      "target_count": null,
+      "increment_value": 1,
+      "target_minutes": 1,
+      "created_at": "2026-01-08T09:42:24.064Z",
+      "remaining_minutes": 1
+    },
+    {
+      "id": "fc5a",
+      "user_id": "f4be",
+      "description": "Drink 5L of water",
+      "type": "count",
+      "priority": "low",
+      "location": "inside",
+      "target_count": 5,
+      "increment_value": 1,
+      "target_minutes": null,
+      "created_at": "2026-01-08T09:55:54.596Z",
+      "remaining_minutes": null,
+      "points_awarded": true
     }
   ]
 }
