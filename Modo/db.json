@@ -298,6 +298,22 @@
       "habits": [
         "fc5a"
       ]
+    },
+    {
+      "id": "df80",
+      "name": "sprint2",
+      "email": "sprint2@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 5,
+      "priority": 1,
+      "createdAt": "2026-01-08T15:12:44.995Z",
+      "habits": [
+        "9c13",
+        1767885985549,
+        1767885995304,
+        "6a1a"
+      ]
     }
   ],
   "habits": [
@@ -1026,6 +1042,33 @@
       "created_at": "2026-01-08T09:55:54.596Z",
       "remaining_minutes": null,
       "points_awarded": true
+    },
+    {
+      "id": "9c13",
+      "user_id": "df80",
+      "description": "fueuhfeh",
+      "type": "check",
+      "priority": "low",
+      "location": "outside",
+      "target_count": null,
+      "increment_value": 1,
+      "target_minutes": null,
+      "created_at": "2026-01-08T15:14:23.043Z",
+      "remaining_minutes": null,
+      "points_awarded": true
+    },
+    {
+      "id": "6a1a",
+      "user_id": "df80",
+      "description": "dwdwd",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "target_count": null,
+      "increment_value": 1,
+      "target_minutes": null,
+      "created_at": "2026-01-08T15:28:07.432Z",
+      "remaining_minutes": null
     }
   ]
 }

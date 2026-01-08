@@ -1,7 +1,7 @@
 <script setup>
 import NavBar from '../Components/NavBar.vue'
 import peopleImg from '../images/people.png'
-import { ref, onMounted, onUnmounted} from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 
 // Estado da animação
 const titleActive = ref(false)
@@ -64,7 +64,6 @@ onUnmounted(() => {
 })
 </script>
 
-
 <template>
   <div class="landing-page">
     <div class="navbar-layer">
@@ -74,15 +73,15 @@ onUnmounted(() => {
     <section class="hero-section">
       <div class="hero-section-cards">
         <div class="hero-card">
-          <img class="star-sparkle" src="/src/images/starVector.png">
+          <img class="star-sparkle" src="/src/images/starVector.png" />
           <h3>Modern</h3>
           <p>Simple to use, exciting to play</p>
         </div>
         <div class="hero-card">
           <div>
-            <img class="shine-top" src="/src/images/shineTop.png">
-            <img class="shine-middle" src="/src/images/shineMiddle.png">
-            <img class="shine-bottom" src="/src/images/shineBottom.png">
+            <img class="shine-top" src="/src/images/shineTop.png" />
+            <img class="shine-middle" src="/src/images/shineMiddle.png" />
+            <img class="shine-bottom" src="/src/images/shineBottom.png" />
           </div>
           <h2>+10</h2>
           <h3>habit sugestions</h3>
@@ -90,8 +89,8 @@ onUnmounted(() => {
         <div class="hero-card">
           <h3>It's a special <span>GIFT</span> for you</h3>
           <div class="card-gift">
-            <img class="gift-top" src="/src/images/giftTop.png">
-            <img src="/src/images/giftBottom.png">
+            <img class="gift-top" src="/src/images/giftTop.png" />
+            <img src="/src/images/giftBottom.png" />
           </div>
         </div>
       </div>
@@ -122,8 +121,7 @@ onUnmounted(() => {
       </div>
 
       <div class="wave-front">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1512 985" preserveAspectRatio="none"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1512 985" preserveAspectRatio="none">
           <defs>
             <!-- ClipPath da onda -->
             <clipPath id="waveClip">
@@ -134,9 +132,9 @@ onUnmounted(() => {
           </defs>
 
           <!-- Image: 612 * 408 -->
-          <image 
+          <image
             :href="peopleImg"
-            width="795.6" 
+            width="795.6"
             height="530.4"
             x="90"
             y="455"
@@ -145,7 +143,6 @@ onUnmounted(() => {
           />
         </svg>
       </div>
-
 
       <div class="hero-content">
         <div class="container">
@@ -175,36 +172,32 @@ onUnmounted(() => {
 
       <div class="carousel">
         <div class="card card-1">
-          <img src="/src/images/carousel_img1.png" alt="">
+          <img src="/src/images/carousel_img1.png" alt="" />
           <div class="content">
-            <img class="carousel-logo" src="/src/images/M.png" alt="logo">
+            <img class="carousel-logo" src="/src/images/M.png" alt="logo" />
             <h2>People with busy schedules have trouble to organize their habits.</h2>
           </div>
         </div>
 
         <div class="card card-2">
-          <img src="/src/images/carousel_img2.png" alt="">
+          <img src="/src/images/carousel_img2.png" alt="" />
           <div class="content">
-            <img class="carousel-logo" src="/src/images/M.png" alt="logo">
+            <img class="carousel-logo" src="/src/images/M.png" alt="logo" />
             <h2>People with mental disorders can be helped.</h2>
           </div>
         </div>
 
         <div class="card card-3">
-          <img src="/src/images/carousel_img3.png" alt="">
+          <img src="/src/images/carousel_img3.png" alt="" />
           <div class="content">
-            <img class="carousel-logo" src="/src/images/M.png" alt="logo">
+            <img class="carousel-logo" src="/src/images/M.png" alt="logo" />
             <h2>Many teenagers have problems with time management.</h2>
           </div>
         </div>
       </div>
     </section>
 
-    <section 
-      class="scroll-section-color"
-      ref="section"
-      @mouseenter="handleMouseEnter"
-    >
+    <section class="scroll-section-color" ref="section" @mouseenter="handleMouseEnter">
       <div class="appear-section">
         <div class="section-titles">
           <div>
@@ -217,49 +210,70 @@ onUnmounted(() => {
 
         <div class="appear-content">
           <div class="appear-text">
-            <h2 :class="{ active: titleActive }">
-              Why we built Modo.
-            </h2>
+            <h2 :class="{ active: titleActive }">Why we built Modo.</h2>
 
             <p :class="{ active: textActive }">
-              We built Modo because people today are overwhelmed by habits, routines, and goals they want to follow, 
-              but struggle to stay consistent. Modern life makes it easy to get distracted, so we created a focused 
-              habit-tracking space that helps you stay committed, organized, and motivated every day with simple tools, 
-              smart reminders, and gamification.
+              We built Modo because people today are overwhelmed by habits, routines, and goals they
+              want to follow, but struggle to stay consistent. Modern life makes it easy to get
+              distracted, so we created a focused habit-tracking space that helps you stay
+              committed, organized, and motivated every day with simple tools, smart reminders, and
+              gamification.
             </p>
           </div>
 
-          <img class="appear-detail" src="/src/images/scrol_detail.png">
+          <img class="appear-detail" src="/src/images/scrol_detail.png" />
         </div>
       </div>
       <div class="scroll-section" ref="scroll">
-        <img src="/src/images/scroll_img1.png" alt="">
-        <img src="/src/images/scroll_img2.png" alt="">
-        <img src="/src/images/scroll_img3.png" alt="">
-        <img src="/src/images/scroll_img4.png" alt="">
+        <img src="/src/images/scroll_img1.png" alt="" />
+        <img src="/src/images/scroll_img2.png" alt="" />
+        <img src="/src/images/scroll_img3.png" alt="" />
+        <img src="/src/images/scroll_img4.png" alt="" />
       </div>
     </section>
-
-
 
     <section class="sponsors-section">
       <h3>It wasn't possible without these organizations</h3>
       <div class="sponsors-carousel">
         <div class="sponsors">
-          <div class="card-sponsers" style="padding-top: 18px;"><img src="/src/images/pPortoLogo.png" alt="P.Porto Logo"></div>
-          <div class="card-sponsers" style="padding-top: 4px;"><img src="/src/images/portoLogo.png" alt="Porto Logo"></div>
-          <div class="card-sponsers" style="padding-top: 5px;"><img src="/src/images/esmadLogo.png" alt="Esmad Logo"></div>
-          <div class="card-sponsers" style="padding-top: 18px;"><img src="/src/images/pPortoLogo.png" alt="P.Porto Logo"></div>
-          <div class="card-sponsers" style="padding-top: 4px;"><img src="/src/images/portoLogo.png" alt="Porto Logo"></div>
-          <div class="card-sponsers" style="padding-top: 5px;"><img src="/src/images/esmadLogo.png" alt="Esmad Logo"></div>
+          <div class="card-sponsers" style="padding-top: 18px">
+            <img src="/src/images/pPortoLogo.png" alt="P.Porto Logo" />
+          </div>
+          <div class="card-sponsers" style="padding-top: 4px">
+            <img src="/src/images/portoLogo.png" alt="Porto Logo" />
+          </div>
+          <div class="card-sponsers" style="padding-top: 5px">
+            <img src="/src/images/esmadLogo.png" alt="Esmad Logo" />
+          </div>
+          <div class="card-sponsers" style="padding-top: 18px">
+            <img src="/src/images/pPortoLogo.png" alt="P.Porto Logo" />
+          </div>
+          <div class="card-sponsers" style="padding-top: 4px">
+            <img src="/src/images/portoLogo.png" alt="Porto Logo" />
+          </div>
+          <div class="card-sponsers" style="padding-top: 5px">
+            <img src="/src/images/esmadLogo.png" alt="Esmad Logo" />
+          </div>
         </div>
         <div aria-hidden class="sponsors">
-          <div class="card-sponsers" style="padding-top: 18px;"><img src="/src/images/pPortoLogo.png" alt="P.Porto Logo"></div>
-          <div class="card-sponsers" style="padding-top: 4px;"><img src="/src/images/portoLogo.png" alt="Porto Logo"></div>
-          <div class="card-sponsers" style="padding-top: 5px;"><img src="/src/images/esmadLogo.png" alt="Esmad Logo"></div>
-          <div class="card-sponsers" style="padding-top: 18px;"><img src="/src/images/pPortoLogo.png" alt="P.Porto Logo"></div>
-          <div class="card-sponsers" style="padding-top: 4px;"><img src="/src/images/portoLogo.png" alt="Porto Logo"></div>
-          <div class="card-sponsers" style="padding-top: 5px;"><img src="/src/images/esmadLogo.png" alt="Esmad Logo"></div>
+          <div class="card-sponsers" style="padding-top: 18px">
+            <img src="/src/images/pPortoLogo.png" alt="P.Porto Logo" />
+          </div>
+          <div class="card-sponsers" style="padding-top: 4px">
+            <img src="/src/images/portoLogo.png" alt="Porto Logo" />
+          </div>
+          <div class="card-sponsers" style="padding-top: 5px">
+            <img src="/src/images/esmadLogo.png" alt="Esmad Logo" />
+          </div>
+          <div class="card-sponsers" style="padding-top: 18px">
+            <img src="/src/images/pPortoLogo.png" alt="P.Porto Logo" />
+          </div>
+          <div class="card-sponsers" style="padding-top: 4px">
+            <img src="/src/images/portoLogo.png" alt="Porto Logo" />
+          </div>
+          <div class="card-sponsers" style="padding-top: 5px">
+            <img src="/src/images/esmadLogo.png" alt="Esmad Logo" />
+          </div>
         </div>
       </div>
     </section>
