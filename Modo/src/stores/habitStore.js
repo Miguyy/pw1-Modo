@@ -1,7 +1,11 @@
 import { defineStore } from 'pinia'
 import Habit from '@/models/habitModel'
 import { useUserStore } from '@/stores/userStore'
-import { createHabit as apiCreateHabit, patch as apiPatch } from '@/api/modoApi'
+import {
+  createHabit as apiCreateHabit,
+  deleteHabit as apiDeleteHabit,
+  patch as apiPatch,
+} from '@/api/modoApi'
 
 const LOCAL_KEY = 'habits_v1'
 
@@ -109,7 +113,6 @@ export const useHabitStore = defineStore('habitStore', {
     },
 
     updateHabit(id, updatedData) {
-      /* const index = this.habits.findIndex((h) => Number(h.id) === Number(id)) */
       const index = this.habits.findIndex((h) => String(h.id) === String(id))
       if (index === -1) return null
       // merge then reconstruct
@@ -119,10 +122,37 @@ export const useHabitStore = defineStore('habitStore', {
       return this.habits[index]
     },
 
-    deleteHabit(id) {
-      /* this.habits = this.habits.filter((h) => Number(h.id) !== Number(id)) */
+    async deleteHabit(id) {
+      const habit = this.getHabitById(id)
+      if (!habit) return
+
+      try {
+        await apiDeleteHabit(id)
+      } catch (err) {
+        console.warn('API delete failed, continuing with local deletion:', err)
+      }
+
       this.habits = this.habits.filter((h) => String(h.id) !== String(id))
       this.saveToLocalStorage()
+
+      try {
+        const userStore = useUserStore()
+        const user = userStore.getUserById(habit.user_id)
+        if (user) {
+          user.habits = (user.habits || []).filter((hid) => String(hid) !== String(id))
+
+          try {
+            await apiPatch(`/users/${user.id}`, { habits: user.habits })
+          } catch (err) {
+            console.warn('Failed to patch user.habits on API after delete:', err)
+          }
+
+          userStore.$patch({ users: [...userStore.users] })
+          if (userStore.saveToLocalStorage) userStore.saveToLocalStorage()
+        }
+      } catch (e) {
+        console.error('Error updating user after habit delete:', e)
+      }
     },
 
     // ----- Tracking / Progress -----
