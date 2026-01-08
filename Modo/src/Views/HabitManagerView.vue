@@ -743,7 +743,7 @@ h1.textContent = `${month} ${day}`;
   }
 
   .status {
-      opacity: .8;
+      opacity: 0.8;
       font-size: 14px;
   }
 
