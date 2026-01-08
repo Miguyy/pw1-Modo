@@ -5,7 +5,10 @@
     <section class="settings-card">
       <header class="profile-header">
         <div class="avatar">
-          <img src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400" alt="Profile">
+          <img
+            src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400"
+            alt="Profile"
+          />
         </div>
         <div class="profile-info">
           <h2>Welcome back, Rui Rodrigues</h2>
@@ -27,15 +30,15 @@
           <div class="field-group">
             <label>Name</label>
             <div class="row">
-              <input type="text" value="Rui">
-              <input type="text" value="Rodrigues">
+              <input type="text" value="Rui" />
+              <input type="text" value="Rodrigues" />
             </div>
           </div>
 
           <div class="field-group">
             <label>Email address</label>
             <div class="inline">
-              <input type="email" value="ruirodrigues@gmail.com">
+              <input type="email" value="ruirodrigues@gmail.com" />
               <button class="btn-change">Change</button>
             </div>
           </div>
@@ -43,7 +46,7 @@
           <div class="field-group">
             <label>Password</label>
             <div class="inline">
-              <input type="password" value="password">
+              <input type="password" value="password" />
               <button class="btn-change">Change</button>
             </div>
           </div>

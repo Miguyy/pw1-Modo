@@ -3,6 +3,7 @@ export default class Habit {
     id = Date.now(),
     user_id = null,
     type = 'check', // "time" | "count" | "check"
+    location = null,
     description = '',
     category = '',
     priority = 'low',
@@ -21,6 +22,9 @@ export default class Habit {
     current_progress = null,
     completed = false,
 
+    // flag
+    points_awarded = false,
+
     created_at = null,
   } = {}) {
     // Preserve IDs exactly as provided (mock server uses strings)
@@ -30,6 +34,7 @@ export default class Habit {
     this.type = type
     this.description = description
     this.category = category
+    this.location = location
     this.priority = priority
     this.repeat = repeat
 
@@ -53,6 +58,9 @@ export default class Habit {
     this.current_progress = current_progress ?? this.defaultProgress()
     this.completed = !!completed
 
+    // flag
+    this.points_awarded = !!points_awarded
+
     this.created_at = created_at ? new Date(created_at) : new Date()
   }
 
@@ -66,6 +74,7 @@ export default class Habit {
   toJSON() {
     return {
       ...this,
+      location: this.location,
       created_at: this.created_at ? this.created_at.toISOString() : null,
     }
   }
