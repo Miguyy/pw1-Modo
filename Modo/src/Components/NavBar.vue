@@ -30,6 +30,23 @@ const logout = () => {
       <div class="ms-auto d-flex align-items-center" v-if="user">
         <div class="navbar-center">
           <RouterLink
+            to="/habitsmanager"
+            class="nav-link-custom me-3"
+            title="Habits Manager"
+            aria-label="Habits Manager"
+          >
+            <svg
+              class="nav-icon"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+              role="img"
+            >
+              <path fill="currentColor" d="M9 16.2L4.8 12 3.4 13.4 9 19l12-12-1.4-1.4z" />
+            </svg>
+          </RouterLink>
+
+          <RouterLink
             to="/statistics"
             class="nav-link-custom me-3"
             title="Statistics"
