@@ -84,7 +84,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style>
   :root {
       --bg: #f3f3f1;
       --green-dark: #3f5f4f;
