@@ -1,11 +1,13 @@
 <template>
-  <div></div>
+  <NavBar />
+  <div class="container py-4">
+    <HabitStatsChart />
+  </div>
 </template>
 
-<script>
-export default {
-  name: 'StatisticsView',
-}
+<script setup>
+import NavBar from '@/Components/NavBar.vue'
+import HabitStatsChart from '@/Components/HabitStatsChart.vue'
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped></style>

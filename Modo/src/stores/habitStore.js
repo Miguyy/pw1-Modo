@@ -1,7 +1,11 @@
-// src/stores/habitStore.js
 import { defineStore } from 'pinia'
 import Habit from '@/models/habitModel'
 import { useUserStore } from '@/stores/userStore'
+import {
+  createHabit as apiCreateHabit,
+  deleteHabit as apiDeleteHabit,
+  patch as apiPatch,
+} from '@/api/modoApi'
 
 const LOCAL_KEY = 'habits_v1'
 
@@ -19,9 +23,9 @@ export const useHabitStore = defineStore('habitStore', {
 
   getters: {
     getHabitsByUser: (state) => (user_id) =>
-      state.habits.filter((h) => Number(h.user_id) === Number(user_id)),
+      state.habits.filter((h) => String(h.user_id) === String(user_id)),
 
-    getHabitById: (state) => (id) => state.habits.find((h) => Number(h.id) === Number(id)),
+    getHabitById: (state) => (id) => state.habits.find((h) => String(h.id) === String(id)),
   },
 
   actions: {
@@ -45,18 +49,71 @@ export const useHabitStore = defineStore('habitStore', {
     },
 
     // ----- CRUD -----
-    addHabit(habitData) {
-      const h = new Habit({
-        ...habitData,
-        id: Date.now(),
-      })
-      this.habits.push(h)
-      this.saveToLocalStorage()
-      return h
+    async addHabit(habitData) {
+      const userStore = useUserStore()
+
+      try {
+        const payload = {
+          ...habitData,
+          created_at: new Date().toISOString(),
+          remaining_minutes: habitData.remaining_minutes ?? habitData.target_minutes ?? null,
+          current_progress: habitData.current_progress ?? undefined,
+        }
+
+        // create on API (json-server will update db.json)
+        const created = await apiCreateHabit(payload)
+
+        // push habit to local store
+        const h = new Habit(created)
+        this.habits.push(h)
+        this.saveToLocalStorage()
+
+        // add habit id to user.habits and try to persist the user
+        // after creating habit on server and pushing local Habit instance:
+        const user = userStore.getUserById(created.user_id)
+        if (user) {
+          const newHabits = [...(user.habits || []), created.id]
+          user.habits = newHabits
+
+          // persist partial update to server (PATCH /users/:id)
+          try {
+            await apiPatch(`/users/${user.id}`, { habits: newHabits })
+          } catch (err) {
+            console.warn('Failed to patch user.habits on API:', err)
+          }
+
+          // ensure reactivity + persist locally
+          userStore.$patch({ users: [...userStore.users] })
+          if (userStore.saveToLocalStorage) userStore.saveToLocalStorage()
+        }
+
+        return h
+      } catch (e) {
+        console.warn('API create failed, falling back to local add:', e)
+
+        // local fallback
+        const h = new Habit({
+          id: Date.now(),
+          ...habitData,
+          created_at: new Date().toISOString(),
+        })
+        this.habits.push(h)
+
+        // attach to local user
+        const user = userStore.getUserById(h.user_id)
+        if (user) {
+          user.habits = user.habits || []
+          user.habits.push(h.id)
+          if (userStore.saveToLocalStorage) userStore.saveToLocalStorage()
+        }
+
+        this.saveToLocalStorage()
+        return h
+      }
     },
 
     updateHabit(id, updatedData) {
-      const index = this.habits.findIndex((h) => Number(h.id) === Number(id))
+      const index = this.habits.findIndex((h) => String(h.id) === String(id))
       if (index === -1) return null
       // merge then reconstruct
       const merged = { ...this.habits[index], ...updatedData }
@@ -65,9 +122,37 @@ export const useHabitStore = defineStore('habitStore', {
       return this.habits[index]
     },
 
-    deleteHabit(id) {
-      this.habits = this.habits.filter((h) => Number(h.id) !== Number(id))
+    async deleteHabit(id) {
+      const habit = this.getHabitById(id)
+      if (!habit) return
+
+      try {
+        await apiDeleteHabit(id)
+      } catch (err) {
+        console.warn('API delete failed, continuing with local deletion:', err)
+      }
+
+      this.habits = this.habits.filter((h) => String(h.id) !== String(id))
       this.saveToLocalStorage()
+
+      try {
+        const userStore = useUserStore()
+        const user = userStore.getUserById(habit.user_id)
+        if (user) {
+          user.habits = (user.habits || []).filter((hid) => String(hid) !== String(id))
+
+          try {
+            await apiPatch(`/users/${user.id}`, { habits: user.habits })
+          } catch (err) {
+            console.warn('Failed to patch user.habits on API after delete:', err)
+          }
+
+          userStore.$patch({ users: [...userStore.users] })
+          if (userStore.saveToLocalStorage) userStore.saveToLocalStorage()
+        }
+      } catch (e) {
+        console.error('Error updating user after habit delete:', e)
+      }
     },
 
     // ----- Tracking / Progress -----
@@ -185,23 +270,34 @@ export const useHabitStore = defineStore('habitStore', {
     },
 
     // ----- Gamificação: quando um hábito é completado -----
+
     _awardPointsFor(habit) {
       try {
+        if (!habit || habit.points_awarded) return
+
         const userStore = useUserStore()
-        const uid = Number(habit.user_id)
-        if (!uid) return
+        const uid = String(habit.user_id)
         const user = userStore.getUserById
           ? userStore.getUserById(uid)
-          : userStore.users.find((u) => u.id === uid)
+          : userStore.users.find((u) => String(u.id) === uid)
         if (!user) return
+
         const points = PRIORITY_POINTS[habit.priority] ?? PRIORITY_POINTS.low
-        // atualiza pontos do user (se usar getter currentUser, acha por id)
-        // assumimos userStore tem updateUser / saveToLocalStorage
         user.points = (Number(user.points) || 0) + points
-        // garante persistência através da store
+
+        habit.points_awarded = true
+
+        this.saveToLocalStorage()
         if (userStore.saveToLocalStorage) userStore.saveToLocalStorage()
+
+        apiPatch(`/users/${user.id}`, { points: user.points }).catch((err) =>
+          console.warn('Failed to patch user points on API:', err),
+        )
+        apiPatch(`/habits/${habit.id}`, { points_awarded: true }).catch((err) =>
+          console.warn('Failed to patch habit.points_awarded on API:', err),
+        )
       } catch (e) {
-        console.error('Erro ao atribuir pontos:', e)
+        console.error('Error awarding points:', e)
       }
     },
 
