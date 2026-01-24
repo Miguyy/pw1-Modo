@@ -1,18 +1,49 @@
 <template>
+  <NavBar />
   <main class="page">
-    <h1>SETTINGS</h1>
+    <div class="page-title">
+      <h2>SETTINGS</h2>
+    </div>
 
     <section class="settings-card">
       <header class="profile-header">
-        <div class="avatar">
+        <div class="avatar" id="avatar">
           <img
             src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400"
             alt="Profile"
           />
         </div>
+        <div class="swiper" id="avatar-decoration">
+          <div class="card-wrapper">
+            <button class="card-button btn-avatar-check">&#10003;</button>
+            <button class="card-button btn-avatar-exit">&#10005;</button>
+            <ul class="card-list swiper-wrapper">
+              <li class="card-item swiper-slide">
+                <img src="/src/images/avatar_decoration/solarSystem.png" alt="solarSystem">
+              </li>
+              <li class="card-item swiper-slide">
+                <img src="/src/images/avatar_decoration/garden.png" alt="garden">
+              </li>
+              <li class="card-item swiper-slide">
+                <img src="/src/images/avatar_decoration/olives.png" alt="olives">
+              </li>
+              <li class="card-item swiper-slide">
+                <img src="/src/images/avatar_decoration/cat.png" alt="cat">
+              </li>
+              <li class="card-item swiper-slide">
+                <img src="/src/images/avatar_decoration/summer.png" alt="summer">
+              </li>
+              <li class="card-item swiper-slide">
+                <img src="/src/images/avatar_decoration/zoo.png" alt="zoo">
+              </li>
+            </ul>
+            <button class="swiper-button-prev">&#8592;</button>
+            <button class="swiper-button-next">&#8594;</button>
+          </div>
+        </div>
         <div class="profile-info">
-          <h2>Welcome back, Rui Rodrigues</h2>
-          <p>ruirodrigues@gmail.com</p>
+          <h2>Welcome back, {{ user.name }}</h2>
+          <p>{{user.email}}</p>
         </div>
         <button class="change-picture">Change picture</button>
       </header>
@@ -81,12 +112,21 @@
   </footer>
 </template>
 
-<script>
-export default {
-  name: 'SettingsView',
-}
+<script setup>
+import { useUserStore } from '../stores/userStore'
+import { computed } from 'vue'
+import NavBar from '@/Components/NavBar.vue'
+
+const userStore = useUserStore()
+const user = computed(() => userStore.currentUser)
+
+defineOptions({             // export default {
+  name: 'SettingsView',     //  name: 'SettingsView',
+})                          //}
+
 </script>
 
+<style src="../css/styles.css"></style>
 <style>
   :root {
       --bg: #f3f3f1;
@@ -115,15 +155,11 @@ export default {
       padding: 32px 24px 80px;
     }
 
-    h1 {
-      font-size: 14px;
-      letter-spacing: 0.3em;
-      color: #444;
-      margin-bottom: 16px;
-    }
 
     /* Card */
     .settings-card {
+      max-width: 1080px;
+      margin: 0 auto 0 auto;
       background: var(--card);
       border-radius: var(--radius);
       padding: 24px;
@@ -302,4 +338,34 @@ export default {
         grid-template-columns: 1fr;
       }
     }
+
+    /* Changes */
+
+    .page-title {
+      width: 100%;
+      max-width: 1080px;
+      margin: 10px auto 50px auto;
+      padding-top: 10px;
+      border-top: 2px dotted #355D4C;
+    }
+
+    .page-title h2 {
+      color: #355D4C;
+      letter-spacing: 0.3em;
+    }
+
+    .swiper {
+      display: flex;
+      width: 96px;
+      height: 96px;
+      background: #fff;
+      /* overflow: hidden; */
+      list-style: none;
+    }
+
+    .card-list img {
+      width: 96px;
+      height: 96px;
+    }
+
 </style>
