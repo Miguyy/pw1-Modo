@@ -394,6 +394,17 @@
       "priority": 1,
       "createdAt": "2026-01-24T21:22:00.285Z",
       "habits": []
+    },
+    {
+      "id": "3dbe",
+      "name": "ultimoteste",
+      "email": "ultimoteste@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:32:38.687Z",
+      "habits": []
     }
   ],
   "habits": [
