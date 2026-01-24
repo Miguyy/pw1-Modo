@@ -53,7 +53,7 @@ library.add(
   faMapPin,
   faCheckCircle,
   faChartBar,
-  faHourglass
+  faHourglass,
 )
 
 const app = createApp(App)

@@ -1,7 +1,5 @@
 <template>
   <div class="weather">
-    <!-- <input v-model="city" placeholder="City" />
-    <input v-model="country" placeholder="Country code (PT)" /> -->
     <button class="refresh-btn" @click="loadWeather" aria-label="Refresh weather">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -66,10 +64,28 @@ export default {
     loadWeather() {
       this.weatherStore.fetchCurrentWeather(this.city, this.country)
     },
+
+    loadWeatherByUserLocation() {
+      if (!navigator.geolocation) {
+        this.weatherStore.error = 'Gelocation is not supported by your browser'
+        return
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords
+          this.weatherStore.fetchCurrentWeatherByLocation(latitude, longitude)
+        },
+        (error) => {
+          this.weatherStore.error = 'Permission to access location was denied'
+          console.error(error)
+        },
+      )
+    },
   },
 
   mounted() {
-    this.loadWeather()
+    this.loadWeatherByUserLocation()
   },
 }
 </script>

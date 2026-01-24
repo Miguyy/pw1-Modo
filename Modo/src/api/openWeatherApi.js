@@ -9,3 +9,14 @@ export async function getCurrentWeather(city, country) {
   }
   return await response.json()
 }
+
+export async function getCurrentWeatherByCoords(lat, lon) {
+  const url = `${BASE_URL}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
+  const response = await fetch(url)
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`)
+  }
+
+  return await response.json()
+}
