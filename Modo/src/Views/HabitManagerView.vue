@@ -1,103 +1,131 @@
 <template>
   <NavBar />
-  <div class="container py-4">
+  <!-- NavBar component -->
+  <br />
+  <!-- Spacer -->
+  <div class="container py-2">
+    <!-- Title Section -->
+    <h2
+      style="
+        color: #355d4c;
+        font-family: Heebo;
+        font-size: 24px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: normal;
+        letter-spacing: 4.8px;
+      "
+    >
+      HABITS MANAGER
+    </h2>
+
+    <div class="row">
+      <!-- Divider -->
+      <div class="col-12">
+        <hr class="my-4" style="border: dotted 1px; color: #355d4c" />
+      </div>
+    </div>
+  </div>
+
+  <div class="container py-2 col-12">
+    <!-- Main Content Container -->
     <div class="row g-3 align-items-start">
       <div class="col-lg-3">
         <div class="weather-box p-3">
+          <!-- Weather Component Box -->
           <Weather />
         </div>
       </div>
+      <div class="col-lg-8">
+        <div class="charts-box p-3">
+          <!-- Habit Stats Chart Box -->
+          <HabitStatsChart />
+        </div>
+      </div>
+    </div>
+    <div class="col-lg add-habit" style="margin-top: 55px">
+      <!-- Add Habit Form -->
+      <div class="card p-3 mb-0">
+        <form @submit.prevent="handleAdd">
+          <!-- Prevent default form submission -->
+          <div class="row g-2">
+            <div class="col-md-6">
+              <label>Description</label>
+              <input v-model="form.description" class="form-control" required />
+            </div>
+            <div class="col-md-1">
+              <label>Priority</label>
+              <select v-model="form.priority" class="form-select">
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+              </select>
+            </div>
 
-      <div class="col-lg-8 add-habit" style="margin-top: 55px">
-        <div class="card p-3 mb-0">
-          <form @submit.prevent="handleAdd">
-            <div class="row g-2">
-              <div class="col-md-6">
-                <label>Description</label>
-                <input v-model="form.description" class="form-control" required />
-              </div>
-              <div class="col-md-2">
-                <label>Priority</label>
-                <select v-model="form.priority" class="form-select">
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
-              </div>
+            <div class="col-md-2">
+              <label>Type</label>
+              <select v-model="form.type" class="form-select">
+                <option value="check">Check</option>
+                <option value="count">Count</option>
+                <option value="time">Time</option>
+              </select>
+            </div>
 
-              <div class="col-md-2">
-                <label>Type</label>
-                <select v-model="form.type" class="form-select">
-                  <option value="check">Check</option>
-                  <option value="count">Count</option>
-                  <option value="time">Time</option>
-                </select>
-              </div>
+            <div class="col-md-2">
+              <label>Location</label>
+              <select v-model="form.location" class="form-select">
+                <option value="inside">Inside</option>
+                <option value="outside">Outside</option>
+              </select>
+            </div>
 
-              <div class="col-md-2">
-                <label>Location</label>
-                <select v-model="form.location" class="form-select">
-                  <option value="inside">Inside</option>
-                  <option value="outside">Outside</option>
-                </select>
-              </div>
+            <div class="col-md-12 text-end d-flex align-items-end">
+              <button class="btn btn-primary w-100" type="submit">
+                <FontAwesomeIcon icon="plus" /> Create new habit
+              </button>
+            </div>
 
-              <div class="col-md-2 text-end d-flex align-items-end">
-                <button class="btn btn-primary w-100" type="submit">
-                  <FontAwesomeIcon icon="plus" /> Create
-                </button>
-              </div>
-
-              <!-- COUNT EXTRA FIELDS -->
-              <div v-if="form.type === 'count'" class="col-12 mt-2">
-                <div class="row g-2">
-                  <div class="col-md-2">
-                    <label>Target</label>
-                    <input type="number" v-model.number="form.target_count" class="form-control" />
-                  </div>
-                  <div class="col-md-2">
-                    <label>Increment</label>
-                    <input
-                      type="number"
-                      v-model.number="form.increment_value"
-                      class="form-control"
-                    />
-                  </div>
+            <!-- COUNT EXTRA FIELDS -->
+            <div v-if="form.type === 'count'" class="col-12 mt-2">
+              <div class="row g-2">
+                <div class="col-md-2">
+                  <label>Target</label>
+                  <input type="number" v-model.number="form.target_count" class="form-control" />
                 </div>
-              </div>
-
-              <!-- TIME EXTRA FIELDS -->
-              <div v-if="form.type === 'time'" class="col-12 mt-2">
-                <div class="row g-2">
-                  <div class="col-md-6">
-                    <label>Target Minutes</label>
-                    <input
-                      type="number"
-                      v-model.number="form.target_minutes"
-                      class="form-control"
-                    />
-                  </div>
+                <div class="col-md-2">
+                  <label>Increment</label>
+                  <input type="number" v-model.number="form.increment_value" class="form-control" />
                 </div>
               </div>
             </div>
-          </form>
-        </div>
+
+            <!-- TIME EXTRA FIELDS -->
+            <div v-if="form.type === 'time'" class="col-12 mt-2">
+              <div class="row g-2">
+                <div class="col-md-6">
+                  <label>Target Minutes</label>
+                  <input type="number" v-model.number="form.target_minutes" class="form-control" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
       </div>
     </div>
 
     <!-- Divider -->
+    <br />
     <div class="row">
       <div class="col-12">
-        <hr class="my-4" />
+        <hr class="my-4" style="border: dotted 1px; color: #355d4c" />
       </div>
     </div>
 
     <!-- Filters and Sorting Toolbar (moved below divider) -->
     <div class="row mt-2">
       <div class="col-12">
-        <div class="card p-3 w-100 filters-card">
+        <div class="card p-3 mb-0 filters-card">
           <div class="row g-2 align-items-end">
-
             <div class="col-md-2">
               <label>Type</label>
               <select v-model="filters.type" class="form-select">
@@ -140,16 +168,16 @@
               </select>
             </div>
             <div class="col-md-1 d-flex justify-content-end">
-              <button class="btn btn-md btn-outline-success" @click="resetFilters">Reset</button>
+              <button class="btn btn-md btn-outline-danger" @click="resetFilters">Reset</button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-      <!-- Habits list: CSS Grid to avoid gaps -->
+    <!-- Habits list: CSS Grid to avoid gaps -->
     <div class="habits-grid mt-4">
-        <div v-for="habit in displayHabits" :key="habit.id" class="habit-item">
+      <div v-for="habit in displayHabits" :key="habit.id" class="habit-item">
         <div class="card p-3 h-100 d-flex flex-column">
           <div class="card-header-custom">
             <div class="habit-title-section">
@@ -181,8 +209,10 @@
                 />
               </div>
               <div class="check-text">
-                <span v-if="habit.current_progress.checked" class="badge bg-success">Completed</span>
-                <span v-else class="badge bg-secondary">Not Started</span>
+                <span v-if="habit.current_progress.checked" class="badge bg-success"
+                  >Completed</span
+                >
+                <span v-else class="badge bg-secondary">Pending</span>
               </div>
             </div>
 
@@ -191,7 +221,10 @@
                 <FontAwesomeIcon :icon="habit.current_progress.checked ? 'undo' : 'check'" />
                 {{ habit.current_progress.checked ? 'Uncheck' : 'Mark Done' }}
               </button>
-              <button class="btn btn-sm btn-outline-danger flex-fill" @click="deleteHabit(habit.id)">
+              <button
+                class="btn btn-sm btn-outline-danger flex-fill"
+                @click="deleteHabit(habit.id)"
+              >
                 <FontAwesomeIcon icon="trash" />
               </button>
             </div>
@@ -202,7 +235,9 @@
             <div class="progress-section">
               <div class="progress-header">
                 <span>Progress</span>
-                <span class="progress-value">{{ habit.current_progress.count }} / {{ habit.target_count }}</span>
+                <span class="progress-value"
+                  >{{ habit.current_progress.count }} / {{ habit.target_count }}</span
+                >
               </div>
               <div class="progress">
                 <div
@@ -230,7 +265,10 @@
               <button class="btn btn-sm btn-success flex-fill" @click="complete(habit.id)">
                 <FontAwesomeIcon icon="check" /> Complete
               </button>
-              <button class="btn btn-sm btn-outline-danger flex-fill" @click="deleteHabit(habit.id)">
+              <button
+                class="btn btn-sm btn-outline-danger flex-fill"
+                @click="deleteHabit(habit.id)"
+              >
                 <FontAwesomeIcon icon="trash" /> Delete
               </button>
             </div>
@@ -241,7 +279,9 @@
             <div class="progress-section">
               <div class="progress-header">
                 <span>Time Progress</span>
-                <span class="progress-value">{{ habit.current_progress.minutes || 0 }} / {{ habit.target_minutes }} min</span>
+                <span class="progress-value"
+                  >{{ habit.current_progress.minutes || 0 }} / {{ habit.target_minutes }} min</span
+                >
               </div>
               <div class="progress">
                 <div
@@ -257,7 +297,9 @@
 
             <div class="time-remaining">
               <span class="time-label">Time Remaining:</span>
-              <span class="time-value">{{ habit.remaining_minutes ?? habit.target_minutes ?? 0 }} min</span>
+              <span class="time-value"
+                >{{ habit.remaining_minutes ?? habit.target_minutes ?? 0 }} min</span
+              >
             </div>
 
             <div class="d-flex gap-2 mt-auto">
@@ -288,7 +330,9 @@
             <button class="btn-close" data-bs-dismiss="modal" @click="onCloseTimerModal"></button>
           </div>
           <div class="modal-body">
-            <p>Time left: <strong>{{ activeRemaining }} min</strong></p>
+            <p>
+              Time left: <strong>{{ activeRemaining }} min</strong>
+            </p>
 
             <div class="d-flex gap-2">
               <button class="btn btn-primary" @click="startTimerButton">
@@ -306,19 +350,46 @@
       </div>
     </div>
   </div>
+
+  <!-- Toast notification -->
+  <Transition name="toast-slide">
+    <div v-if="toast.visible" class="toast-notification">
+      <div
+        class="toast-icon"
+        :style="{ color: toast.title === 'Habit deleted' ? '#b4554d' : '#00cc66' }"
+      >
+        {{ toast.title === 'Habit deleted' ? '🗑️' : '✅' }}
+      </div>
+      <div class="toast-content">
+        <strong>{{ toast.title }}</strong>
+        <small>{{ toast.message }}</small>
+      </div>
+    </div>
+  </Transition>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+
+// Pinia stores
 import { useHabitStore } from '@/stores/habitStore'
 import { useUserStore } from '@/stores/userStore'
+import { useOpenWeatherApiStore } from '@/stores/openWeatherApiStore'
+
+// Bootstrap JS helpers (Modal/Toast)
 import * as bootstrap from 'bootstrap'
+
+// Local components used in this view
 import NavBar from '../Components/NavBar.vue'
 import Weather from '@/Components/Weather.vue'
+import HabitStatsChart from '@/Components/HabitStatsChart.vue'
 
+// Initialize stores
 const habitStore = useHabitStore()
 const userStore = useUserStore()
+const weatherStore = useOpenWeatherApiStore()
 
+// Form reactive state for the add-habit form
 const form = ref({
   description: '',
   type: 'check',
@@ -329,11 +400,55 @@ const form = ref({
   target_minutes: 15,
 })
 
+// Simple UI toast state used for quick feedback (create/delete)
+const toast = ref({
+  visible: false,
+  title: '',
+  message: '',
+  timeout: null,
+})
+
+// Helper to show the toast message
+function showToast(title, message, duration = 3000) {
+  toast.value.title = title
+  toast.value.message = message
+  toast.value.visible = true
+
+  if (toast.value.timeout) clearTimeout(toast.value.timeout)
+
+  toast.value.timeout = setTimeout(() => {
+    toast.value.visible = false
+  }, duration)
+}
+
+// Lifecycle hook: restore persisted state and reconcile timers
 onMounted(() => {
   habitStore.loadFromLocalStorage()
   habitStore.reconcileRunningTimers()
   if (userStore.loadFromLocalStorage) userStore.loadFromLocalStorage()
 })
+
+watch(
+  () => weatherStore.weatherData,
+  (newWeather) => {
+    if (!newWeather) return
+
+    // Check if it's raining
+    const condition = newWeather.weather[0].main.toLowerCase()
+    if (condition.includes('rain')) {
+      // Find outside habits
+      const outsideHabits = displayHabits.value.filter((h) => h.location === 'outside')
+      if (outsideHabits.length) {
+        showToast(
+          'Weather Alert',
+          `It's raining! You might want to postpone your outside tasks.`,
+          10000,
+        )
+      }
+    }
+  },
+  { immediate: true },
+)
 
 const currentUser = computed(() => userStore.currentUser)
 const userHabits = computed(() => {
@@ -382,8 +497,10 @@ const displayHabits = computed(() => {
       return (pa - pb) * dir
     }
     if (sortBy === 'created_at') {
-      const ta = a.created_at instanceof Date ? a.created_at.getTime() : new Date(a.created_at).getTime()
-      const tb = b.created_at instanceof Date ? b.created_at.getTime() : new Date(b.created_at).getTime()
+      const ta =
+        a.created_at instanceof Date ? a.created_at.getTime() : new Date(a.created_at).getTime()
+      const tb =
+        b.created_at instanceof Date ? b.created_at.getTime() : new Date(b.created_at).getTime()
       return (ta - tb) * dir
     }
     // alphabetical by description
@@ -397,6 +514,7 @@ const displayHabits = computed(() => {
   return filtered
 })
 
+// Reset filters to their default values
 function resetFilters() {
   filters.value = {
     search: '',
@@ -408,6 +526,19 @@ function resetFilters() {
   }
 }
 
+function resetForm() {
+  form.value = {
+    description: '',
+    type: 'check',
+    location: 'inside',
+    priority: 'low',
+    target_count: 1,
+    increment_value: 1,
+    target_minutes: 15,
+  }
+}
+
+// Handle submission of the add-habit form
 function handleAdd() {
   if (!currentUser.value) return alert('Please log in first')
 
@@ -422,14 +553,29 @@ function handleAdd() {
     target_minutes: form.value.type === 'time' ? form.value.target_minutes : null,
   })
 
+  // Provide immediate feedback
+  showToast(
+    'Habit created',
+    `${form.value.description} · ${form.value.priority} · ${form.value.location}`,
+  )
+
+  // reset form inputs
   form.value.description = ''
   form.value.location = 'inside'
+
+  resetForm()
 }
 
+// Delete a habit after confirmation and show a toast
 function deleteHabit(id) {
-  if (confirm('Delete habit?')) habitStore.deleteHabit(id)
+  if (confirm('Delete habit?')) {
+    const habit = habitStore.getHabitById(id)
+    habitStore.deleteHabit(id)
+    showToast('Habit deleted', `${habit.description} · ${habit.priority} · ${habit.location}`)
+  }
 }
 
+// Action helpers that delegate to the habit store
 function increment(id) {
   habitStore.incrementCount(id)
 }
@@ -443,16 +589,19 @@ function complete(id) {
   habitStore.completeHabit(id)
 }
 
+// Compute percent complete for time-based habits
 function timePercent(h) {
   if (!h.target_minutes) return 0
   return Math.round(((h.current_progress.minutes || 0) / h.target_minutes) * 100)
 }
 
+// Compute percent complete for count-based habits
 function countPercent(h) {
   if (!h.target_count) return 0
   return Math.round(((h.current_progress.count || 0) / h.target_count) * 100)
 }
 
+// Return the FontAwesome icon name for a habit type
 function getHabitIcon(type) {
   switch (type) {
     case 'check':
@@ -466,6 +615,7 @@ function getHabitIcon(type) {
   }
 }
 
+// Map progress percent to a CSS class used by the progress bar
 function progressClass(percent) {
   if (percent < 33) return 'progress-low'
   if (percent < 66) return 'progress-mid'
@@ -572,6 +722,38 @@ function onCloseTimerModal() {
   background: #e88530;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(241, 150, 64, 0.3);
+}
+
+.charts-box {
+  background: linear-gradient(135deg, #d7dfdb 0%, #d7dfdb 100%);
+  color: #fff;
+  border-radius: var(--radius);
+  min-height: 310px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.charts-box:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+.charts-box input {
+  background: rgba(255, 255, 255, 0.95);
+  color: #000;
+  border-radius: 10px;
+  padding: 10px 12px;
+  border: 2px solid rgba(0, 0, 0, 0.05);
+  width: 100%;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  transition: all 0.3s ease;
+}
+
+.charts-box input:focus {
+  outline: none;
+  border-color: var(--green);
+  box-shadow: 0 0 8px rgba(79, 111, 95, 0.2);
 }
 
 /* FORM CARD */
@@ -1024,5 +1206,63 @@ function onCloseTimerModal() {
 .check-text {
   font-size: 13px;
   font-weight: 600;
+}
+
+/* Toast */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  background: linear-gradient(135deg, #355d4c, #4f6f5f);
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+
+  min-width: 260px;
+  max-width: 320px;
+}
+
+.toast-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.toast-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toast-content strong {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.toast-content small {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Animation */
+.toast-slide-enter-active,
+.toast-slide-leave-active {
+  transition: all 0.35s ease;
+}
+
+.toast-slide-enter-from {
+  opacity: 0;
+  transform: translateY(-20px) translateX(20px);
+}
+
+.toast-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) translateX(20px);
 }
 </style>
