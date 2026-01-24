@@ -328,6 +328,72 @@
       "habits": [
         "5888"
       ]
+    },
+    {
+      "id": "9acb",
+      "name": "toast",
+      "email": "toast@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:12:43.002Z",
+      "habits": []
+    },
+    {
+      "id": "d53f",
+      "name": "toast2",
+      "email": "toast2@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:13:29.227Z",
+      "habits": []
+    },
+    {
+      "id": "a6c8",
+      "name": "aaaa",
+      "email": "aaaa@gmail.com",
+      "password": "M1guelitop!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:13:46.565Z",
+      "habits": []
+    },
+    {
+      "id": "1197",
+      "name": "toasttest",
+      "email": "toasttest@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:16:10.896Z",
+      "habits": []
+    },
+    {
+      "id": "74b7",
+      "name": "toasttest2",
+      "email": "toasttest2",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:17:34.688Z",
+      "habits": []
+    },
+    {
+      "id": "2256",
+      "name": "TESTEFINALTOASTREGISTER",
+      "email": "TESTEFINALTOASTREGISTER",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:22:00.285Z",
+      "habits": []
     }
   ],
   "habits": [
