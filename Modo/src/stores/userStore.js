@@ -1,6 +1,11 @@
 import { defineStore } from 'pinia'
 import User from '../models/userModel'
-import { usersList, createUser as apiCreateUser } from '../api/modoApi'
+import {
+  usersList,
+  createUser as apiCreateUser,
+  updateUser as apiUpdateUser,
+  deleteUser as apiDeleteUser,
+} from '../api/modoApi'
 
 export const useUserStore = defineStore('userStore', {
   state: () => ({
@@ -116,6 +121,42 @@ export const useUserStore = defineStore('userStore', {
     logout() {
       this.loggedUserId = null
       localStorage.removeItem('loggedUserId')
+    },
+
+    async updateUserProfile(updates) {
+      if (!this.loggedUserId) throw new Error('No logged-in user to update')
+      const user = this.getUserById(this.loggedUserId)
+      if (!user) throw new Error('User not found')
+
+      Object.assign(user, updates)
+
+      try {
+        const payload = user.toJSON ? user.toJSON() : { ...user }
+        await apiUpdateUser(user.id, payload)
+      } catch (e) {
+        console.warn('API update failed, changes kept locally:', e)
+      }
+
+      this.saveToLocalStorage()
+      return user
+    },
+
+    async deleteAccount(id = this.loggedUserId) {
+      if (id == null) throw new Error('No user id provided for deletion')
+      const targetId = String(id)
+      this.users = this.users.filter((u) => String(u.id) !== targetId)
+
+      try {
+        await apiDeleteUser(id)
+      } catch (e) {
+        console.warn('API delete failed, removed locally only:', e)
+      }
+
+      if (String(this.loggedUserId) === targetId) {
+        this.logout()
+      }
+
+      this.saveToLocalStorage()
     },
   },
 

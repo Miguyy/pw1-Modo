@@ -7,7 +7,57 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap'
 
+/* Font Awesome */
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import {
+  faUser,
+  faEnvelope,
+  faLock,
+  faImage,
+  faBell,
+  faQuestionCircle,
+  faInfoCircle,
+  faSignOutAlt,
+  faTrash,
+  faArrowRight,
+  faArrowLeft,
+  faPlus,
+  faCheck,
+  faClock,
+  faPlay,
+  faPause,
+  faMapPin,
+  faCheckCircle,
+  faChartBar,
+  faHourglass,
+} from '@fortawesome/free-solid-svg-icons'
+
+library.add(
+  faUser,
+  faEnvelope,
+  faLock,
+  faImage,
+  faBell,
+  faQuestionCircle,
+  faInfoCircle,
+  faSignOutAlt,
+  faTrash,
+  faArrowRight,
+  faArrowLeft,
+  faPlus,
+  faCheck,
+  faClock,
+  faPlay,
+  faPause,
+  faMapPin,
+  faCheckCircle,
+  faChartBar,
+  faHourglass
+)
+
 const app = createApp(App)
+app.component('FontAwesomeIcon', FontAwesomeIcon)
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
