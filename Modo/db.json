@@ -405,6 +405,36 @@
       "priority": 1,
       "createdAt": "2026-01-24T21:32:38.687Z",
       "habits": []
+    },
+    {
+      "id": "0ae4",
+      "username": "testuser",
+      "email": "",
+      "password": "TestPassword123",
+      "createdAt": "2026-01-24T21:47:16.081Z",
+      "points": 0,
+      "priority": 1,
+      "habits": []
+    },
+    {
+      "id": "f27a",
+      "name": "testuser",
+      "email": "test@example.com",
+      "password": "TestPassword123!",
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:50:05.826Z",
+      "habits": []
+    },
+    {
+      "id": "b6f0",
+      "name": "testuser",
+      "email": "test@example.com",
+      "password": "TestPassword123!",
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T22:06:51.896Z",
+      "habits": []
     }
   ],
   "habits": [
@@ -1211,6 +1241,176 @@
       "target_minutes": 15,
       "created_at": "2026-01-24T19:46:31.200Z",
       "remaining_minutes": 15
+    },
+    {
+      "id": "3b04",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T21:45:47.417Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "e0ce",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T21:48:54.782Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "9a4d",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T21:57:36.584Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "28df",
+      "user_id": "u1",
+      "description": "Test habit via wrapper props",
+      "type": "check",
+      "priority": "medium",
+      "location": "inside",
+      "created_at": "2026-01-24T21:58:43.989Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "b51d",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T21:58:53.081Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "2045",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T21:59:13.629Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "910b",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:00:29.946Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "3e9d",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:01:27.886Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "9aa3",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:04:04.313Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "5238",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:05:49.775Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "ce5b",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:05:53.906Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "7af6",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:06:08.401Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "fc31",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:06:11.353Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "0524",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:06:30.520Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "ea2f",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:07:15.877Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "3fe9",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:07:28.373Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "1813",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:07:41.212Z",
+      "remaining_minutes": null
     }
   ]
 }

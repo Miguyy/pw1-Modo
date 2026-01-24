@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useHabitStore } from '@/stores/habitStore'
 
-describe('Habit Store - create habit', () => {
+describe('HabitManager.vue', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
   })
