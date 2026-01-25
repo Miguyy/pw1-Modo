@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import Habit from '@/models/habitModel'
+import Habit from '../Models/habitModel'
 import { useUserStore } from '@/stores/userStore'
 import {
   createHabit as apiCreateHabit,
@@ -56,7 +56,7 @@ export const useHabitStore = defineStore('habitStore', {
         const payload = {
           ...habitData,
           created_at: new Date().toISOString(),
-          remaining_minutes: habitData.remaining_minutes ?? habitData.target_minutes ?? null,
+          remaining_seconds: habitData.remaining_seconds ?? (habitData.target_minutes ? habitData.target_minutes * 60 : null),
           current_progress: habitData.current_progress ?? undefined,
         }
 
@@ -199,31 +199,48 @@ export const useHabitStore = defineStore('habitStore', {
       // se já completado não começar
       if (habit.completed) return
       habit.timer_last_started_at = Date.now()
-      // if remaining_minutes is undefined but target exists, ensure it's set
-      if (habit.remaining_minutes == null && habit.target_minutes != null) {
-        habit.remaining_minutes = habit.target_minutes
+      // if remaining_seconds is undefined but target exists, ensure it's set
+      if (habit.remaining_seconds == null && habit.target_minutes != null) {
+        habit.remaining_seconds = habit.target_minutes * 60
       }
       this.saveToLocalStorage()
     },
 
-    // pause timer — calcula tempo passado desde timer_last_started_at e atualiza progress
-    pauseTimer(id) {
+    // pause timer — save the remaining seconds directly from UI
+    pauseTimer(id, remainingSeconds = null) {
       const habit = this.getHabitById(id)
       if (!habit || habit.type !== 'time') return
-      if (!habit.timer_last_started_at) return
-      const now = Date.now()
-      const elapsedMs = now - habit.timer_last_started_at
-      const elapsedMin = Math.floor(elapsedMs / 60000) // minutos completos
-      if (elapsedMin > 0) {
-        habit.current_progress.minutes += elapsedMin
-        habit.remaining_minutes = (habit.target_minutes ?? 0) - habit.current_progress.minutes
-        if (habit.remaining_minutes <= 0) {
-          habit.remaining_minutes = 0
+      
+      // If we have exact remaining seconds from UI, use that
+      if (remainingSeconds !== null) {
+        habit.remaining_seconds = remainingSeconds
+        const totalTargetSeconds = (habit.target_minutes ?? 0) * 60
+        const elapsedSeconds = totalTargetSeconds - remainingSeconds
+        habit.current_progress.seconds = elapsedSeconds
+        
+        if (remainingSeconds <= 0) {
+          habit.remaining_seconds = 0
+          habit.current_progress.seconds = totalTargetSeconds
+          habit.completed = true
+          this._awardPointsFor(habit)
+        }
+      } else if (habit.timer_last_started_at) {
+        // Fallback to timestamp-based calculation
+        const now = Date.now()
+        const elapsedMs = now - habit.timer_last_started_at
+        const elapsedSec = Math.floor(elapsedMs / 1000)
+        const currentRemaining = habit.remaining_seconds ?? (habit.target_minutes * 60)
+        habit.remaining_seconds = Math.max(0, currentRemaining - elapsedSec)
+        habit.current_progress.seconds = (habit.target_minutes * 60) - habit.remaining_seconds
+        
+        if (habit.remaining_seconds <= 0) {
+          habit.remaining_seconds = 0
           habit.completed = true
           this._awardPointsFor(habit)
         }
       }
-      // clear last started timestamp (we store remaining_minutes for resume)
+      
+      // clear last started timestamp
       habit.timer_last_started_at = null
       this.saveToLocalStorage()
     },
@@ -239,18 +256,18 @@ export const useHabitStore = defineStore('habitStore', {
       this.habits.forEach((habit) => {
         if (habit.type === 'time' && habit.timer_last_started_at) {
           const elapsedMs = now - habit.timer_last_started_at
-          const elapsedMin = Math.floor(elapsedMs / 60000)
-          if (elapsedMin > 0) {
-            habit.current_progress.minutes += elapsedMin
-            habit.remaining_minutes = (habit.target_minutes ?? 0) - habit.current_progress.minutes
-            if (habit.remaining_minutes <= 0) {
-              habit.remaining_minutes = 0
-              habit.completed = true
-              this._awardPointsFor(habit)
-            } else {
-              // adjust timer_last_started_at so next reconcile counts from now
-              habit.timer_last_started_at = now
-            }
+          const elapsedSec = Math.floor(elapsedMs / 1000)
+          const currentRemaining = habit.remaining_seconds ?? (habit.target_minutes * 60)
+          habit.remaining_seconds = Math.max(0, currentRemaining - elapsedSec)
+          habit.current_progress.seconds = (habit.target_minutes * 60) - habit.remaining_seconds
+          
+          if (habit.remaining_seconds <= 0) {
+            habit.remaining_seconds = 0
+            habit.completed = true
+            this._awardPointsFor(habit)
+          } else {
+            // adjust timer_last_started_at so next reconcile counts from now
+            habit.timer_last_started_at = now
           }
         }
       })
@@ -263,7 +280,7 @@ export const useHabitStore = defineStore('habitStore', {
       list.forEach((h) => {
         h.current_progress = h.defaultProgress()
         h.completed = false
-        if (h.type === 'time') h.remaining_minutes = h.target_minutes
+        if (h.type === 'time') h.remaining_seconds = h.target_minutes * 60
         h.timer_last_started_at = null
       })
       this.saveToLocalStorage()
@@ -310,8 +327,8 @@ export const useHabitStore = defineStore('habitStore', {
         habit.current_progress.count = habit.target_count
       }
       if (habit.type === 'time' && habit.target_minutes) {
-        habit.current_progress.minutes = habit.target_minutes
-        habit.remaining_minutes = 0
+        habit.current_progress.seconds = habit.target_minutes * 60
+        habit.remaining_seconds = 0
         habit.timer_last_started_at = null
       }
       this.saveToLocalStorage()

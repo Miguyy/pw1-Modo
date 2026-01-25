@@ -11,7 +11,7 @@ export default class Habit {
 
     // time
     target_minutes = null,
-    remaining_minutes = null,
+    remaining_seconds = null,
     timer_last_started_at = null,
 
     // count
@@ -42,10 +42,13 @@ export default class Habit {
     this.target_minutes =
       target_minutes !== null && target_minutes !== undefined ? Number(target_minutes) : null
 
-    this.remaining_minutes =
-      remaining_minutes !== null && remaining_minutes !== undefined
-        ? Number(remaining_minutes)
-        : this.target_minutes
+    // remaining_seconds - initialize from saved value or calculate from target_minutes
+    this.remaining_seconds =
+      remaining_seconds !== null && remaining_seconds !== undefined
+        ? Number(remaining_seconds)
+        : this.target_minutes !== null
+          ? this.target_minutes * 60
+          : null
 
     this.timer_last_started_at = timer_last_started_at
 
@@ -65,7 +68,7 @@ export default class Habit {
   }
 
   defaultProgress() {
-    if (this.type === 'time') return { minutes: 0 }
+    if (this.type === 'time') return { seconds: 0 }
     if (this.type === 'count') return { count: 0 }
     if (this.type === 'check') return { checked: false }
     return {}
