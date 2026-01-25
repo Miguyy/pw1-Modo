@@ -1,4 +1,4 @@
-# Modo — Habit Tracker
+# <img src="Modo/src/images/modoIcon.png" alt="Modo Icon" width="120" height="30"/> - Habit Tracker
 
 A modern, lightweight habit-tracking web app built with Vue and Vite. Modo helps you create, track and visualize habits, and integrates basic weather info for contextual planning.
 
