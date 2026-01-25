@@ -332,14 +332,14 @@ const selectDecoration = (src) => {
     * { box-sizing: border-box; }
 
     body {
-      margin: 0;
       font-family: 'Heebo', sans-serif;
       background: var(--bg);
       color: #1e1e1e;
     }
 
     .page {
-      max-width: 1080px;
+      max-width: 1140px;
+      padding: 0px 30px 0px 30px;
       margin: 0 auto;
       padding-top: 30px;
     }
