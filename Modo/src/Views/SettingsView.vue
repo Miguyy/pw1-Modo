@@ -5,7 +5,7 @@
       <h2>SETTINGS</h2>
     </div>
 
-    <section v-if="currentUser" class="settings-card">
+    <section v-if="user" class="settings-card">
       <header class="profile-header">
         <div class="avatar" id="avatar" v-show="showAvatar">
           <img
