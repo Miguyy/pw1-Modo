@@ -91,11 +91,17 @@ export default {
         return
       }
 
+      const user = this.userStore.currentUser
+
       this.showToast('Login successful', 'Welcome back!', 2000)
 
-      // show success toast and delay navigation so the toast is visible
-      this.showToast('Login successful', 'Welcome back!', 2000)
-      setTimeout(() => this.$router.push('/habitsmanager'), 800)
+      setTimeout(() => {
+        if (user.priority === 2) {
+          this.$router.push('/adminpanel')
+        } else {
+          this.$router.push('/habitsmanager')
+        }
+      }, 800)
     },
     showToast(title, message, duration = 3000) {
       if (!this.toast) this.toast = { visible: false, title: '', message: '', timeout: null }

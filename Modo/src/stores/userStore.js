@@ -17,6 +17,10 @@ export const useUserStore = defineStore('userStore', {
   getters: {
     /* currentUser: (state) => state.users.find((u) => u.id === state.loggedUserId), */
     currentUser: (state) => state.users.find((u) => String(u.id) === String(state.loggedUserId)),
+    isAdmin: (state) => {
+      const user = state.users.find((u) => String(u.id) === String(state.loggedUserId))
+      return user?.priority === 2
+    },
   },
 
   actions: {

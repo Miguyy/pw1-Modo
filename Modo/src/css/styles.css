@@ -430,7 +430,7 @@
   width: 70%;
   height: 785px;
   margin: 1000px auto 100px auto;
-  border-top: 1px dashed #355D4C;
+  border-top: 1px dashed #355d4c;
 }
 
 .section-titles {
@@ -457,13 +457,21 @@
   margin-left: 5px;
   margin-right: 5px;
   flex-grow: 1;
-  transition: flex-basis 0.6s ease, filter 0.4s ease;
+  transition:
+    flex-basis 0.6s ease,
+    filter 0.4s ease;
   overflow: hidden;
 }
 
-.carousel .card-1 { flex-basis: 30%; }
-.carousel .card-2 { flex-basis: 50%; }
-.carousel .card-3 { flex-basis: 100%; }
+.carousel .card-1 {
+  flex-basis: 30%;
+}
+.carousel .card-2 {
+  flex-basis: 50%;
+}
+.carousel .card-3 {
+  flex-basis: 100%;
+}
 
 .carousel:hover .card {
   flex-basis: 20%;
@@ -485,7 +493,7 @@
   width: 100%;
   padding: 20px;
   color: white;
-  background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
 }
 
 .carousel .card h3 {
@@ -506,7 +514,7 @@
 
 /* Scroll section */
 .scroll-section-color {
-  background-color: #355D4C;
+  background-color: #355d4c;
   height: 1100px;
   position: relative;
   overflow: hidden;
@@ -532,7 +540,7 @@
 
 .appear-text h2,
 .appear-text p {
-  color: #355D4C;
+  color: #355d4c;
   transition: color 0.4s ease;
 }
 
@@ -560,12 +568,9 @@
   flex-shrink: 0;
 }
 
-
-
-
 /* Sponsors carousel */
 .sponsors-section {
-  display:flex;
+  display: flex;
   width: 70%;
   height: 200px;
   margin: 100px auto 100px auto;
@@ -576,7 +581,7 @@
 
 .sponsors-carousel {
   display: flex;
-  border-top: 2px dashed #355D4C;
+  border-top: 2px dashed #355d4c;
   overflow: hidden;
 }
 
@@ -610,17 +615,15 @@
 }
 
 @keyframes spin {
-  from {translate: 0;}
-  to {translate: -100%;}
+  from {
+    translate: 0;
+  }
+  to {
+    translate: -100%;
+  }
 }
 
-
-
-
-
 /* ------------------------------------------------------- */
-
-
 
 .faq-section {
   position: absolute;

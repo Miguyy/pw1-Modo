@@ -29,7 +29,7 @@
 
   <div class="container py-2">
     <!-- Main Content Container -->
-    <div class="row g-3 align-items-stretch">
+    <div class="row mt-2 g-3 align-items-stretch">
       <div class="col-12 col-md-4 col-lg-3">
         <div class="weather-box shadow p-3 h-100">
           <!-- Weather Component Box -->
@@ -116,7 +116,11 @@
                   </div>
                   <div class="col-md-2">
                     <label>Increment</label>
-                    <input type="number" v-model.number="form.increment_value" class="form-control" />
+                    <input
+                      type="number"
+                      v-model.number="form.increment_value"
+                      class="form-control"
+                    />
                   </div>
                 </div>
               </div>
@@ -126,7 +130,11 @@
                 <div class="row g-2">
                   <div class="col-md-6">
                     <label>Target Minutes</label>
-                    <input type="number" v-model.number="form.target_minutes" class="form-control" />
+                    <input
+                      type="number"
+                      v-model.number="form.target_minutes"
+                      class="form-control"
+                    />
                   </div>
                 </div>
               </div>
@@ -221,7 +229,10 @@
               </div>
 
               <!-- CHECK TYPE -->
-              <div v-if="habit.type === 'check'" class="habit-content flex-grow-1 d-flex flex-column">
+              <div
+                v-if="habit.type === 'check'"
+                class="habit-content flex-grow-1 d-flex flex-column"
+              >
                 <div class="check-indicator">
                   <div
                     class="check-status"
@@ -255,7 +266,10 @@
               </div>
 
               <!-- COUNT TYPE -->
-              <div v-if="habit.type === 'count'" class="habit-content flex-grow-1 d-flex flex-column">
+              <div
+                v-if="habit.type === 'count'"
+                class="habit-content flex-grow-1 d-flex flex-column"
+              >
                 <div class="progress-section">
                   <div class="progress-header">
                     <span>Progress</span>
@@ -299,12 +313,16 @@
               </div>
 
               <!-- TIME TYPE -->
-              <div v-if="habit.type === 'time'" class="habit-content flex-grow-1 d-flex flex-column">
+              <div
+                v-if="habit.type === 'time'"
+                class="habit-content flex-grow-1 d-flex flex-column"
+              >
                 <div class="progress-section">
                   <div class="progress-header">
                     <span>Time Progress</span>
                     <span class="progress-value"
-                      >{{ habit.current_progress.minutes || 0 }} / {{ habit.target_minutes }} min</span
+                      >{{ habit.current_progress.minutes || 0 }} /
+                      {{ habit.target_minutes }} min</span
                     >
                   </div>
                   <div class="progress">
@@ -327,7 +345,10 @@
                 </div>
 
                 <div class="d-flex gap-2 mt-auto">
-                  <button class="btn btn-sm btn-outline-primary flex-fill" @click="openTimer(habit.id)">
+                  <button
+                    class="btn btn-sm btn-outline-primary flex-fill"
+                    @click="openTimer(habit.id)"
+                  >
                     <FontAwesomeIcon icon="clock" /> Timer
                   </button>
                   <button class="btn btn-sm btn-success flex-fill" @click="complete(habit.id)">
@@ -726,6 +747,10 @@ function onCloseTimerModal() {
   transition: all 0.3s ease;
 }
 
+.weather-box:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
 
 .weather-box input {
   background: rgba(255, 255, 255, 0.95);
@@ -767,6 +792,11 @@ function onCloseTimerModal() {
   min-height: 310px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
+}
+
+.charts-box:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
 }
 
 .charts-box input {
