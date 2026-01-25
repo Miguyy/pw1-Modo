@@ -1,11 +1,11 @@
 <template>
   <NavBar />
-  <div class="container">
+  <div class="containerBox">
     <div class="page-title">
       <h2>HABITS MANAGER</h2>
     </div>
     <!-- Main Content Container -->
-    <div class="row mt-2 g-3 align-items-stretch">
+    <div class="content row mt-2 g-3 align-items-stretch">
       <div class="col-12 col-md-4 col-lg-3">
         <div class="weather-box shadow p-3 h-100">
           <!-- Weather Component Box -->
@@ -815,11 +815,15 @@ function onCloseTimerModal() {
   box-sizing: border-box;
 }
 
-.container {
-  width: 1080px;
-  max-width: 1080px;
+.containerBox {
+  max-width: 1140px;
   margin: 0 auto;
-  padding: 30px 0px 0px;
+  padding: 30px 30px 0px 30px;
+}
+
+.content {
+  max-width: 1140px;
+  justify-content: space-between;
 }
 
 .weather-box {
@@ -1334,18 +1338,6 @@ function onCloseTimerModal() {
 
 .modal-body {
   padding: 24px;
-}
-
-/* CONTAINER */
-.container {
-  max-width: 1200px;
-}
-
-/* HEADING */
-.container h5,
-.container h3 {
-  color: var(--green-dark);
-  font-weight: 700;
 }
 
 /* Filters toolbar */
