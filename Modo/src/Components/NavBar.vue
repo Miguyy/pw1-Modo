@@ -70,7 +70,7 @@ const logout = () => {
           </RouterLink>
         </div>
 
-        <RouterLink class="nav-icon" to="/adminpanel">&#9733;</RouterLink>
+        <RouterLink class="nav-icon" to="/adminpanel" style="font-size: 30px;">&#9733;</RouterLink>
 
         <span class="me-3 fw-semibold">{{ user.name }}</span>
         <img
@@ -97,6 +97,7 @@ const logout = () => {
   display: inline-block;
   vertical-align: middle;
   color: #355d4c;
+  text-decoration: none;
 }
 .nav-link-custom {
   display: inline-flex;
