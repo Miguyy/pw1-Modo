@@ -6,10 +6,19 @@
     </div>
 
     <section v-if="user" class="settings-card">
+      <!-- Hidden file input for profile picture -->
+      <input
+        type="file"
+        ref="fileInput"
+        accept="image/*"
+        style="display: none"
+        @change="handleFileUpload"
+      />
+
       <header class="profile-header">
         <div class="avatar" id="avatar" v-show="showAvatar">
           <img
-            src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400"
+            :src="profilePic || 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400'"
             alt="Profile"
           />
           <button class="card-button btn-avatar-edit" @click="openDecoration">✎</button>
@@ -40,7 +49,7 @@
             <button class="swiper-button-prev" @click="prevSlide">←</button>
             <button class="swiper-button-next" @click="nextSlide">→</button>
             <img
-            src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400"
+            :src="profilePic || 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400'"
             alt="Profile"
             />
           </div>
@@ -365,7 +374,12 @@ const currentIndex = ref(0)
 const slideWidth = 96
 const selectedDecoration = ref(null)
 
-const decorations = [
+// profile picture
+const fileInput = ref(null)
+const profilePic = ref(user.value?.avatar || null)
+
+// Default decorations (fallback)
+const defaultDecorations = [
   { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png' },
   { name: 'garden', src: '/src/images/avatar_decoration/garden.png' },
   { name: 'olives', src: '/src/images/avatar_decoration/olives.png' },
@@ -374,12 +388,70 @@ const decorations = [
   { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png' }
 ]
 
-// Load saved decoration on mount
+// Load decorations from localStorage (synced with Admin Panel)
+function loadDecorations() {
+  const saved = localStorage.getItem('avatarDecorations')
+  if (saved) {
+    try {
+      return JSON.parse(saved)
+    } catch {
+      return [...defaultDecorations]
+    }
+  }
+  return [...defaultDecorations]
+}
+
+const decorations = ref(loadDecorations())
+
+// Load saved decoration and profile pic on mount
 onMounted(() => {
   if (user.value?.avatarDecoration) {
     selectedDecoration.value = user.value.avatarDecoration
   }
+  if (user.value?.avatar) {
+    profilePic.value = user.value.avatar
+  }
 })
+
+// Handle profile picture upload
+const promptAvatar = () => {
+  fileInput.value?.click()
+}
+
+const handleFileUpload = (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    showToast('Invalid file', 'Please select an image file.', 'error')
+    return
+  }
+
+  // Validate file size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('File too large', 'Please select an image smaller than 5MB.', 'error')
+    return
+  }
+
+  // Convert to base64 and store
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    profilePic.value = e.target.result
+    if (user.value) {
+      user.value.avatar = e.target.result
+      userStore.saveToLocalStorage()
+    }
+    showToast('Picture updated', 'Your profile picture has been changed.', 'success')
+  }
+  reader.onerror = () => {
+    showToast('Error', 'Failed to read the image file.', 'error')
+  }
+  reader.readAsDataURL(file)
+
+  // Reset the input so the same file can be selected again
+  event.target.value = ''
+}
 
 const openDecoration = () => {
   showAvatar.value = false
@@ -390,7 +462,7 @@ const closeDecoration = () => {
 }
 
 const nextSlide = () => {
-  if (currentIndex.value < decorations.length - 1) {
+  if (currentIndex.value < decorations.value.length - 1) {
     currentIndex.value++
   }
 }
@@ -447,6 +519,7 @@ const saveChanges = async () => {
       name: userName.value,
       email: userEmail.value,
       password: userPassword.value,
+      avatar: profilePic.value,
       avatarDecoration: selectedDecoration.value
     })
     showToast('Success', 'Changes saved successfully!', 'success')
