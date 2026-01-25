@@ -1,23 +1,9 @@
 <template>
   <NavBar />
-  <!-- NavBar component -->
-  <br />
-  <!-- Spacer -->
-  <div class="container py-2">
-    <!-- Title Section -->
+  <div class="container">
     <div class="page-title">
       <h2>HABITS MANAGER</h2>
     </div>
-
-    <div class="row">
-      <!-- Divider -->
-      <div class="col-12">
-        <hr class="my-4" style="border: dotted 1px; color: #355d4c" />
-      </div>
-    </div>
-  </div>
-
-  <div class="container py-2">
     <!-- Main Content Container -->
     <div class="row mt-2 g-3 align-items-stretch">
       <div class="col-12 col-md-4 col-lg-3">
@@ -710,7 +696,7 @@ function onCloseTimerModal() {
 }
 </script>
 
-<style scoped>
+<style>
 :root {
   --bg: #f3f3f1;
   --green-dark: #3f5f4f;
@@ -726,6 +712,13 @@ function onCloseTimerModal() {
 
 * {
   box-sizing: border-box;
+}
+
+.container {
+  width: 1080px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 30px 0px 0px;
 }
 
 .weather-box {

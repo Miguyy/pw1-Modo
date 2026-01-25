@@ -339,9 +339,9 @@ const selectDecoration = (src) => {
     }
 
     .page {
-      max-width: 1200px;
+      max-width: 1080px;
       margin: 0 auto;
-      padding: 32px 24px 80px;
+      padding-top: 30px;
     }
 
 
