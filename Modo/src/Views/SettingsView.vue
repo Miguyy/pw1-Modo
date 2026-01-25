@@ -58,8 +58,8 @@
           <div class="nav-item" id="notification-btn"><span>Notifications</span> →</div>
           <div class="nav-item" id="help-btn"><span>Help</span> →</div>
           <div class="nav-item" id="about-btn"><span>About</span> →</div>
-          <div class="nav-item danger" id="logout-btn">Logout</div>
-          <div class="nav-item danger" id="delete-btn">Delete account</div>
+          <div class="nav-item danger" id="logout-btn" @click="handleLogout">Logout</div>
+          <div class="nav-item danger" id="delete-btn" @click="handleDeleteAccount">Delete account</div>
         </aside>
 
         <div class="form-section">
@@ -189,7 +189,8 @@
 
 <script setup>
 import { useUserStore } from '../stores/userStore'
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import NavBar from '@/Components/NavBar.vue'
 
 defineOptions({
@@ -197,6 +198,7 @@ defineOptions({
 })
 
 const userStore = useUserStore()
+const router = useRouter()
 const user = computed(() => userStore.currentUser)
 
 // name
@@ -289,6 +291,13 @@ const decorations = [
   { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png' }
 ]
 
+// Load saved decoration on mount
+onMounted(() => {
+  if (user.value?.avatarDecoration) {
+    selectedDecoration.value = user.value.avatarDecoration
+  }
+})
+
 const openDecoration = () => {
   showAvatar.value = false
 }
@@ -312,6 +321,48 @@ const prevSlide = () => {
 const selectDecoration = (src) => {
   selectedDecoration.value = src
   showAvatar.value = true
+  // Save to user profile
+  if (user.value) {
+    user.value.avatarDecoration = src
+    userStore.saveToLocalStorage()
+  }
+}
+
+// Logout function
+const handleLogout = () => {
+  if (confirm('Are you sure you want to logout?')) {
+    userStore.logout()
+    router.push('/login')
+  }
+}
+
+// Delete account function
+const handleDeleteAccount = async () => {
+  if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+    if (confirm('This will permanently delete all your data. Continue?')) {
+      try {
+        await userStore.deleteAccount()
+        router.push('/login')
+      } catch (e) {
+        alert('Failed to delete account: ' + e.message)
+      }
+    }
+  }
+}
+
+// Save all changes
+const saveChanges = async () => {
+  try {
+    await userStore.updateUserProfile({
+      name: userName.value,
+      email: userEmail.value,
+      password: userPassword.value,
+      avatarDecoration: selectedDecoration.value
+    })
+    alert('Changes saved successfully!')
+  } catch (e) {
+    alert('Failed to save changes: ' + e.message)
+  }
 }
 </script>
 
