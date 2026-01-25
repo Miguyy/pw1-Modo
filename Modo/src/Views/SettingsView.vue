@@ -55,46 +55,103 @@
 
       <div class="settings-content">
         <aside class="sidebar">
-          <div class="nav-item"><FontAwesomeIcon icon="bell" /> <span>Notifications</span> <FontAwesomeIcon icon="arrow-right" /></div>
-          <div class="nav-item"><FontAwesomeIcon icon="question-circle" /> <span>Help</span> <FontAwesomeIcon icon="arrow-right" /></div>
-          <div class="nav-item"><FontAwesomeIcon icon="info-circle" /> <span>About</span> <FontAwesomeIcon icon="arrow-right" /></div>
-          <div class="nav-item danger" @click="handleLogout"> <span>Logout</span> <FontAwesomeIcon icon="sign-out-alt" /> </div>
-          <div class="nav-item danger" @click="handleDelete"> <span>Delete account</span> <FontAwesomeIcon icon="trash" /></div>
+          <div class="nav-item" id="notification-btn"><span>Notifications</span> →</div>
+          <div class="nav-item" id="help-btn"><span>Help</span> →</div>
+          <div class="nav-item" id="about-btn"><span>About</span> →</div>
+          <div class="nav-item danger" id="logout-btn">Logout</div>
+          <div class="nav-item danger" id="delete-btn">Delete account</div>
         </aside>
 
         <div class="form-section">
           <div class="field-group">
-            <label><FontAwesomeIcon icon="user" /> Name</label>
+            <label>Name</label>
             <div class="inline">
-              <input v-model="firstName" type="text" placeholder="First name" />
-              <input v-model="lastName" type="text" placeholder="Last name" />
+              <input 
+                type="text" 
+                v-model="userName"
+                :readonly="!isEditingName"
+                :style="{ opacity: isEditingName ? 1 : 0.5 }"
+              />
+              <button 
+                id="toggle-name" 
+                type="button" 
+                class="btn-change change-name" 
+                @click="toggleEditName"
+              >
+                {{ isEditingName ? 'Ok' : 'Change' }}
+              </button>
             </div>
           </div>
 
           <div class="field-group">
             <label><FontAwesomeIcon icon="envelope" /> Email address</label>
             <div class="inline">
-              <input v-model="email" type="email" placeholder="Your email" />
-              <button class="btn-change" @click="saveChanges">Save</button>
+              <input 
+                id="change-email" 
+                type="email" 
+                v-model="userEmail" 
+                :readonly="!isEditingEmail" 
+                :style="{ opacity: isEditingEmail ? 1 : 0.5 }"
+              />
+
+              <button 
+                id="toggle-email" 
+                type="button" 
+                class="btn-change change-email" 
+                @click="toggleEditEmail"
+              >
+                {{ isEditingEmail ? 'Ok' : 'Change' }}
+              </button>
             </div>
           </div>
 
           <div class="field-group">
             <label><FontAwesomeIcon icon="lock" /> Password</label>
             <div class="inline">
-              <input
-                v-model="currentPassword"
-                type="password"
-                placeholder="Current password"
+              <input 
+                :type="isEditingPassword ? 'text' : 'password'" 
+                v-model="userPassword"
+                :readonly="!isEditingPassword"
+                :style="{ opacity: isEditingPassword ? 1 : 0.5 }"
               />
-              <input v-model="newPassword" type="password" placeholder="New password" />
-              <button class="btn-change" @click="saveChanges">Update</button>
+              <button 
+                id="toggle-password" 
+                type="button" 
+                class="btn-change change-password" 
+                @click="toggleEditPassword"
+              >
+                {{ isEditingPassword ? 'Ok' : 'Change' }}
+              </button>
             </div>
           </div>
 
           <div class="form-actions">
             <button class="btn-primary" @click="saveChanges">Save changes</button>
           </div>
+        </div>
+
+        <div class="form-section" id="notification-section" hidden>
+          <div class="notification-card" id="notification">
+            <h3 class="notification-title">Wellcome to MODO!</h3>
+            <p class="notification-content">
+              🎉 Welcome aboard, {{userName}}! We're thrilled to have you in MODO with us.
+            </p>
+            <button class="clear-notification-btn" id="clear-notification">Clear</button>
+          </div>
+        </div>
+
+        <div class="form-section" id="help-section" hidden>
+
+        </div>
+
+        <div class="form-section" id="about-section" hidden>
+          <h3>What about MODO?</h3>
+          <p>
+            MODO is a minimalist and powerful habit tracker built to help you take control of your daily routine. Whether you're trying to develop healthier habits, stay focused on personal goals, or simply bring more structure to your day, MODO keeps you on track with clarity and ease.
+            Designed with simplicity in mind, MODO lets you create habits, track your progress, and celebrate your streaks—all in a clean, distraction-free interface. Smart reminders and visual insights help you stay motivated, showing you how small, consistent actions lead to meaningful change.
+            MODO isn't just about checking off tasks. It's about building momentum, staying intentional, and becoming the best version of yourself, one habit at a time.
+            Live with purpose. Grow with consistency. Move with MODO.
+          </p>
         </div>
       </div>
     </section>
@@ -132,25 +189,97 @@
 
 <script setup>
 import { useUserStore } from '../stores/userStore'
-import { computed } from 'vue'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import NavBar from '@/Components/NavBar.vue'
+
+defineOptions({
+  name: 'SettingsView',
+})
 
 const userStore = useUserStore()
 const user = computed(() => userStore.currentUser)
 
-defineOptions({             // export default {
-  name: 'SettingsView',     //  name: 'SettingsView',
-})                          //}
+// name
+const isEditingName = ref(false)
+const userName = ref(user.value?.name || '')
 
-// ESTADO
+const toggleEditName = () => {
+  if (isEditingName.value) {
+    if (userName.value !== user.value.name) {
+      
+      // Verifica se já existe o nome para outro utilizador
+      const nameExists = userStore.users.find(u => 
+        u.name === userName.value && u.id !== user.value.id
+      )
+
+      if (nameExists) {
+        alert(`O nome "${userName.value}" já está a ser utilizado por outro utilizador!`)
+        return
+      }
+      
+      // Se não existe, atualiza
+      user.value.name = userName.value
+    }
+
+    isEditingName.value = false
+  } else {
+    userName.value = user.value.name
+    isEditingName.value = true
+  }
+}
+
+// email
+const isEditingEmail = ref(false)
+const userEmail = ref(user.value?.email || '') 
+
+const toggleEditEmail = () => {
+  if (isEditingEmail.value) {
+    if (userEmail.value !== user.value.email) {
+
+      // Verifica se já existe o email para outro utilizador
+      const emailExists = userStore.users.find(u => 
+        u.email === userEmail.value && u.id !== user.value.id
+      )
+
+      if (emailExists) {
+        alert(`O email "${userEmail.value}" já está registado!`)
+        return
+      }
+
+      // Se não existe, atualiza
+      user.value.email = userEmail.value
+    }
+    
+    isEditingEmail.value = false
+    console.log('Email atualizado com sucesso.')
+  } else {
+    userEmail.value = user.value.email
+    isEditingEmail.value = true
+  }
+}
+
+// password
+const isEditingPassword = ref(false)
+const userPassword = ref(user.value?.password || '********') // Valor inicial ou da store
+
+const toggleEditPassword = () => {
+  if (isEditingPassword.value) {
+    
+    if (user.value) user.value.password = userPassword.value
+    isEditingPassword.value = false
+  } else {
+    // Ao clicar em change, garante que o rascunho tem a senha atual
+    userPassword.value = user.value?.password || ''
+    isEditingPassword.value = true
+  }
+}
+
+// avatar
 const showAvatar = ref(true)
 const currentIndex = ref(0)
 const slideWidth = 96
-
 const selectedDecoration = ref(null)
 
-// LISTA DE DECORAÇÕES
 const decorations = [
   { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png' },
   { name: 'garden', src: '/src/images/avatar_decoration/garden.png' },
@@ -160,7 +289,6 @@ const decorations = [
   { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png' }
 ]
 
-// FUNÇÕES
 const openDecoration = () => {
   showAvatar.value = false
 }
@@ -338,6 +466,7 @@ const selectDecoration = (src) => {
 
     /* Form */
     .form-section {
+      right: 0px;
       display: flex;
       flex-direction: column;
       gap: 22px;
@@ -402,7 +531,10 @@ const selectDecoration = (src) => {
       align-items: center;
     }
 
-    .inline input { flex: 1; }
+    .inline input {
+      flex: 1;
+      max-width: 650px;
+    }
 
     .btn-change {
       padding: 10px 16px;
@@ -696,6 +828,55 @@ const selectDecoration = (src) => {
       pointer-events: none;
       transform: scale(1.3);
       transform-origin: center;
+    }
+
+    .notification-card{
+      width: 100%;
+      height: 80px;
+      padding: 10px 15px 10px 15px;
+      position: relative;
+      border: 1px solid var(--green);
+      border-radius: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .notification-card h3 {
+      font-size: 20px;
+      transition: all 0.4s ease;
+      cursor: pointer;
+    }
+
+    .notification-card h3:hover {
+      transform: scale(1.1);
+    }
+
+    .clear-notification-btn {
+      width: 50px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
+      color: #fff;
+
+      border-radius: 10px;
+
+      /* estilo glass */
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .clear-notification-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+      transform: scale(1.1);
     }
 
 </style>
