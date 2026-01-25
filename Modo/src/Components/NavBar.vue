@@ -70,6 +70,8 @@ const logout = () => {
           </RouterLink>
         </div>
 
+        <RouterLink class="nav-icon" to="/adminpanel">&#9733;</RouterLink>
+
         <span class="me-3 fw-semibold">{{ user.name }}</span>
         <img
           v-if="user.avatar"
