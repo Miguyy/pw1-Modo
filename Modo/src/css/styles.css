@@ -790,3 +790,22 @@
     border-radius: 0;
   }
 }
+
+/* ------------ BODY ------------- */
+/* Assim pôe-se o mesmo div com a mesma class em todas as pages */
+
+.page-title {
+  width: 100%;
+  max-width: 1080px;
+  margin: 10px auto 50px auto;
+  padding-top: 10px;
+  border-top: 2px dotted #355D4C;
+}
+
+.page-title h2 {
+  color: #355D4C;
+  letter-spacing: 0.3em;
+}
+
+/* ------------ SETTINGS -------------- */
+

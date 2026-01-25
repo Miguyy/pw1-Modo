@@ -1,15 +1,54 @@
 <template>
   <NavBar />
   <main class="page">
-    <h1>SETTINGS</h1>
+    <div class="page-title">
+      <h2>SETTINGS</h2>
+    </div>
 
     <section v-if="currentUser" class="settings-card">
       <header class="profile-header">
-        <div class="avatar">
-          <img :src="avatarPreview" alt="Profile" />
-          <h2>{{ firstName || 'friend' }}!</h2>
+        <div class="avatar" id="avatar" v-show="showAvatar">
+          <img
+            src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400"
+            alt="Profile"
+          />
+          <button class="card-button btn-avatar-edit" @click="openDecoration">✎</button>
+          <img
+            v-if="selectedDecoration"
+            :src="selectedDecoration"
+            class="avatar-decoration"
+            alt=""
+          />
         </div>
+
+        <div class="swiper" id="avatar-decoration" v-show="!showAvatar">
+          <div class="card-wrapper">
+            <button class="card-button btn-avatar-exit" @click="closeDecoration">✕</button>
+            <ul
+              class="card-list swiper-wrapper" :style="{ transform: `translateX(-${currentIndex * slideWidth}px)` }"
+            >
+              <li
+                v-for="item in decorations"
+                :key="item.name"
+                class="card-item swiper-slide"
+              >
+                <button class="card-button btn-avatar-check" @click="selectDecoration(item.src)">✓</button>
+                <img :src="item.src" :alt="item.name" />
+              </li>
+            </ul>
+
+            <button class="swiper-button-prev" @click="prevSlide">←</button>
+            <button class="swiper-button-next" @click="nextSlide">→</button>
+            <img
+            src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400"
+            alt="Profile"
+            />
+          </div>
+        </div>
+
         <div class="profile-info">
+          <h2>Welcome back, {{ user.name }}</h2>
+          <p>{{user.email}}</p>
         </div>
         <button class="change-picture" @click="promptAvatar">Change picture</button>
       </header>
@@ -90,141 +129,65 @@
     </div>
   </footer>
 </template>
-<script>
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import NavBar from '../Components/NavBar.vue'
+
+<script setup>
 import { useUserStore } from '../stores/userStore'
+import { computed } from 'vue'
+import { ref } from 'vue'
+import NavBar from '@/Components/NavBar.vue'
 
-const DEFAULT_AVATAR = 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400'
+const userStore = useUserStore()
+const user = computed(() => userStore.currentUser)
 
-export default {
-  name: 'SettingsView',
-  components: {
-    NavBar,
-  },
-  data() {
-    return {
-      userStore: null,
-      firstName: '',
-      lastName: '',
-      email: '',
-      avatar: '',
-      currentPassword: '',
-      newPassword: '',
-    }
-  },
-  computed: {
-    currentUser() {
-      return this.userStore?.currentUser
-    },
-    avatarPreview() {
-      return this.avatar || this.currentUser?.avatar || DEFAULT_AVATAR
-    },
-  },
-  watch: {
-    currentUser(newVal) {
-      if (newVal) this.populateForm(newVal)
-    },
-  },
-  created() {
-    this.userStore = useUserStore()
-    this.bootstrapUser()
-  },
-  methods: {
-    async bootstrapUser() {
-      // First, restore the logged-in user ID from localStorage
-      const storedLoggedId = localStorage.getItem('loggedUserId')
-      if (storedLoggedId) {
-        this.userStore.loggedUserId = storedLoggedId
-      }
+defineOptions({             // export default {
+  name: 'SettingsView',     //  name: 'SettingsView',
+})                          //}
 
-      // Then load users from localStorage
-      this.userStore.loadFromLocalStorage()
+// ESTADO
+const showAvatar = ref(true)
+const currentIndex = ref(0)
+const slideWidth = 96
 
-      // If we have a logged-in user, populate the form
-      if (this.userStore.currentUser) {
-        this.populateForm(this.userStore.currentUser)
-      } else {
-        // Try fetching from API as backup
-        await this.userStore.fetchUsers().catch(() => {})
-        
-        if (this.userStore.currentUser) {
-          this.populateForm(this.userStore.currentUser)
-        } else {
-          // No user found, redirect to login
-          this.$router.push('/login')
-        }
-      }
-    },
+const selectedDecoration = ref(null)
 
-    populateForm(user) {
-      const parts = (user.name || '').split(' ')
-      this.firstName = parts.shift() || ''
-      this.lastName = parts.join(' ')
-      this.email = user.email || ''
-      this.avatar = user.avatar || ''
-    },
+// LISTA DE DECORAÇÕES
+const decorations = [
+  { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png' },
+  { name: 'garden', src: '/src/images/avatar_decoration/garden.png' },
+  { name: 'olives', src: '/src/images/avatar_decoration/olives.png' },
+  { name: 'cat', src: '/src/images/avatar_decoration/cat.png' },
+  { name: 'summer', src: '/src/images/avatar_decoration/summer.png' },
+  { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png' }
+]
 
-    async saveChanges() {
-      if (!this.firstName || !this.email) {
-        alert('Please fill in your name and email.')
-        return
-      }
+// FUNÇÕES
+const openDecoration = () => {
+  showAvatar.value = false
+}
 
-      const fullName = `${this.firstName} ${this.lastName}`.trim()
-      const updates = { name: fullName, email: this.email, avatar: this.avatar || null }
+const closeDecoration = () => {
+  showAvatar.value = true
+}
 
-      if (this.newPassword) {
-        if (!this.currentPassword) {
-          alert('Enter your current password to change it.')
-          return
-        }
-        if (this.currentPassword !== (this.currentUser?.password || '')) {
-          alert('Current password is incorrect.')
-          return
-        }
-        if (this.newPassword.length < 8) {
-          alert('New password must be at least 8 characters long.')
-          return
-        }
-        updates.password = this.newPassword
-      }
+const nextSlide = () => {
+  if (currentIndex.value < decorations.length - 1) {
+    currentIndex.value++
+  }
+}
 
-      try {
-        await this.userStore.updateUserProfile(updates)
-        this.currentPassword = ''
-        this.newPassword = ''
-        alert('Profile updated successfully.')
-      } catch (e) {
-        console.error(e)
-        alert('Failed to update profile.')
-      }
-    },
+const prevSlide = () => {
+  if (currentIndex.value > 0) {
+    currentIndex.value--
+  }
+}
 
-    promptAvatar() {
-      const url = prompt('Paste an image URL for your avatar', this.avatar || this.avatarPreview)
-      if (url !== null) this.avatar = url.trim()
-    },
-
-    handleLogout() {
-      this.userStore.logout()
-      this.$router.push('/login')
-    },
-
-    async handleDelete() {
-      if (!confirm('This will delete your account and data. Continue?')) return
-      try {
-        await this.userStore.deleteAccount()
-        this.$router.push('/register')
-      } catch (e) {
-        console.error(e)
-        alert('Unable to delete account.')
-      }
-    },
-  },
+const selectDecoration = (src) => {
+  selectedDecoration.value = src
+  showAvatar.value = true
 }
 </script>
 
+<style src="../css/styles.css"></style>
 <style>
   :root {
       --bg: #f3f3f1;
@@ -253,15 +216,11 @@ export default {
       padding: 32px 24px 80px;
     }
 
-    h1 {
-      font-size: 14px;
-      letter-spacing: 0.3em;
-      color: #444;
-      margin-bottom: 16px;
-    }
 
     /* Card */
     .settings-card {
+      max-width: 1080px;
+      margin: 0 auto 0 auto;
       background: var(--card);
       border-radius: var(--radius);
       padding: 24px;
@@ -279,11 +238,10 @@ export default {
     }
 
     .avatar {
+      position: relative;
+      display: flex;
       width: 96px;
       height: 96px;
-      border-radius: 50%;
-      background: #fff;
-      overflow: hidden;
       flex-shrink: 0;
       transition: transform 0.3s ease;
     }
@@ -295,6 +253,7 @@ export default {
     .avatar img {
       width: 100%;
       height: 100%;
+      border-radius: 50%;
       object-fit: cover;
     }
 
@@ -537,4 +496,206 @@ export default {
         grid-template-columns: 1fr 1fr;
       }
     }
+
+    /* Changes */
+
+    .page-title {
+      width: 100%;
+      max-width: 1080px;
+      margin: 10px auto 50px auto;
+      padding-top: 10px;
+      border-top: 2px dotted #355D4C;
+    }
+
+    .page-title h2 {
+      color: #355D4C;
+      letter-spacing: 0.3em;
+    }
+
+    .swiper {
+      display: flex;
+      width: 96px;
+      height: 96px;
+      overflow: hidden;
+    }
+
+    .swiper img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .card-list img {
+      width: 96px;
+      height: 96px;
+    }
+
+    .card-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      padding: 0px;
+    }
+
+    .swiper-wrapper {
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .btn-avatar-exit {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      z-index: 2;
+      color: #fff;
+
+      border-radius: 50%;
+
+      /* estilo glass */
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-avatar-exit:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    }
+
+    .btn-avatar-check {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      z-index: 2;
+      color: #fff;
+
+      border-radius: 50%;
+
+      /* estilo glass */
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-avatar-check:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    }
+
+    .swiper-button-prev {
+      position: absolute;
+      bottom: 0px;
+      left: 0px;
+      z-index: 2;
+      color: #fff;
+
+      border-radius: 50%;
+
+      /* estilo glass */
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .swiper-button-prev:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    }
+
+    .swiper-button-next{
+      position: absolute;
+      bottom: 0px;
+      right: 0px;
+      z-index: 2;
+      color: #fff;
+
+      border-radius: 50%;
+
+      /* estilo glass */
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .swiper-button-next:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    }
+
+    .swiper-slide {
+      width: 96px;
+      height: 96px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .btn-avatar-edit {
+      position: absolute;
+      bottom: -10px;
+      right: -10px;
+      z-index: 2;
+      color: #fff;
+
+      border-radius: 50%;
+
+      /* estilo glass */
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-avatar-edit:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+      transform: scale(1.1);
+    }
+
+    .avatar-decoration {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      transform: scale(1.3);
+      transform-origin: center;
+    }
+
 </style>
