@@ -205,16 +205,6 @@
             </p>
             <p>
               <strong>Contact Support:</strong> For further assistance, email us at support@modo.app
-          <div class="form-actions">
-            <button class="btn-primary" @click="saveChanges">Save changes</button>
-          </div>
-        </div>
-
-        <div class="form-section" id="notification-section" hidden>
-          <div class="notification-card" id="notification">
-            <h3 class="notification-title">Wellcome to MODO!</h3>
-            <p class="notification-content">
-              🎉 Welcome aboard, {{ userName }}! We're thrilled to have you in MODO with us.
             </p>
           </div>
 
@@ -228,21 +218,6 @@
               Live with purpose. Grow with consistency. Move with MODO.
             </p>
           </div>
-        <div class="form-section" id="help-section" hidden></div>
-
-        <div class="form-section" id="about-section" hidden>
-          <h3>What about MODO?</h3>
-          <p>
-            MODO is a minimalist and powerful habit tracker built to help you take control of your
-            daily routine. Whether you're trying to develop healthier habits, stay focused on
-            personal goals, or simply bring more structure to your day, MODO keeps you on track with
-            clarity and ease. Designed with simplicity in mind, MODO lets you create habits, track
-            your progress, and celebrate your streaks—all in a clean, distraction-free interface.
-            Smart reminders and visual insights help you stay motivated, showing you how small,
-            consistent actions lead to meaningful change. MODO isn't just about checking off tasks.
-            It's about building momentum, staying intentional, and becoming the best version of
-            yourself, one habit at a time. Live with purpose. Grow with consistency. Move with MODO.
-          </p>
         </div>
       </div>
     </section>
@@ -944,6 +919,46 @@ body {
   color: #fff;
 }
 
+.nav-item.active {
+  background: var(--green);
+  color: #fff;
+}
+
+.nav-item.active span {
+  opacity: 1;
+}
+
+.notification-badge {
+  background: var(--danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Content Card */
+.content-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 24px;
+  min-height: 300px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 /* Form */
 .form-section {
   right: 0px;
@@ -1360,17 +1375,61 @@ footer a:hover {
   transform-origin: center;
 }
 
-.notification-card h3:hover {
-  transform: scale(1.1);
+
+/* Decoration Level Badge Styles */
+.decoration-level-badge {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(180, 85, 77, 0.9);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.decoration-level-badge.unlocked {
+  background: rgba(53, 93, 76, 0.9);
+}
+
+.decoration-locked {
+  opacity: 0.5;
+  filter: grayscale(50%);
+}
+
+.decoration-locked img {
+  filter: brightness(0.7);
+}
+
+.btn-locked {
+  background: rgba(180, 85, 77, 0.8) !important;
+}
+
+.btn-locked:hover {
+  background: rgba(180, 85, 77, 1) !important;
+}
+
+.btn-avatar-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .clear-notification-btn {
-  width: 50px;
+  width: 60px;
+  height: 30px;
+  padding: 5px 10px;
   position: absolute;
-  top: 10px;
+  top: 50%;
   right: 10px;
+  transform: translateY(-50%);
   z-index: 2;
   color: #fff;
+  font-size: 12px;
+  font-weight: 600;
 
   border-radius: 10px;
 
@@ -1552,6 +1611,179 @@ footer a:hover {
 .modal-fade-enter-from .confirm-modal,
 .modal-fade-leave-to .confirm-modal {
   transform: scale(0.9);
+}
+
+/* Notification Section Styles */
+.no-notifications {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+.btn-clear-all {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-clear-all:hover {
+  background: #943f38;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .settings-content {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav-item {
+    flex: 1 1 auto;
+    min-width: 120px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .nav-item span {
+    margin-right: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 20px 15px;
+  }
+
+  .settings-card {
+    padding: 20px;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .avatar {
+    margin: 0 auto;
+  }
+
+  .profile-info {
+    text-align: center;
+  }
+
+  .profile-info h2 {
+    font-size: 18px;
+  }
+
+  .change-picture {
+    margin: 0 auto;
+  }
+
+  .field-group .inline {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .field-group .inline input {
+    width: 100%;
+  }
+
+  .btn-change {
+    width: 100%;
+  }
+
+  .sidebar {
+    flex-direction: column;
+  }
+
+  .nav-item {
+    min-width: unset;
+    justify-content: space-between;
+  }
+
+  .notification-card {
+    height: auto;
+    min-height: 80px;
+    padding: 12px 70px 12px 15px;
+  }
+
+  .clear-notification-btn {
+    width: 55px;
+    height: 28px;
+    font-size: 11px;
+    right: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title h2 {
+    font-size: 20px;
+    letter-spacing: 0.15em;
+  }
+
+  .settings-card {
+    padding: 15px;
+    border-radius: 16px;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .avatar img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .profile-info h2 {
+    font-size: 16px;
+  }
+
+  .form-section h3 {
+    font-size: 16px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .notification-card {
+    height: auto;
+    min-height: 70px;
+    padding: 10px 65px 10px 12px;
+  }
+
+  .notification-title {
+    font-size: 16px;
+  }
+
+  .notification-content {
+    font-size: 12px;
+  }
+
+  .clear-notification-btn {
+    width: 50px;
+    height: 26px;
+    font-size: 10px;
+    padding: 4px 6px;
+    right: 6px;
+  }
 }
 </style>
 <style src="../css/styles.css"></style>
