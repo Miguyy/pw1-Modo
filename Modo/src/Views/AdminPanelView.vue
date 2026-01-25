@@ -115,7 +115,7 @@
                 <td>
                   <button
                     class="action-icon action-edit me-2"
-                    @click="editUser(user.id)"
+                    @click="openEditModal(user)"
                     title="Edit"
                   >
                     <i class="bi bi-pencil" aria-hidden="true"></i>
@@ -160,6 +160,39 @@
     </div>
   </div>
 
+  <!-- Edit User Modal -->
+  <div v-if="modalVisible" class="modal-backdrop">
+    <div class="modal-panel">
+      <h5 class="mb-3">Edit user</h5>
+      <div class="mb-2">
+        <label class="form-label">Name</label>
+        <input v-model="editingUser.name" class="form-control" />
+      </div>
+      <div class="mb-2">
+        <label class="form-label">Email</label>
+        <input v-model="editingUser.email" class="form-control" />
+      </div>
+      <div class="row">
+        <div class="col">
+          <label class="form-label">Points</label>
+          <input type="number" v-model.number="editingUser.points" class="form-control" />
+        </div>
+        <div class="col">
+          <label class="form-label">Priority</label>
+          <select v-model="editingUser.priority" class="form-select">
+            <option value="1">User</option>
+            <option value="2">Admin</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-3">
+        <button class="btn btn-outline-secondary" @click="cancelEdit">Cancel</button>
+        <button class="btn btn-success" @click="confirmEdit">Save</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast notification -->
   <Transition name="toast-slide">
     <div v-if="toast.visible" class="toast-notification">
@@ -179,11 +212,10 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import NavBar from '../Components/NavBar.vue'
 import { useUserStore } from '@/stores/userStore'
+import { updateUser as apiUpdateUser } from '@/api/modoApi'
 
-const router = useRouter()
 const userStore = useUserStore()
 
 const search = ref('')
@@ -271,8 +303,48 @@ function nextPage() {
   goToPage(currentPage.value + 1)
 }
 
-function editUser(id) {
-  router.push({ path: `/adminpanel/edit/${id}` })
+// Modal state for editing a user inline
+const modalVisible = ref(false)
+const editingUser = ref(null)
+
+function openEditModal(user) {
+  // clone the user so edits are local until confirmed
+  editingUser.value = JSON.parse(JSON.stringify(user))
+  modalVisible.value = true
+}
+
+function cancelEdit() {
+  modalVisible.value = false
+  editingUser.value = null
+  showToast('Operation cancelled', 'User edit was cancelled')
+}
+
+async function confirmEdit() {
+  if (!editingUser.value) return
+  const payload = { ...editingUser.value }
+  try {
+    // try API update
+    await apiUpdateUser(payload.id, payload)
+    // update local store
+    const idx = userStore.users.findIndex((u) => String(u.id) === String(payload.id))
+    if (idx !== -1) {
+      userStore.users[idx] = { ...userStore.users[idx], ...payload }
+      userStore.saveToLocalStorage()
+    }
+    showToast('User modified', `${payload.name || payload.email} was modified`)
+  } catch (e) {
+    // fallback: update locally
+    console.warn('API update failed, updating locally only', e)
+    const idx = userStore.users.findIndex((u) => String(u.id) === String(payload.id))
+    if (idx !== -1) {
+      userStore.users[idx] = { ...userStore.users[idx], ...payload }
+      userStore.saveToLocalStorage()
+    }
+    showToast('User modified', `${payload.name || payload.email} was modified (local)`)
+  } finally {
+    modalVisible.value = false
+    editingUser.value = null
+  }
 }
 
 /*
@@ -609,5 +681,24 @@ function formatDate(value) {
 .toast-content small {
   font-size: 12px;
   opacity: 0.9;
+}
+
+/* Simple modal styles */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+.modal-panel {
+  width: 520px;
+  max-width: calc(100% - 32px);
+  background: #fff;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 24px 60px rgba(10, 30, 20, 0.15);
 }
 </style>

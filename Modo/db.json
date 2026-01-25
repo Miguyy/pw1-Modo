@@ -342,13 +342,13 @@
     },
     {
       "id": "d53f",
-      "name": "toast2",
-      "email": "toast2@gmail.com",
+      "name": "toastadmin",
+      "email": "toastadmin@gmail.com",
       "password": "M1guelito!",
       "avatar": null,
-      "points": 0,
-      "priority": 1,
       "createdAt": "2026-01-24T21:13:29.227Z",
+      "points": 30,
+      "priority": "2",
       "habits": []
     },
     {
