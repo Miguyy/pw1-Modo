@@ -283,7 +283,8 @@
         "698b",
         "b2d2",
         "782f",
-        "1c5e"
+        "1c5e",
+        "768c"
       ]
     },
     {
@@ -443,6 +444,96 @@
       "points": 0,
       "priority": 1,
       "createdAt": "2026-01-25T08:10:14.042Z",
+      "habits": []
+    },
+    {
+      "id": "2573",
+      "name": "testuser",
+      "email": "test@example.com",
+      "password": "TestPassword123!",
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-25T09:07:12.519Z",
+      "habits": []
+    },
+    {
+      "id": "2911",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:07:12.519Z",
+      "habits": []
+    },
+    {
+      "id": "c35f",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:07:30.927Z",
+      "habits": []
+    },
+    {
+      "id": "3d55",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:07:50.554Z",
+      "habits": []
+    },
+    {
+      "id": "282c",
+      "name": "testuser",
+      "email": "test@example.com",
+      "password": "TestPassword123!",
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-25T09:07:50.554Z",
+      "habits": []
+    },
+    {
+      "id": "ea60",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:07:56.098Z",
+      "habits": []
+    },
+    {
+      "id": "0470",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:08:43.832Z",
+      "habits": []
+    },
+    {
+      "id": "1abd",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:09:23.806Z",
+      "habits": []
+    },
+    {
+      "id": "cd62",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:09:40.452Z",
       "habits": []
     }
   ],
@@ -1417,6 +1508,39 @@
       "location": "inside",
       "created_at": "2026-01-25T08:10:14.043Z",
       "remaining_minutes": null
+    },
+    {
+      "id": "3c2a",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-25T09:07:12.520Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "6f9c",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-25T09:07:50.556Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "768c",
+      "user_id": "76a8",
+      "description": "habit teste",
+      "type": "time",
+      "priority": "low",
+      "location": "inside",
+      "target_count": null,
+      "increment_value": 1,
+      "target_minutes": 15,
+      "created_at": "2026-01-25T09:10:18.648Z",
+      "remaining_minutes": 15
     }
   ]
 }
