@@ -36,6 +36,19 @@
       </p>
     </div>
   </div>
+
+  <!-- Toast notification -->
+  <Transition name="toast-slide">
+    <div v-if="toast.visible" class="toast-notification">
+      <div class="toast-icon">
+        <FontAwesomeIcon icon="info-circle" />
+      </div>
+      <div class="toast-content">
+        <strong>{{ toast.title }}</strong>
+        <small>{{ toast.message }}</small>
+      </div>
+    </div>
+  </Transition>
 </template>
 
 <script>
@@ -48,6 +61,7 @@ export default {
       email: '',
       password: '',
       userStore: null,
+      toast: { visible: false, title: '', message: '', timeout: null },
     }
   },
   created() {
@@ -66,22 +80,88 @@ export default {
   methods: {
     async loginUser() {
       if (!this.email || !this.password) {
-        alert('Please fill in both email and password.')
+        this.showToast('Missing fields', 'Please fill in both email and password.', 3000)
         return
       }
 
       const ok = await this.userStore.loginByEmail(this.email, this.password)
 
       if (!ok) {
-        alert('Invalid email or password.')
+        this.showToast('Login failed', 'Invalid email or password.', 3000)
         return
       }
 
-      this.$router.push('/habitsmanager')
+      const user = this.userStore.currentUser
+
+      this.showToast('Login successful', 'Welcome back!', 2000)
+
+      setTimeout(() => {
+        if (user.priority === 2) {
+          this.$router.push('/adminpanel')
+        } else {
+          this.$router.push('/habitsmanager')
+        }
+      }, 800)
+    },
+    showToast(title, message, duration = 3000) {
+      if (!this.toast) this.toast = { visible: false, title: '', message: '', timeout: null }
+      this.toast.title = title
+      this.toast.message = message
+      this.toast.visible = true
+
+      if (this.toast.timeout) clearTimeout(this.toast.timeout)
+      this.toast.timeout = setTimeout(() => {
+        this.toast.visible = false
+      }, duration)
     },
   },
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+/* Toast styles (local to login view) */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #355d4c, #4f6f5f);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  min-width: 240px;
+}
+.toast-icon {
+  font-size: 20px;
+}
+.toast-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.toast-content strong {
+  font-size: 14px;
+}
+.toast-content small {
+  font-size: 12px;
+  opacity: 0.95;
+}
+
+.toast-slide-enter-active,
+.toast-slide-leave-active {
+  transition: all 0.35s ease;
+}
+.toast-slide-enter-from {
+  opacity: 0;
+  transform: translateY(-12px) translateX(8px);
+}
+.toast-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-8px) translateX(8px);
+}
+</style>
 <style src="../css/styles.css"></style>

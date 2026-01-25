@@ -5,7 +5,7 @@
       <h2>SETTINGS</h2>
     </div>
 
-    <section class="settings-card">
+    <section v-if="currentUser" class="settings-card">
       <header class="profile-header">
         <div class="avatar" id="avatar" v-show="showAvatar">
           <img
@@ -50,7 +50,7 @@
           <h2>Welcome back, {{ user.name }}</h2>
           <p>{{user.email}}</p>
         </div>
-        <button class="change-picture">Change picture</button>
+        <button class="change-picture" @click="promptAvatar">Change picture</button>
       </header>
 
       <div class="settings-content">
@@ -84,7 +84,7 @@
           </div>
 
           <div class="field-group">
-            <label>Email address</label>
+            <label><FontAwesomeIcon icon="envelope" /> Email address</label>
             <div class="inline">
               <input 
                 id="change-email" 
@@ -106,7 +106,7 @@
           </div>
 
           <div class="field-group">
-            <label>Password</label>
+            <label><FontAwesomeIcon icon="lock" /> Password</label>
             <div class="inline">
               <input 
                 :type="isEditingPassword ? 'text' : 'password'" 
@@ -123,6 +123,10 @@
                 {{ isEditingPassword ? 'Ok' : 'Change' }}
               </button>
             </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-primary" @click="saveChanges">Save changes</button>
           </div>
         </div>
 
@@ -150,6 +154,10 @@
           </p>
         </div>
       </div>
+    </section>
+
+    <section v-else class="settings-card">
+      <p>Please log in to access your settings.</p>
     </section>
   </main>
 
@@ -363,6 +371,11 @@ const selectDecoration = (src) => {
       width: 96px;
       height: 96px;
       flex-shrink: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .avatar:hover {
+      transform: scale(1.05);
     }
 
     .avatar img {
@@ -393,6 +406,13 @@ const selectDecoration = (src) => {
       border-radius: 999px;
       cursor: pointer;
       font-size: 13px;
+      transition: all 0.3s ease;
+    }
+
+    .change-picture:hover {
+      background: rgba(255,255,255,0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
 
     /* Content */
@@ -422,6 +442,19 @@ const selectDecoration = (src) => {
       background: rgba(255,255,255,0.12);
       cursor: pointer;
       font-size: 14px;
+      transition: all 0.3s ease;
+      gap: 10px;
+    }
+
+    .nav-item svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .nav-item:hover {
+      background: rgba(255,255,255,0.18);
+      transform: translateX(4px);
     }
 
     .nav-item span { opacity: 0.85; }
@@ -451,12 +484,24 @@ const selectDecoration = (src) => {
       font-size: 13px;
       margin-bottom: 8px;
       color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    label svg {
+      font-size: 14px;
     }
 
     .row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
+      width: 100%;
+    }
+
+    .row input {
+      min-width: 0;
     }
 
     input {
@@ -467,6 +512,17 @@ const selectDecoration = (src) => {
       outline: none;
       background: #e7efe9;
       font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    input:hover {
+      background: #f5f9f7;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    input:focus {
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(79, 111, 95, 0.1);
     }
 
     .inline {
@@ -488,6 +544,18 @@ const selectDecoration = (src) => {
       color: #fff;
       cursor: pointer;
       font-size: 13px;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .btn-change:hover {
+      background: rgba(255,255,255,0.28);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn-change:active {
+      transform: translateY(0);
     }
 
     /* Footer */
@@ -516,11 +584,48 @@ const selectDecoration = (src) => {
       color: var(--text-muted);
       text-decoration: none;
       margin-bottom: 6px;
+      transition: all 0.3s ease;
+    }
+
+    footer a:hover {
+      color: var(--text-light);
+      transform: translateX(4px);
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-primary {
+      padding: 12px 18px;
+      border: none;
+      border-radius: 999px;
+      background: #2f4f40;
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    .btn-primary:hover {
+      background: #1f3f30;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
     }
 
     @media (max-width: 900px) {
       .settings-content {
         grid-template-columns: 1fr;
+      }
+
+      .row {
+        grid-template-columns: 1fr 1fr;
       }
     }
 
