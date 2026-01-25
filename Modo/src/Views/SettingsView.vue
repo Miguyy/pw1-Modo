@@ -40,9 +40,19 @@
                 v-for="item in decorations"
                 :key="item.name"
                 class="card-item swiper-slide"
+                :class="{ 'decoration-locked': userLevel < (item.requiredLevel ?? 0) }"
               >
-                <button class="card-button btn-avatar-check" @click="selectDecoration(item.src)">✓</button>
+                <button 
+                  class="card-button btn-avatar-check" 
+                  @click="selectDecoration(item.src)"
+                  :class="{ 'btn-locked': userLevel < (item.requiredLevel ?? 0) }"
+                >
+                  <FontAwesomeIcon :icon="userLevel < (item.requiredLevel ?? 0) ? 'lock' : 'check'" />
+                </button>
                 <img :src="item.src" :alt="item.name" />
+                <span class="decoration-level-badge" :class="{ 'unlocked': userLevel >= (item.requiredLevel ?? 0) }">
+                  Lv. {{ item.requiredLevel ?? 0 }}
+                </span>
               </li>
             </ul>
 
@@ -64,103 +74,147 @@
 
       <div class="settings-content">
         <aside class="sidebar">
-          <div class="nav-item" id="notification-btn"><span>Notifications</span> →</div>
-          <div class="nav-item" id="help-btn"><span>Help</span> →</div>
-          <div class="nav-item" id="about-btn"><span>About</span> →</div>
-          <div class="nav-item danger" id="logout-btn" @click="handleLogout">Logout</div>
-          <div class="nav-item danger" id="delete-btn" @click="handleDeleteAccount">Delete account</div>
+          <div class="nav-item" :class="{ active: activeSection === 'account' || activeSection === null }" id="account-btn" @click="toggleSection('account')">
+            <span><FontAwesomeIcon icon="user" /> Account Info</span> →
+          </div>
+          <div class="nav-item" :class="{ active: activeSection === 'notifications' }" id="notification-btn" @click="toggleSection('notifications')">
+            <span><FontAwesomeIcon icon="bell" /> Notifications</span>
+            <span v-if="notifications.length > 0" class="notification-badge">{{ notifications.length }}</span>
+            <span v-else>→</span>
+          </div>
+          <div class="nav-item" :class="{ active: activeSection === 'help' }" id="help-btn" @click="toggleSection('help')">
+            <span><FontAwesomeIcon icon="circle-question" /> Help</span> →
+          </div>
+          <div class="nav-item" :class="{ active: activeSection === 'about' }" id="about-btn" @click="toggleSection('about')">
+            <span><FontAwesomeIcon icon="info-circle" /> About</span> →
+          </div>
+          <div class="nav-item danger" id="logout-btn" @click="handleLogout">
+            <FontAwesomeIcon icon="right-from-bracket" /> Logout
+          </div>
+          <div class="nav-item danger" id="delete-btn" @click="handleDeleteAccount">
+            <FontAwesomeIcon icon="trash" /> Delete account
+          </div>
         </aside>
 
-        <div class="form-section">
-          <div class="field-group">
-            <label>Name</label>
-            <div class="inline">
-              <input 
-                type="text" 
-                v-model="userName"
-                :readonly="!isEditingName"
-                :style="{ opacity: isEditingName ? 1 : 0.5 }"
-              />
-              <button 
-                id="toggle-name" 
-                type="button" 
-                class="btn-change change-name" 
-                @click="toggleEditName"
-              >
-                {{ isEditingName ? 'Ok' : 'Change' }}
-              </button>
+        <div class="content-card">
+          <!-- Account Info Section -->
+          <div class="form-section" v-show="activeSection === 'account' || activeSection === null">
+            <h3 class="section-title"><FontAwesomeIcon icon="user" /> Account Information</h3>
+            <div class="field-group">
+              <label>Name</label>
+              <div class="inline">
+                <input 
+                  type="text" 
+                  v-model="userName"
+                  :readonly="!isEditingName"
+                  :style="{ opacity: isEditingName ? 1 : 0.5 }"
+                />
+                <button 
+                  id="toggle-name" 
+                  type="button" 
+                  class="btn-change change-name" 
+                  @click="toggleEditName"
+                >
+                  {{ isEditingName ? 'Ok' : 'Change' }}
+                </button>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label><FontAwesomeIcon icon="envelope" /> Email address</label>
+              <div class="inline">
+                <input 
+                  id="change-email" 
+                  type="email" 
+                  v-model="userEmail" 
+                  :readonly="!isEditingEmail" 
+                  :style="{ opacity: isEditingEmail ? 1 : 0.5 }"
+                />
+
+                <button 
+                  id="toggle-email" 
+                  type="button" 
+                  class="btn-change change-email" 
+                  @click="toggleEditEmail"
+                >
+                  {{ isEditingEmail ? 'Ok' : 'Change' }}
+                </button>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label><FontAwesomeIcon icon="lock" /> Password</label>
+              <div class="inline">
+                <input 
+                  :type="isEditingPassword ? 'text' : 'password'" 
+                  v-model="userPassword"
+                  :readonly="!isEditingPassword"
+                  :style="{ opacity: isEditingPassword ? 1 : 0.5 }"
+                />
+                <button 
+                  id="toggle-password" 
+                  type="button" 
+                  class="btn-change change-password" 
+                  @click="toggleEditPassword"
+                >
+                  {{ isEditingPassword ? 'Ok' : 'Change' }}
+                </button>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn-primary" @click="saveChanges">Save changes</button>
             </div>
           </div>
 
-          <div class="field-group">
-            <label><FontAwesomeIcon icon="envelope" /> Email address</label>
-            <div class="inline">
-              <input 
-                id="change-email" 
-                type="email" 
-                v-model="userEmail" 
-                :readonly="!isEditingEmail" 
-                :style="{ opacity: isEditingEmail ? 1 : 0.5 }"
-              />
-
-              <button 
-                id="toggle-email" 
-                type="button" 
-                class="btn-change change-email" 
-                @click="toggleEditEmail"
-              >
-                {{ isEditingEmail ? 'Ok' : 'Change' }}
-              </button>
+          <!-- Notifications Section -->
+          <div class="form-section" id="notification-section" v-show="activeSection === 'notifications'">
+            <h3 class="section-title"><FontAwesomeIcon icon="bell" /> Notifications</h3>
+            <div v-if="notifications.length === 0" class="no-notifications">
+              <p>No notifications yet!</p>
             </div>
-          </div>
-
-          <div class="field-group">
-            <label><FontAwesomeIcon icon="lock" /> Password</label>
-            <div class="inline">
-              <input 
-                :type="isEditingPassword ? 'text' : 'password'" 
-                v-model="userPassword"
-                :readonly="!isEditingPassword"
-                :style="{ opacity: isEditingPassword ? 1 : 0.5 }"
-              />
-              <button 
-                id="toggle-password" 
-                type="button" 
-                class="btn-change change-password" 
-                @click="toggleEditPassword"
-              >
-                {{ isEditingPassword ? 'Ok' : 'Change' }}
-              </button>
+            <div 
+              v-for="(notification, index) in notifications" 
+              :key="index" 
+              class="notification-card"
+            >
+              <h3 class="notification-title">{{ notification.title }}</h3>
+              <p class="notification-content">
+                {{ notification.message }}
+              </p>
+              <small class="notification-date">{{ formatNotificationDate(notification.date) }}</small>
+              <button class="clear-notification-btn" @click="dismissNotification(index)">Dismiss</button>
             </div>
+            <button v-if="notifications.length > 0" class="btn-clear-all" @click="clearAllNotifications">Clear All</button>
           </div>
 
-          <div class="form-actions">
-            <button class="btn-primary" @click="saveChanges">Save changes</button>
-          </div>
-        </div>
-
-        <div class="form-section" id="notification-section" hidden>
-          <div class="notification-card" id="notification">
-            <h3 class="notification-title">Wellcome to MODO!</h3>
-            <p class="notification-content">
-              🎉 Welcome aboard, {{userName}}! We're thrilled to have you in MODO with us.
+          <!-- Help Section -->
+          <div class="form-section" id="help-section" v-show="activeSection === 'help'">
+            <h3 class="section-title"><FontAwesomeIcon icon="circle-question" /> Need Help?</h3>
+            <p>
+              <strong>Getting Started:</strong> Create your first habit by navigating to the Habit Manager page. Click "Create new habit" and fill in the details.
             </p>
-            <button class="clear-notification-btn" id="clear-notification">Clear</button>
+            <p>
+              <strong>Tracking Progress:</strong> Mark habits as complete daily to earn points and level up. Each completed habit awards you 10 points!
+            </p>
+            <p>
+              <strong>Avatar Decorations:</strong> Unlock new avatar decorations every 5 levels. Visit Settings to customize your profile.
+            </p>
+            <p>
+              <strong>Contact Support:</strong> For further assistance, email us at support@modo.app
+            </p>
           </div>
-        </div>
 
-        <div class="form-section" id="help-section" hidden>
-
-        </div>
-
-        <div class="form-section" id="about-section" hidden>
-          <h3>What about MODO?</h3>
-          <p>
-            MODO is a minimalist and powerful habit tracker built to help you take control of your daily routine. Whether you're trying to develop healthier habits, stay focused on personal goals, or simply bring more structure to your day, MODO keeps you on track with clarity and ease.
-            Designed with simplicity in mind, MODO lets you create habits, track your progress, and celebrate your streaks—all in a clean, distraction-free interface. Smart reminders and visual insights help you stay motivated, showing you how small, consistent actions lead to meaningful change.
-            MODO isn't just about checking off tasks. It's about building momentum, staying intentional, and becoming the best version of yourself, one habit at a time.
-            Live with purpose. Grow with consistency. Move with MODO.
-          </p>
+          <!-- About Section -->
+          <div class="form-section" id="about-section" v-show="activeSection === 'about'">
+            <h3 class="section-title"><FontAwesomeIcon icon="info-circle" /> What about MODO?</h3>
+            <p>
+              MODO is a minimalist and powerful habit tracker built to help you take control of your daily routine. Whether you're trying to develop healthier habits, stay focused on personal goals, or simply bring more structure to your day, MODO keeps you on track with clarity and ease.
+              Designed with simplicity in mind, MODO lets you create habits, track your progress, and celebrate your streaks—all in a clean, distraction-free interface. Smart reminders and visual insights help you stay motivated, showing you how small, consistent actions lead to meaningful change.
+              MODO isn't just about checking off tasks. It's about building momentum, staying intentional, and becoming the best version of yourself, one habit at a time.
+              Live with purpose. Grow with consistency. Move with MODO.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -227,7 +281,7 @@
 
 <script setup>
 import { useUserStore } from '../stores/userStore'
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import NavBar from '@/Components/NavBar.vue'
 
@@ -238,6 +292,121 @@ defineOptions({
 const userStore = useUserStore()
 const router = useRouter()
 const user = computed(() => userStore.currentUser)
+
+// Active section for sidebar navigation
+const activeSection = ref(null)
+
+function toggleSection(section) {
+  activeSection.value = activeSection.value === section ? null : section
+}
+
+// Notifications system
+const notifications = ref([])
+
+function loadNotifications() {
+  const userId = user.value?.id
+  if (!userId) return
+  const saved = localStorage.getItem(`notifications_${userId}`)
+  if (saved) {
+    try {
+      notifications.value = JSON.parse(saved)
+    } catch {
+      notifications.value = []
+    }
+  }
+}
+
+function saveNotifications() {
+  const userId = user.value?.id
+  if (!userId) return
+  localStorage.setItem(`notifications_${userId}`, JSON.stringify(notifications.value))
+}
+
+function addNotification(title, message) {
+  notifications.value.unshift({
+    title,
+    message,
+    date: new Date().toISOString()
+  })
+  saveNotifications()
+}
+
+function dismissNotification(index) {
+  notifications.value.splice(index, 1)
+  saveNotifications()
+  showToast('Notification dismissed', '', 'success')
+}
+
+function clearAllNotifications() {
+  notifications.value = []
+  saveNotifications()
+  showToast('All notifications cleared', '', 'success')
+}
+
+function formatNotificationDate(dateStr) {
+  const date = new Date(dateStr)
+  return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+}
+
+// Check for newly unlocked decorations based on user level
+function checkDecorationUnlocks() {
+  const userId = user.value?.id
+  if (!userId) return
+  
+  const level = Math.floor((user.value.points || 0) / 100)
+  const unlockedKey = `unlockedDecorations_${userId}`
+  const savedUnlocked = localStorage.getItem(unlockedKey)
+  let previouslyUnlocked = []
+  
+  if (savedUnlocked) {
+    try {
+      previouslyUnlocked = JSON.parse(savedUnlocked)
+    } catch {
+      previouslyUnlocked = []
+    }
+  }
+  
+  // Load decorations
+  const saved = localStorage.getItem('avatarDecorations')
+  let decorationsList = []
+  if (saved) {
+    try {
+      decorationsList = JSON.parse(saved)
+    } catch {
+      decorationsList = []
+    }
+  }
+  
+  // Default decorations fallback
+  if (decorationsList.length === 0) {
+    decorationsList = [
+      { name: 'solarSystem', requiredLevel: 0 },
+      { name: 'garden', requiredLevel: 5 },
+      { name: 'olives', requiredLevel: 10 },
+      { name: 'cat', requiredLevel: 15 },
+      { name: 'summer', requiredLevel: 20 },
+      { name: 'zoo', requiredLevel: 25 }
+    ]
+  }
+  
+  // Check for newly unlocked decorations
+  const newlyUnlocked = decorationsList.filter(d => {
+    const requiredLevel = d.requiredLevel ?? 0
+    return level >= requiredLevel && !previouslyUnlocked.includes(d.name)
+  })
+  
+  // Add notifications for newly unlocked decorations
+  newlyUnlocked.forEach(d => {
+    addNotification(
+      '🎉 New Decoration Unlocked!',
+      `Congratulations! You've unlocked the "${d.name}" avatar decoration at Level ${d.requiredLevel ?? 0}!`
+    )
+    previouslyUnlocked.push(d.name)
+  })
+  
+  // Save updated unlocked list
+  localStorage.setItem(unlockedKey, JSON.stringify(previouslyUnlocked))
+}
 
 // Toast notification state
 const toast = ref({
@@ -384,14 +553,14 @@ const selectedDecoration = ref(null)
 const fileInput = ref(null)
 const profilePic = ref(user.value?.avatar || null)
 
-// Default decorations (fallback)
+// Default decorations (fallback) with level requirements
 const defaultDecorations = [
-  { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png' },
-  { name: 'garden', src: '/src/images/avatar_decoration/garden.png' },
-  { name: 'olives', src: '/src/images/avatar_decoration/olives.png' },
-  { name: 'cat', src: '/src/images/avatar_decoration/cat.png' },
-  { name: 'summer', src: '/src/images/avatar_decoration/summer.png' },
-  { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png' }
+  { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png', requiredLevel: 0 },
+  { name: 'garden', src: '/src/images/avatar_decoration/garden.png', requiredLevel: 5 },
+  { name: 'olives', src: '/src/images/avatar_decoration/olives.png', requiredLevel: 10 },
+  { name: 'cat', src: '/src/images/avatar_decoration/cat.png', requiredLevel: 15 },
+  { name: 'summer', src: '/src/images/avatar_decoration/summer.png', requiredLevel: 20 },
+  { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png', requiredLevel: 25 }
 ]
 
 // Load decorations from localStorage (synced with Admin Panel)
@@ -407,7 +576,12 @@ function loadDecorations() {
   return [...defaultDecorations]
 }
 
-const decorations = ref(loadDecorations())
+const decorationsRaw = ref(loadDecorations())
+
+// Sort decorations by required level
+const decorations = computed(() => {
+  return [...decorationsRaw.value].sort((a, b) => (a.requiredLevel ?? 0) - (b.requiredLevel ?? 0))
+})
 
 // Load saved decoration and profile pic on mount
 onMounted(() => {
@@ -417,7 +591,21 @@ onMounted(() => {
   if (user.value?.avatar) {
     profilePic.value = user.value.avatar
   }
+  // Load notifications
+  loadNotifications()
+  // Check for newly unlocked decorations
+  checkDecorationUnlocks()
 })
+
+// Watch for user points changes to check for new decoration unlocks
+watch(
+  () => user.value?.points,
+  (newPoints, oldPoints) => {
+    if (newPoints !== oldPoints && newPoints !== undefined) {
+      checkDecorationUnlocks()
+    }
+  }
+)
 
 // Handle profile picture upload
 const promptAvatar = () => {
@@ -479,14 +667,45 @@ const prevSlide = () => {
   }
 }
 
-const selectDecoration = (src) => {
+// Compute user level based on points
+const userLevel = computed(() => {
+  if (!user.value || Number.isNaN(Number(user.value.points))) return 0
+  return Math.floor((user.value.points || 0) / 100)
+})
+
+// Find decoration by src to get its required level
+const getDecorationBySource = (src) => {
+  return decorations.value.find(d => d.src === src)
+}
+
+const selectDecoration = async (src) => {
+  const decoration = getDecorationBySource(src)
+  const requiredLevel = decoration?.requiredLevel ?? 0
+  
+  // Check if user has sufficient level
+  if (userLevel.value < requiredLevel) {
+    showToast(
+      'Level Required',
+      `You need to be Level ${requiredLevel} to use this decoration. You are currently Level ${userLevel.value}.`,
+      'warning',
+      4000
+    )
+    return
+  }
+  
   selectedDecoration.value = src
   showAvatar.value = true
-  // Save to user profile
+  // Save to user profile using updateUserProfile for proper persistence
   if (user.value) {
-    user.value.avatarDecoration = src
-    userStore.saveToLocalStorage()
+    try {
+      await userStore.updateUserProfile({ avatarDecoration: src })
+    } catch (e) {
+      // Fallback: save directly
+      user.value.avatarDecoration = src
+      userStore.saveToLocalStorage()
+    }
   }
+  showToast('Decoration Applied', `"${decoration?.name || 'Decoration'}" has been equipped!`, 'success')
 }
 
 // Logout function
@@ -677,11 +896,49 @@ const saveChanges = async () => {
       transform: translateX(4px);
     }
 
+    .nav-item.active {
+      background: var(--green);
+      color: #fff;
+    }
+
+    .nav-item.active span { opacity: 1; }
+
     .nav-item span { opacity: 0.85; }
 
     .danger {
       background: var(--danger);
       color: #fff;
+    }
+
+    .notification-badge {
+      background: var(--danger);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      min-width: 20px;
+      text-align: center;
+    }
+
+    /* Content Card */
+    .content-card {
+      background: rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 24px;
+      min-height: 300px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     /* Form */
@@ -951,6 +1208,11 @@ const saveChanges = async () => {
 
       cursor: pointer;
       transition: all 0.3s ease;
+
+      /* center icon */
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .btn-avatar-check:hover {
@@ -1083,12 +1345,12 @@ const saveChanges = async () => {
     }
 
     .clear-notification-btn {
-      width: 50px;
       position: absolute;
       top: 10px;
       right: 10px;
       z-index: 2;
       color: #fff;
+      padding: 6px 12px;
 
       border-radius: 10px;
 
@@ -1102,6 +1364,11 @@ const saveChanges = async () => {
 
       cursor: pointer;
       transition: all 0.3s ease;
+      
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
     }
 
     .clear-notification-btn:hover {
@@ -1272,4 +1539,184 @@ const saveChanges = async () => {
       transform: scale(0.9);
     }
 
+    /* Decoration Level Badge Styles */
+    .decoration-level-badge {
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(180, 85, 77, 0.9);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      white-space: nowrap;
+    }
+
+    .decoration-level-badge.unlocked {
+      background: rgba(53, 93, 76, 0.9);
+    }
+
+    .decoration-locked {
+      opacity: 0.5;
+      filter: grayscale(50%);
+    }
+
+    .decoration-locked img {
+      filter: brightness(0.7);
+    }
+
+    .btn-locked {
+      background: rgba(180, 85, 77, 0.8) !important;
+    }
+
+    .btn-locked:hover {
+      background: rgba(180, 85, 77, 1) !important;
+    }
+
+    /* Notification styles */
+    .no-notifications {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-muted);
+    }
+
+    .notification-date {
+      display: block;
+      color: var(--text-muted);
+      font-size: 11px;
+      margin-top: 8px;
+    }
+
+    .btn-clear-all {
+      width: 100%;
+      margin-top: 12px;
+      padding: 10px;
+      background: var(--danger);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-clear-all:hover {
+      background: #943f38;
+      transform: translateY(-2px);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 900px) {
+      .settings-content {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .nav-item {
+        flex: 1 1 auto;
+        min-width: 120px;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .nav-item span {
+        margin-right: 4px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .page {
+        padding: 20px 15px;
+      }
+
+      .settings-card {
+        padding: 20px;
+      }
+
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+      }
+
+      .avatar {
+        margin: 0 auto;
+      }
+
+      .profile-info {
+        text-align: center;
+      }
+
+      .profile-info h2 {
+        font-size: 18px;
+      }
+
+      .change-picture {
+        margin: 0 auto;
+      }
+
+      .field-group .inline {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .field-group .inline input {
+        width: 100%;
+      }
+
+      .btn-change {
+        width: 100%;
+      }
+
+      .sidebar {
+        flex-direction: column;
+      }
+
+      .nav-item {
+        min-width: unset;
+        justify-content: space-between;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page-title h2 {
+        font-size: 20px;
+        letter-spacing: 0.15em;
+      }
+
+      .settings-card {
+        padding: 15px;
+        border-radius: 16px;
+      }
+
+      .avatar {
+        width: 80px;
+        height: 80px;
+      }
+
+      .avatar img {
+        width: 80px;
+        height: 80px;
+      }
+
+      .profile-info h2 {
+        font-size: 16px;
+      }
+
+      .form-section h3 {
+        font-size: 16px;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+    }
 </style>

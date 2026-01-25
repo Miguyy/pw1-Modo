@@ -163,7 +163,11 @@
                   Name
                   <span class="sort-indicator" v-if="decorationSortKey === 'name'">{{ decorationSortDir === 'asc' ? '▲' : '▼' }}</span>
                 </th>
-                <th style="width: 300px">Path</th>
+                <th style="width: 100px" class="sortable" @click="toggleDecorationSort('requiredLevel')">
+                  Req. Level
+                  <span class="sort-indicator" v-if="decorationSortKey === 'requiredLevel'">{{ decorationSortDir === 'asc' ? '▲' : '▼' }}</span>
+                </th>
+                <th style="width: 250px">Path</th>
                 <th style="width: 120px">Actions</th>
               </tr>
             </thead>
@@ -177,7 +181,10 @@
                   />
                 </td>
                 <td class="fw-medium">{{ decoration.name }}</td>
-                <td class="text-muted text-truncate" style="max-width: 300px">{{ decoration.src }}</td>
+                <td>
+                  <span class="level-badge">Lv. {{ decoration.requiredLevel ?? 0 }}</span>
+                </td>
+                <td class="text-muted text-truncate" style="max-width: 250px">{{ decoration.src }}</td>
                 <td>
                   <button
                     class="action-icon action-edit me-2"
@@ -196,7 +203,7 @@
                 </td>
               </tr>
               <tr v-if="decorations.length === 0">
-                <td colspan="4" class="text-center py-4 text-muted">No decorations found.</td>
+                <td colspan="5" class="text-center py-4 text-muted">No decorations found.</td>
               </tr>
             </tbody>
           </table>
@@ -250,6 +257,18 @@
           :disabled="!isNewDecoration"
           placeholder="e.g., rainbow"
         />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Required Level</label>
+        <input 
+          type="number" 
+          v-model.number="editingDecoration.requiredLevel" 
+          class="form-control"
+          min="0"
+          step="5"
+          placeholder="0"
+        />
+        <small class="text-muted">Users need this level to equip the decoration (recommended: multiples of 5)</small>
       </div>
       <div class="mb-3">
         <label class="form-label">Choose Image</label>
@@ -311,14 +330,14 @@ const search = ref('')
 const perPage = ref(5)
 const currentPage = ref(1)
 
-// Default avatar decorations
+// Default avatar decorations with level requirements (every 5 levels unlocks a new one)
 const defaultDecorations = [
-  { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png' },
-  { name: 'garden', src: '/src/images/avatar_decoration/garden.png' },
-  { name: 'olives', src: '/src/images/avatar_decoration/olives.png' },
-  { name: 'cat', src: '/src/images/avatar_decoration/cat.png' },
-  { name: 'summer', src: '/src/images/avatar_decoration/summer.png' },
-  { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png' }
+  { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png', requiredLevel: 0 },
+  { name: 'garden', src: '/src/images/avatar_decoration/garden.png', requiredLevel: 5 },
+  { name: 'olives', src: '/src/images/avatar_decoration/olives.png', requiredLevel: 10 },
+  { name: 'cat', src: '/src/images/avatar_decoration/cat.png', requiredLevel: 15 },
+  { name: 'summer', src: '/src/images/avatar_decoration/summer.png', requiredLevel: 20 },
+  { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png', requiredLevel: 25 }
 ]
 
 // Load decorations from localStorage or use defaults
@@ -357,6 +376,12 @@ const sortedDecorations = computed(() => {
   const dir = decorationSortDir.value === 'asc' ? 1 : -1
   
   list.sort((a, b) => {
+    // Handle numeric sorting for requiredLevel
+    if (key === 'requiredLevel') {
+      const va = Number(a[key]) || 0
+      const vb = Number(b[key]) || 0
+      return (va - vb) * dir
+    }
     const va = (a[key] || '').toString().toLowerCase()
     const vb = (b[key] || '').toString().toLowerCase()
     if (va < vb) return -1 * dir
@@ -578,7 +603,7 @@ function deleteDecoration(name) {
 }
 
 function openAddDecorationModal() {
-  editingDecoration.value = { name: '', src: '' }
+  editingDecoration.value = { name: '', src: '', requiredLevel: 0 }
   isNewDecoration.value = true
   decorationModalVisible.value = true
 }
@@ -1004,5 +1029,18 @@ function saveDecoration() {
   box-shadow: 0 8px 20px rgba(53, 93, 76, 0.25);
   background: linear-gradient(135deg, #2a4d3e, #3f5f4f);
   color: #fff;
+}
+
+.level-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #355d4c, #4a7a64);
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  min-width: 50px;
 }
 </style>

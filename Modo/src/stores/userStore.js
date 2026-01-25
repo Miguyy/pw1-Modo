@@ -27,7 +27,36 @@ export const useUserStore = defineStore('userStore', {
     async fetchUsers() {
       try {
         const res = await usersList()
-        this.users = res.map((u) => new User(u))
+        
+        // Load existing localStorage data to preserve local-only fields like avatarDecoration
+        const localRaw = localStorage.getItem('users')
+        let localUsersMap = {}
+        if (localRaw) {
+          try {
+            const localArr = JSON.parse(localRaw)
+            localUsersMap = localArr.reduce((map, u) => {
+              map[String(u.id)] = u
+              return map
+            }, {})
+          } catch (e) {
+            console.warn('Failed to parse local users for merge', e)
+          }
+        }
+        
+        // Merge API data with local-only fields (avatar, avatarDecoration)
+        this.users = res.map((apiUser) => {
+          const localUser = localUsersMap[String(apiUser.id)]
+          if (localUser) {
+            // Preserve local-only fields
+            return new User({
+              ...apiUser,
+              avatar: localUser.avatar || apiUser.avatar,
+              avatarDecoration: localUser.avatarDecoration || apiUser.avatarDecoration,
+            })
+          }
+          return new User(apiUser)
+        })
+        
         const numericIds = this.users.map((u) => Number(u.id)).filter((n) => !Number.isNaN(n))
         this.nextId = numericIds.length ? Math.max(...numericIds) + 1 : 0
         this.saveToLocalStorage()
