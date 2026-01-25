@@ -297,7 +297,7 @@
                   <div class="progress-header">
                     <span>Time Progress</span>
                     <span class="progress-value"
-                      >{{ habit.current_progress.minutes || 0 }} /
+                      >{{ formatSecondsToMinSec(habit.current_progress.seconds || 0) }} /
                       {{ habit.target_minutes }} min</span
                     >
                   </div>
@@ -316,7 +316,7 @@
                 <div class="time-remaining">
                   <span class="time-label">Time Remaining:</span>
                   <span class="time-value"
-                    >{{ habit.remaining_minutes ?? habit.target_minutes ?? 0 }} min</span
+                    >{{ formatSecondsToMinSec(habit.remaining_seconds ?? (habit.target_minutes * 60) ?? 0) }}</span
                   >
                 </div>
 
@@ -352,16 +352,20 @@
             <h5 class="modal-title">{{ activeTimerHabit?.description }}</h5>
             <button class="btn-close" data-bs-dismiss="modal" @click="onCloseTimerModal"></button>
           </div>
-          <div class="modal-body">
-            <p>
-              Time left: <strong>{{ activeRemaining }} min</strong>
+          <div class="modal-body text-center">
+            <div class="timer-display mb-3">
+              <span class="timer-value" :class="{ 'timer-running': timerIsRunning }">{{ formattedTime }}</span>
+            </div>
+            <p class="text-muted mb-3">
+              <span v-if="timerIsRunning" class="badge bg-success">Running</span>
+              <span v-else class="badge bg-secondary">Paused</span>
             </p>
 
-            <div class="d-flex gap-2">
-              <button class="btn btn-primary" @click="startTimerButton">
-                <FontAwesomeIcon icon="play" /> Start / Continue
+            <div class="d-flex gap-2 justify-content-center">
+              <button class="btn btn-primary" @click="startTimerButton" :disabled="timerIsRunning">
+                <FontAwesomeIcon icon="play" /> {{ timerIsRunning ? 'Running...' : 'Start' }}
               </button>
-              <button class="btn btn-secondary" @click="pauseTimerButton">
+              <button class="btn btn-secondary" @click="pauseTimerButton" :disabled="!timerIsRunning">
                 <FontAwesomeIcon icon="pause" /> Pause
               </button>
               <button class="btn btn-success" @click="complete(activeTimerHabit.id)">
@@ -392,7 +396,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 
 // Pinia stores
 import { useHabitStore } from '@/stores/habitStore'
@@ -626,10 +630,19 @@ function complete(id) {
   habitStore.completeHabit(id)
 }
 
-// Compute percent complete for time-based habits
+// Compute percent complete for time-based habits (using seconds)
 function timePercent(h) {
   if (!h.target_minutes) return 0
-  return Math.round(((h.current_progress.minutes || 0) / h.target_minutes) * 100)
+  const targetSeconds = h.target_minutes * 60
+  const progressSeconds = h.current_progress.seconds || 0
+  return Math.round((progressSeconds / targetSeconds) * 100)
+}
+
+// Format seconds to MM:SS string
+function formatSecondsToMinSec(totalSeconds) {
+  const mins = Math.floor(totalSeconds / 60)
+  const secs = totalSeconds % 60
+  return `${mins}:${String(secs).padStart(2, '0')}`
 }
 
 // Compute percent complete for count-based habits
@@ -663,36 +676,124 @@ function progressClass(percent) {
 const timerModalEl = ref(null)
 const timerInstance = ref(null)
 const activeTimerHabit = ref(null)
-const activeRemaining = ref(0)
+const remainingSeconds = ref(0)
+const timerIsRunning = ref(false)
+const timerIntervalId = ref(null)
+
+// Format time as MM:SS
+const formattedTime = computed(() => {
+  const mins = Math.floor(remainingSeconds.value / 60)
+  const secs = remainingSeconds.value % 60
+  return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`
+})
+
+// Clean up timer interval on component unmount
+onUnmounted(() => {
+  if (timerIntervalId.value) {
+    clearInterval(timerIntervalId.value)
+  }
+})
 
 function openTimer(id) {
   const habit = habitStore.getHabitById(id)
   activeTimerHabit.value = habit
-  activeRemaining.value = habit.remaining_minutes ?? habit.target_minutes ?? 0
+  
+  // Get remaining seconds from habit (or calculate from target_minutes)
+  const targetSeconds = (habit.target_minutes ?? 0) * 60
+  remainingSeconds.value = habit.remaining_seconds ?? targetSeconds
+  timerIsRunning.value = !!habit.timer_last_started_at
+  
+  // If timer was already running, calculate current remaining time
+  if (habit.timer_last_started_at) {
+    const elapsed = Date.now() - habit.timer_last_started_at
+    const elapsedSec = Math.floor(elapsed / 1000)
+    remainingSeconds.value = Math.max(0, remainingSeconds.value - elapsedSec)
+    
+    if (remainingSeconds.value > 0) {
+      startCountdown()
+    }
+  }
+  
   if (!timerInstance.value && timerModalEl.value) {
     timerInstance.value = new bootstrap.Modal(timerModalEl.value)
   }
   timerInstance.value.show()
 }
 
+function startCountdown() {
+  // Clear any existing interval
+  if (timerIntervalId.value) {
+    clearInterval(timerIntervalId.value)
+  }
+  
+  timerIntervalId.value = setInterval(() => {
+    if (remainingSeconds.value <= 0) {
+      // Timer completed
+      clearInterval(timerIntervalId.value)
+      timerIntervalId.value = null
+      timerIsRunning.value = false
+      remainingSeconds.value = 0
+      
+      // Auto-complete the habit
+      if (activeTimerHabit.value) {
+        habitStore.completeHabit(activeTimerHabit.value.id)
+        showToast('Timer Complete!', `${activeTimerHabit.value.description} has been completed!`)
+      }
+      return
+    }
+    
+    // Decrement by 1 second
+    remainingSeconds.value--
+    
+    // Update habit progress in real-time for the progress bar
+    if (activeTimerHabit.value) {
+      const habit = habitStore.getHabitById(activeTimerHabit.value.id)
+      if (habit) {
+        habit.remaining_seconds = remainingSeconds.value
+        habit.current_progress.seconds = (habit.target_minutes * 60) - remainingSeconds.value
+      }
+    }
+  }, 1000)
+}
+
+function stopCountdown() {
+  if (timerIntervalId.value) {
+    clearInterval(timerIntervalId.value)
+    timerIntervalId.value = null
+  }
+}
+
 function startTimerButton() {
   if (!activeTimerHabit.value) return
   habitStore.startTimer(activeTimerHabit.value.id)
-  const h = habitStore.getHabitById(activeTimerHabit.value.id)
-  activeRemaining.value = h.remaining_minutes ?? h.target_minutes
+  
+  // If remainingSeconds is 0, reset to full time
+  if (remainingSeconds.value <= 0) {
+    const h = habitStore.getHabitById(activeTimerHabit.value.id)
+    const targetSeconds = (h.target_minutes ?? 0) * 60
+    remainingSeconds.value = h.remaining_seconds ?? targetSeconds
+  }
+  
+  timerIsRunning.value = true
+  startCountdown()
 }
 
 function pauseTimerButton() {
   if (!activeTimerHabit.value) return
-  habitStore.pauseTimer(activeTimerHabit.value.id)
-  activeRemaining.value = habitStore.getHabitById(activeTimerHabit.value.id).remaining_minutes ?? 0
+  stopCountdown()
+  // Pass current remaining seconds to store
+  habitStore.pauseTimer(activeTimerHabit.value.id, remainingSeconds.value)
+  timerIsRunning.value = false
 }
 
 function onCloseTimerModal() {
-  if (activeTimerHabit.value) {
-    habitStore.pauseTimer(activeTimerHabit.value.id)
-    activeTimerHabit.value = null
+  stopCountdown()
+  if (activeTimerHabit.value && timerIsRunning.value) {
+    // Save current state when closing modal while running
+    habitStore.pauseTimer(activeTimerHabit.value.id, remainingSeconds.value)
   }
+  activeTimerHabit.value = null
+  timerIsRunning.value = false
 }
 </script>
 
@@ -1223,6 +1324,10 @@ function onCloseTimerModal() {
   border-radius: var(--radius) var(--radius) 0 0;
 }
 
+.modal-header .modal-title {
+  color: #fff !important;
+}
+
 .modal-header .btn-close {
   filter: brightness(0) invert(1);
 }
@@ -1360,7 +1465,37 @@ function onCloseTimerModal() {
   transform: translateY(-10px) translateX(20px);
 }
 
-.page-title {
+/* Timer Display */
+.timer-display {
+  padding: 20px;
+  background: linear-gradient(135deg, rgba(79, 111, 95, 0.1), rgba(212, 237, 218, 0.15));
+  border-radius: 16px;
+}
+
+.timer-value {
+  font-size: 56px;
+  font-weight: 700;
+  font-family: 'Courier New', Courier, monospace;
+  color: var(--green-dark);
+  letter-spacing: 4px;
+  transition: all 0.3s ease;
+}
+
+.timer-value.timer-running {
+  color: #28a745;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+  
+ .page-title {
   width: 100%;
   max-width: 1080px;
   margin: 10px auto 50px auto;

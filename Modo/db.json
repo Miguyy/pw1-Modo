@@ -493,6 +493,26 @@
       "priority": 2,
       "createdAt": "2026-01-25T09:09:23.806Z",
       "habits": []
+    },
+    {
+      "id": "4b93",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T18:50:57.002Z",
+      "habits": []
+    },
+    {
+      "id": "ffa0",
+      "name": "testuser",
+      "email": "test@example.com",
+      "password": "TestPassword123!",
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-25T18:50:56.999Z",
+      "habits": []
     }
   ],
   "habits": [
@@ -1499,6 +1519,16 @@
       "target_minutes": 15,
       "created_at": "2026-01-25T09:10:18.648Z",
       "remaining_minutes": 15
+    },
+    {
+      "id": "2654",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-25T18:50:57.024Z",
+      "remaining_minutes": null
     }
   ]
 }

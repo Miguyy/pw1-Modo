@@ -58,8 +58,8 @@
           <div class="nav-item" id="notification-btn"><span>Notifications</span> →</div>
           <div class="nav-item" id="help-btn"><span>Help</span> →</div>
           <div class="nav-item" id="about-btn"><span>About</span> →</div>
-          <div class="nav-item danger" id="logout-btn">Logout</div>
-          <div class="nav-item danger" id="delete-btn">Delete account</div>
+          <div class="nav-item danger" id="logout-btn" @click="handleLogout">Logout</div>
+          <div class="nav-item danger" id="delete-btn" @click="handleDeleteAccount">Delete account</div>
         </aside>
 
         <div class="form-section">
@@ -185,11 +185,41 @@
       </div>
     </div>
   </footer>
+
+  <!-- Toast notification -->
+  <Transition name="toast-slide">
+    <div v-if="toast.visible" class="toast-notification" :class="toast.type">
+      <div class="toast-icon">
+        {{ toast.type === 'error' ? '❌' : toast.type === 'warning' ? '⚠️' : '✅' }}
+      </div>
+      <div class="toast-content">
+        <strong>{{ toast.title }}</strong>
+        <small>{{ toast.message }}</small>
+      </div>
+    </div>
+  </Transition>
+
+  <!-- Confirmation Modal -->
+  <Transition name="modal-fade">
+    <div v-if="confirmModal.visible" class="modal-overlay" @click.self="cancelConfirm">
+      <div class="confirm-modal">
+        <h3>{{ confirmModal.title }}</h3>
+        <p>{{ confirmModal.message }}</p>
+        <div class="modal-actions">
+          <button class="btn-cancel" @click="cancelConfirm">Cancel</button>
+          <button class="btn-confirm" :class="{ 'btn-danger': confirmModal.isDanger }" @click="acceptConfirm">
+            {{ confirmModal.confirmText || 'Confirm' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </Transition>
 </template>
 
 <script setup>
 import { useUserStore } from '../stores/userStore'
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 import NavBar from '@/Components/NavBar.vue'
 
 defineOptions({
@@ -197,7 +227,62 @@ defineOptions({
 })
 
 const userStore = useUserStore()
+const router = useRouter()
 const user = computed(() => userStore.currentUser)
+
+// Toast notification state
+const toast = ref({
+  visible: false,
+  title: '',
+  message: '',
+  type: 'success', // 'success', 'error', 'warning'
+  timeout: null,
+})
+
+function showToast(title, message, type = 'success', duration = 3000) {
+  toast.value.title = title
+  toast.value.message = message
+  toast.value.type = type
+  toast.value.visible = true
+
+  if (toast.value.timeout) clearTimeout(toast.value.timeout)
+
+  toast.value.timeout = setTimeout(() => {
+    toast.value.visible = false
+  }, duration)
+}
+
+// Confirmation modal state
+const confirmModal = ref({
+  visible: false,
+  title: '',
+  message: '',
+  confirmText: 'Confirm',
+  isDanger: false,
+  onConfirm: null,
+})
+
+function showConfirm(title, message, onConfirm, options = {}) {
+  confirmModal.value = {
+    visible: true,
+    title,
+    message,
+    confirmText: options.confirmText || 'Confirm',
+    isDanger: options.isDanger || false,
+    onConfirm,
+  }
+}
+
+function acceptConfirm() {
+  if (confirmModal.value.onConfirm) {
+    confirmModal.value.onConfirm()
+  }
+  confirmModal.value.visible = false
+}
+
+function cancelConfirm() {
+  confirmModal.value.visible = false
+}
 
 // name
 const isEditingName = ref(false)
@@ -213,7 +298,7 @@ const toggleEditName = () => {
       )
 
       if (nameExists) {
-        alert(`O nome "${userName.value}" já está a ser utilizado por outro utilizador!`)
+        showToast('Name unavailable', `The name "${userName.value}" is already taken.`, 'error')
         return
       }
       
@@ -242,7 +327,7 @@ const toggleEditEmail = () => {
       )
 
       if (emailExists) {
-        alert(`O email "${userEmail.value}" já está registado!`)
+        showToast('Email unavailable', `The email "${userEmail.value}" is already registered.`, 'error')
         return
       }
 
@@ -289,6 +374,13 @@ const decorations = [
   { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png' }
 ]
 
+// Load saved decoration on mount
+onMounted(() => {
+  if (user.value?.avatarDecoration) {
+    selectedDecoration.value = user.value.avatarDecoration
+  }
+})
+
 const openDecoration = () => {
   showAvatar.value = false
 }
@@ -312,6 +404,55 @@ const prevSlide = () => {
 const selectDecoration = (src) => {
   selectedDecoration.value = src
   showAvatar.value = true
+  // Save to user profile
+  if (user.value) {
+    user.value.avatarDecoration = src
+    userStore.saveToLocalStorage()
+  }
+}
+
+// Logout function
+const handleLogout = () => {
+  showConfirm(
+    'Logout',
+    'Are you sure you want to logout?',
+    () => {
+      userStore.logout()
+      router.push('/login')
+    }
+  )
+}
+
+// Delete account function
+const handleDeleteAccount = () => {
+  showConfirm(
+    'Delete Account',
+    'Are you sure you want to delete your account? This action cannot be undone and will permanently delete all your data.',
+    async () => {
+      try {
+        await userStore.deleteAccount()
+        router.push('/login')
+      } catch (e) {
+        showToast('Error', 'Failed to delete account: ' + e.message, 'error')
+      }
+    },
+    { confirmText: 'Delete', isDanger: true }
+  )
+}
+
+// Save all changes
+const saveChanges = async () => {
+  try {
+    await userStore.updateUserProfile({
+      name: userName.value,
+      email: userEmail.value,
+      password: userPassword.value,
+      avatarDecoration: selectedDecoration.value
+    })
+    showToast('Success', 'Changes saved successfully!', 'success')
+  } catch (e) {
+    showToast('Error', 'Failed to save changes: ' + e.message, 'error')
+  }
 }
 </script>
 
@@ -888,6 +1029,168 @@ const selectDecoration = (src) => {
       background: rgba(255, 255, 255, 0.3);
       box-shadow: 0 6px 10px rgba(0,0,0,0.15);
       transform: scale(1.1);
+    }
+
+    /* Toast Notifications */
+    .toast-notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #355d4c, #4f6f5f);
+      color: #fff;
+      padding: 14px 18px;
+      border-radius: 14px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+      min-width: 280px;
+      max-width: 380px;
+    }
+
+    .toast-notification.error {
+      background: linear-gradient(135deg, #b4554d, #d46a5f);
+    }
+
+    .toast-notification.warning {
+      background: linear-gradient(135deg, #c4842d, #e5a03d);
+    }
+
+    .toast-icon {
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .toast-content {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .toast-content strong {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .toast-content small {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+
+    /* Toast Animation */
+    .toast-slide-enter-active,
+    .toast-slide-leave-active {
+      transition: all 0.35s ease;
+    }
+
+    .toast-slide-enter-from {
+      opacity: 0;
+      transform: translateY(-20px) translateX(20px);
+    }
+
+    .toast-slide-leave-to {
+      opacity: 0;
+      transform: translateY(-10px) translateX(20px);
+    }
+
+    /* Confirmation Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10000;
+    }
+
+    .confirm-modal {
+      background: #fff;
+      border-radius: 18px;
+      padding: 28px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    .confirm-modal h3 {
+      margin: 0 0 12px 0;
+      color: var(--green-dark);
+      font-size: 20px;
+    }
+
+    .confirm-modal p {
+      margin: 0 0 24px 0;
+      color: #555;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .btn-cancel {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 999px;
+      background: #e5e7eb;
+      color: #333;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+      background: #d1d5db;
+    }
+
+    .btn-confirm {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 999px;
+      background: var(--green);
+      color: #fff;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-confirm:hover {
+      background: var(--green-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-confirm.btn-danger {
+      background: var(--danger);
+    }
+
+    .btn-confirm.btn-danger:hover {
+      background: #943f38;
+    }
+
+    /* Modal Animation */
+    .modal-fade-enter-active,
+    .modal-fade-leave-active {
+      transition: all 0.3s ease;
+    }
+
+    .modal-fade-enter-from,
+    .modal-fade-leave-to {
+      opacity: 0;
+    }
+
+    .modal-fade-enter-from .confirm-modal,
+    .modal-fade-leave-to .confirm-modal {
+      transform: scale(0.9);
     }
 
 </style>
