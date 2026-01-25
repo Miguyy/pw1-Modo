@@ -683,6 +683,8 @@ const selectDecoration = (src) => {
     }
 
     .btn-avatar-exit {
+      width: 30px;
+      height: 30px;
       position: absolute;
       top: 0px;
       left: 0px;
@@ -709,6 +711,8 @@ const selectDecoration = (src) => {
     }
 
     .btn-avatar-check {
+      width: 30px;
+      height: 30px;
       position: absolute;
       top: 0px;
       right: 0px;
@@ -735,6 +739,8 @@ const selectDecoration = (src) => {
     }
 
     .swiper-button-prev {
+      width: 30px;
+      height: 30px;
       position: absolute;
       bottom: 0px;
       left: 0px;
@@ -761,6 +767,8 @@ const selectDecoration = (src) => {
     }
 
     .swiper-button-next{
+      width: 30px;
+      height: 30px;
       position: absolute;
       bottom: 0px;
       right: 0px;
@@ -796,6 +804,8 @@ const selectDecoration = (src) => {
     }
 
     .btn-avatar-edit {
+      width: 30px;
+      height: 30px;
       position: absolute;
       bottom: -10px;
       right: -10px;
