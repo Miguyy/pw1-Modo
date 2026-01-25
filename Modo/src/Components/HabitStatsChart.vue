@@ -1,6 +1,34 @@
 <template>
-  <div style="height: 260px">
-    <canvas ref="canvas"></canvas>
+  <div class="stats-wrapper">
+    <div class="stats-header d-flex justify-content-between align-items-center mb-3">
+      <h5 class="mb-0">
+        <FontAwesomeIcon icon="chart-pie" class="text-warning me-2" />
+        Habit Statistics
+      </h5>
+      <div class="btn-group" role="group">
+        <button
+          type="button"
+          class="btn btn-sm btn-outline"
+          :class="{ active: chartType === 'doughnut' }"
+          @click="chartType = 'doughnut'"
+          title="Doughnut Chart"
+        >
+          <FontAwesomeIcon icon="circle-notch" />
+        </button>
+        <button
+          type="button"
+          class="btn btn-sm btn-outline"
+          :class="{ active: chartType === 'bar' }"
+          @click="chartType = 'bar'"
+          title="Bar Chart"
+        >
+          <FontAwesomeIcon icon="bars" />
+        </button>
+      </div>
+    </div>
+    <div class="chart-area">
+      <canvas ref="canvas"></canvas>
+    </div>
   </div>
 </template>
 
@@ -14,6 +42,7 @@ const canvas = ref(null)
 let chart = null
 const habitStore = useHabitStore()
 const userStore = useUserStore()
+const chartType = ref('doughnut')
 
 function counts() {
   const user = userStore.currentUser
@@ -24,11 +53,9 @@ function counts() {
   return [notCompleted, completed]
 }
 
-function createChart() {
-  const ctx = canvas.value.getContext('2d')
+function getChartConfig() {
   const data = counts()
-  chart = new Chart(ctx, {
-    type: 'bar',
+  const baseConfig = {
     data: {
       labels: ['Not completed', 'Completed'],
       datasets: [
@@ -41,18 +68,47 @@ function createChart() {
       ],
     },
     options: {
-      plugins: { legend: { display: false } },
-      scales: {
-        y: { beginAtZero: true, ticks: { precision: 0 } },
-      },
       responsive: true,
       maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: chartType.value === 'doughnut',
+          position: 'bottom',
+        },
+      },
     },
-  })
+  }
+
+  if (chartType.value === 'bar') {
+    baseConfig.options.scales = {
+      y: { beginAtZero: true, ticks: { precision: 0 } },
+    }
+  }
+
+  return { type: chartType.value, ...baseConfig }
+}
+
+function createChart() {
+  if (!canvas.value) return
+  const ctx = canvas.value.getContext('2d')
+  const config = getChartConfig()
+  chart = new Chart(ctx, config)
+}
+
+function updateChartType() {
+  if (chart) {
+    chart.destroy()
+    createChart()
+  }
 }
 
 onMounted(() => {
   createChart()
+})
+
+// update when chart type changes
+watch(chartType, () => {
+  updateChartType()
 })
 
 // update when habits or currentUser change
@@ -72,3 +128,36 @@ onBeforeUnmount(() => {
   if (chart) chart.destroy()
 })
 </script>
+
+<style scoped>
+.stats-wrapper {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.stats-header {
+  padding: 0.5rem 0;
+}
+
+.chart-area {
+  position: relative;
+  height: 200px;
+}
+
+.btn-group .btn {
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-group .btn.active {
+  background-color: #3f5f4f;
+  border-color: #3f5f4f;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(63, 95, 79, 0.3);
+}
+
+.btn-group .btn:not(.active):hover {
+  background-color: #dff3e4;
+  border-color: #4f6f5f;
+}
+</style>

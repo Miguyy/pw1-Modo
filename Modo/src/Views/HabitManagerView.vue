@@ -27,93 +27,115 @@
     </div>
   </div>
 
-  <div class="container py-2 col-12">
+  <div class="container py-2">
     <!-- Main Content Container -->
-    <div class="row g-3 align-items-start">
-      <div class="col-lg-3">
-        <div class="weather-box p-3">
+    <div class="row g-3 align-items-stretch">
+      <div class="col-12 col-md-4 col-lg-3">
+        <div class="weather-box shadow p-3 h-100">
           <!-- Weather Component Box -->
           <Weather />
         </div>
       </div>
-      <div class="col-lg-8">
-        <div class="charts-box p-3">
+      <div class="col-12 col-md-4 col-lg-4">
+        <div class="charts-box p-3 h-100">
           <!-- Habit Stats Chart Box -->
           <HabitStatsChart />
         </div>
       </div>
-    </div>
-    <div class="col-lg add-habit" style="margin-top: 55px">
-      <!-- Add Habit Form -->
-      <div class="card p-3 mb-0">
-        <form @submit.prevent="handleAdd">
-          <!-- Prevent default form submission -->
-          <div class="row g-2">
-            <div class="col-md-6">
-              <label>Description</label>
-              <input v-model="form.description" class="form-control" required />
-            </div>
-            <div class="col-md-1">
-              <label>Priority</label>
-              <select v-model="form.priority" class="form-select">
-                <option value="low">Low</option>
-                <option value="medium">Medium</option>
-                <option value="high">High</option>
-              </select>
-            </div>
-
-            <div class="col-md-2">
-              <label>Type</label>
-              <select v-model="form.type" class="form-select">
-                <option value="check">Check</option>
-                <option value="count">Count</option>
-                <option value="time">Time</option>
-              </select>
-            </div>
-
-            <div class="col-md-2">
-              <label>Location</label>
-              <select v-model="form.location" class="form-select">
-                <option value="inside">Inside</option>
-                <option value="outside">Outside</option>
-              </select>
-            </div>
-
-            <div class="col-md-12 text-end d-flex align-items-end">
-              <button class="btn btn-primary w-100" type="submit">
-                <FontAwesomeIcon icon="plus" /> Create new habit
-              </button>
-            </div>
-
-            <!-- COUNT EXTRA FIELDS -->
-            <div v-if="form.type === 'count'" class="col-12 mt-2">
-              <div class="row g-2">
-                <div class="col-md-2">
-                  <label>Target</label>
-                  <input type="number" v-model.number="form.target_count" class="form-control" />
-                </div>
-                <div class="col-md-2">
-                  <label>Increment</label>
-                  <input type="number" v-model.number="form.increment_value" class="form-control" />
-                </div>
-              </div>
-            </div>
-
-            <!-- TIME EXTRA FIELDS -->
-            <div v-if="form.type === 'time'" class="col-12 mt-2">
-              <div class="row g-2">
-                <div class="col-md-6">
-                  <label>Target Minutes</label>
-                  <input type="number" v-model.number="form.target_minutes" class="form-control" />
-                </div>
-              </div>
+      <div class="col-12 col-md-4 col-lg-4">
+        <div class="profile-card p-3 d-flex align-items-center gap-3 h-100">
+          <div class="avatar-wrapper">
+            <img
+              v-if="currentUser?.avatar"
+              :src="currentUser.avatar"
+              alt="Profile"
+              class="avatar-img"
+            />
+            <div v-else class="avatar-fallback">{{ userInitials }}</div>
+          </div>
+          <div class="flex-grow-1">
+            <h5 class="mb-1 text-capitalize">{{ currentUser?.name || 'Guest' }}</h5>
+            <p class="mb-2 text-muted small">{{ currentUser?.email || 'Not signed in' }}</p>
+            <div class="d-flex flex-wrap gap-2 align-items-center">
+              <span class="badge bg-success-soft">Points: {{ currentUser?.points ?? 0 }}</span>
+              <span class="badge bg-primary-soft">Level: {{ userLevel }}</span>
             </div>
           </div>
-        </form>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4 add-habit">
+      <div class="col-12">
+        <!-- Add Habit Form -->
+        <div class="card p-3 mb-0">
+          <form @submit.prevent="handleAdd">
+            <!-- Prevent default form submission -->
+            <div class="row g-2">
+              <div class="col-md-6">
+                <label>Description</label>
+                <input v-model="form.description" class="form-control" required />
+              </div>
+              <div class="col-md-1">
+                <label>Priority</label>
+                <select v-model="form.priority" class="form-select">
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+
+              <div class="col-md-2">
+                <label>Type</label>
+                <select v-model="form.type" class="form-select">
+                  <option value="check">Check</option>
+                  <option value="count">Count</option>
+                  <option value="time">Time</option>
+                </select>
+              </div>
+
+              <div class="col-md-2">
+                <label>Location</label>
+                <select v-model="form.location" class="form-select">
+                  <option value="inside">Inside</option>
+                  <option value="outside">Outside</option>
+                </select>
+              </div>
+
+              <div class="col-md-12 text-end d-flex align-items-end">
+                <button class="btn btn-primary w-100" type="submit">
+                  <FontAwesomeIcon icon="plus" /> Create new habit
+                </button>
+              </div>
+
+              <!-- COUNT EXTRA FIELDS -->
+              <div v-if="form.type === 'count'" class="col-12 mt-2">
+                <div class="row g-2">
+                  <div class="col-md-2">
+                    <label>Target</label>
+                    <input type="number" v-model.number="form.target_count" class="form-control" />
+                  </div>
+                  <div class="col-md-2">
+                    <label>Increment</label>
+                    <input type="number" v-model.number="form.increment_value" class="form-control" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- TIME EXTRA FIELDS -->
+              <div v-if="form.type === 'time'" class="col-12 mt-2">
+                <div class="row g-2">
+                  <div class="col-md-6">
+                    <label>Target Minutes</label>
+                    <input type="number" v-model.number="form.target_minutes" class="form-control" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
 
-    <!-- Divider -->
     <br />
     <div class="row">
       <div class="col-12">
@@ -176,145 +198,149 @@
     </div>
 
     <!-- Habits list: CSS Grid to avoid gaps -->
-    <div class="habits-grid mt-4">
-      <div v-for="habit in displayHabits" :key="habit.id" class="habit-item">
-        <div class="card p-3 h-100 d-flex flex-column">
-          <div class="card-header-custom">
-            <div class="habit-title-section">
-              <strong class="habit-title">{{ habit.description }}</strong>
-              <div class="habit-badges">
-                <span class="badge badge-priority" :class="'priority-' + habit.priority">
-                  {{ habit.priority.toUpperCase() }}
-                </span>
-                <span class="badge badge-type" :class="'type-' + habit.type">
-                  <FontAwesomeIcon :icon="getHabitIcon(habit.type)" /> {{ habit.type }}
-                </span>
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="habits-grid">
+          <div v-for="habit in displayHabits" :key="habit.id" class="habit-item">
+            <div class="card p-3 h-100 d-flex flex-column">
+              <div class="card-header-custom">
+                <div class="habit-title-section">
+                  <strong class="habit-title">{{ habit.description }}</strong>
+                  <div class="habit-badges">
+                    <span class="badge badge-priority" :class="'priority-' + habit.priority">
+                      {{ habit.priority.toUpperCase() }}
+                    </span>
+                    <span class="badge badge-type" :class="'type-' + habit.type">
+                      <FontAwesomeIcon :icon="getHabitIcon(habit.type)" /> {{ habit.type }}
+                    </span>
+                  </div>
+                </div>
+                <small class="location-info">
+                  <FontAwesomeIcon icon="map-pin" /> {{ habit.location }}
+                </small>
               </div>
-            </div>
-            <small class="location-info">
-              <FontAwesomeIcon icon="map-pin" /> {{ habit.location }}
-            </small>
-          </div>
 
-          <!-- CHECK TYPE -->
-          <div v-if="habit.type === 'check'" class="habit-content flex-grow-1 d-flex flex-column">
-            <div class="check-indicator">
-              <div
-                class="check-status"
-                :class="{ 'check-completed': habit.current_progress.checked }"
-              >
-                <FontAwesomeIcon
-                  :icon="habit.current_progress.checked ? 'check-circle' : 'circle'"
-                  class="check-icon"
-                />
-              </div>
-              <div class="check-text">
-                <span v-if="habit.current_progress.checked" class="badge bg-success"
-                  >Completed</span
-                >
-                <span v-else class="badge bg-secondary">Pending</span>
-              </div>
-            </div>
+              <!-- CHECK TYPE -->
+              <div v-if="habit.type === 'check'" class="habit-content flex-grow-1 d-flex flex-column">
+                <div class="check-indicator">
+                  <div
+                    class="check-status"
+                    :class="{ 'check-completed': habit.current_progress.checked }"
+                  >
+                    <FontAwesomeIcon
+                      :icon="habit.current_progress.checked ? 'check-circle' : 'circle'"
+                      class="check-icon"
+                    />
+                  </div>
+                  <div class="check-text">
+                    <span v-if="habit.current_progress.checked" class="badge bg-success"
+                      >Completed</span
+                    >
+                    <span v-else class="badge bg-secondary">Pending</span>
+                  </div>
+                </div>
 
-            <div class="check-actions d-flex gap-2 mt-auto">
-              <button class="btn btn-sm btn-success flex-fill" @click="toggleCheck(habit.id)">
-                <FontAwesomeIcon :icon="habit.current_progress.checked ? 'undo' : 'check'" />
-                {{ habit.current_progress.checked ? 'Uncheck' : 'Mark Done' }}
-              </button>
-              <button
-                class="btn btn-sm btn-outline-danger flex-fill"
-                @click="deleteHabit(habit.id)"
-              >
-                <FontAwesomeIcon icon="trash" />
-              </button>
-            </div>
-          </div>
-
-          <!-- COUNT TYPE -->
-          <div v-if="habit.type === 'count'" class="habit-content flex-grow-1 d-flex flex-column">
-            <div class="progress-section">
-              <div class="progress-header">
-                <span>Progress</span>
-                <span class="progress-value"
-                  >{{ habit.current_progress.count }} / {{ habit.target_count }}</span
-                >
-              </div>
-              <div class="progress">
-                <div
-                  class="progress-bar"
-                  role="progressbar"
-                  :style="{ width: countPercent(habit) + '%' }"
-                  :class="progressClass(countPercent(habit))"
-                >
-                  {{ countPercent(habit) }}%
+                <div class="check-actions d-flex gap-2 mt-auto">
+                  <button class="btn btn-sm btn-success flex-fill" @click="toggleCheck(habit.id)">
+                    <FontAwesomeIcon :icon="habit.current_progress.checked ? 'undo' : 'check'" />
+                    {{ habit.current_progress.checked ? 'Uncheck' : 'Mark Done' }}
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-danger flex-fill"
+                    @click="deleteHabit(habit.id)"
+                  >
+                    <FontAwesomeIcon icon="trash" />
+                  </button>
                 </div>
               </div>
-            </div>
 
-            <div class="counter-controls">
-              <button class="btn btn-sm btn-danger" @click="decrement(habit.id)">
-                <FontAwesomeIcon icon="arrow-left" />
-              </button>
-              <span class="counter-value">{{ habit.current_progress.count }}</span>
-              <button class="btn btn-sm btn-success" @click="increment(habit.id)">
-                <FontAwesomeIcon icon="arrow-right" />
-              </button>
-            </div>
+              <!-- COUNT TYPE -->
+              <div v-if="habit.type === 'count'" class="habit-content flex-grow-1 d-flex flex-column">
+                <div class="progress-section">
+                  <div class="progress-header">
+                    <span>Progress</span>
+                    <span class="progress-value"
+                      >{{ habit.current_progress.count }} / {{ habit.target_count }}</span
+                    >
+                  </div>
+                  <div class="progress">
+                    <div
+                      class="progress-bar"
+                      role="progressbar"
+                      :style="{ width: countPercent(habit) + '%' }"
+                      :class="progressClass(countPercent(habit))"
+                    >
+                      {{ countPercent(habit) }}%
+                    </div>
+                  </div>
+                </div>
 
-            <div class="d-flex gap-2 mt-auto">
-              <button class="btn btn-sm btn-success flex-fill" @click="complete(habit.id)">
-                <FontAwesomeIcon icon="check" /> Complete
-              </button>
-              <button
-                class="btn btn-sm btn-outline-danger flex-fill"
-                @click="deleteHabit(habit.id)"
-              >
-                <FontAwesomeIcon icon="trash" /> Delete
-              </button>
-            </div>
-          </div>
+                <div class="counter-controls">
+                  <button class="btn btn-sm btn-danger" @click="decrement(habit.id)">
+                    <FontAwesomeIcon icon="arrow-left" />
+                  </button>
+                  <span class="counter-value">{{ habit.current_progress.count }}</span>
+                  <button class="btn btn-sm btn-success" @click="increment(habit.id)">
+                    <FontAwesomeIcon icon="arrow-right" />
+                  </button>
+                </div>
 
-          <!-- TIME TYPE -->
-          <div v-if="habit.type === 'time'" class="habit-content flex-grow-1 d-flex flex-column">
-            <div class="progress-section">
-              <div class="progress-header">
-                <span>Time Progress</span>
-                <span class="progress-value"
-                  >{{ habit.current_progress.minutes || 0 }} / {{ habit.target_minutes }} min</span
-                >
-              </div>
-              <div class="progress">
-                <div
-                  class="progress-bar"
-                  role="progressbar"
-                  :style="{ width: timePercent(habit) + '%' }"
-                  :class="progressClass(timePercent(habit))"
-                >
-                  {{ timePercent(habit) }}%
+                <div class="d-flex gap-2 mt-auto">
+                  <button class="btn btn-sm btn-success flex-fill" @click="complete(habit.id)">
+                    <FontAwesomeIcon icon="check" /> Complete
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-danger flex-fill"
+                    @click="deleteHabit(habit.id)"
+                  >
+                    <FontAwesomeIcon icon="trash" /> Delete
+                  </button>
                 </div>
               </div>
-            </div>
 
-            <div class="time-remaining">
-              <span class="time-label">Time Remaining:</span>
-              <span class="time-value"
-                >{{ habit.remaining_minutes ?? habit.target_minutes ?? 0 }} min</span
-              >
-            </div>
+              <!-- TIME TYPE -->
+              <div v-if="habit.type === 'time'" class="habit-content flex-grow-1 d-flex flex-column">
+                <div class="progress-section">
+                  <div class="progress-header">
+                    <span>Time Progress</span>
+                    <span class="progress-value"
+                      >{{ habit.current_progress.minutes || 0 }} / {{ habit.target_minutes }} min</span
+                    >
+                  </div>
+                  <div class="progress">
+                    <div
+                      class="progress-bar"
+                      role="progressbar"
+                      :style="{ width: timePercent(habit) + '%' }"
+                      :class="progressClass(timePercent(habit))"
+                    >
+                      {{ timePercent(habit) }}%
+                    </div>
+                  </div>
+                </div>
 
-            <div class="d-flex gap-2 mt-auto">
-              <button class="btn btn-sm btn-outline-primary flex-fill" @click="openTimer(habit.id)">
-                <FontAwesomeIcon icon="clock" /> Timer
-              </button>
-              <button class="btn btn-sm btn-success flex-fill" @click="complete(habit.id)">
-                <FontAwesomeIcon icon="check" /> Complete
-              </button>
-              <button
-                class="btn btn-sm btn-outline-danger flex-fill"
-                @click="deleteHabit(habit.id)"
-              >
-                <FontAwesomeIcon icon="trash" /> Delete
-              </button>
+                <div class="time-remaining">
+                  <span class="time-label">Time Remaining:</span>
+                  <span class="time-value"
+                    >{{ habit.remaining_minutes ?? habit.target_minutes ?? 0 }} min</span
+                  >
+                </div>
+
+                <div class="d-flex gap-2 mt-auto">
+                  <button class="btn btn-sm btn-outline-primary flex-fill" @click="openTimer(habit.id)">
+                    <FontAwesomeIcon icon="clock" /> Timer
+                  </button>
+                  <button class="btn btn-sm btn-success flex-fill" @click="complete(habit.id)">
+                    <FontAwesomeIcon icon="check" /> Complete
+                  </button>
+                  <button
+                    class="btn btn-sm btn-outline-danger flex-fill"
+                    @click="deleteHabit(habit.id)"
+                  >
+                    <FontAwesomeIcon icon="trash" /> Delete
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -451,6 +477,20 @@ watch(
 )
 
 const currentUser = computed(() => userStore.currentUser)
+const userLevel = computed(() => {
+  if (!currentUser.value || Number.isNaN(Number(currentUser.value.points))) return 0
+  return Math.round((currentUser.value.points || 0) / 100)
+})
+const userInitials = computed(() => {
+  const name = currentUser.value?.name || ''
+  const initials = name
+    .split(' ')
+    .filter((n) => n)
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+  return initials ? initials.toUpperCase() : '?'
+})
 const userHabits = computed(() => {
   if (!currentUser.value) return []
   return habitStore.getHabitsByUser(currentUser.value.id)
@@ -686,10 +726,6 @@ function onCloseTimerModal() {
   transition: all 0.3s ease;
 }
 
-.weather-box:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
-}
 
 .weather-box input {
   background: rgba(255, 255, 255, 0.95);
@@ -725,17 +761,12 @@ function onCloseTimerModal() {
 }
 
 .charts-box {
-  background: linear-gradient(135deg, #d7dfdb 0%, #d7dfdb 100%);
-  color: #fff;
+  background: #fff;
+  color: var(--green-dark);
   border-radius: var(--radius);
   min-height: 310px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transition: all 0.3s ease;
-}
-
-.charts-box:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
 }
 
 .charts-box input {
@@ -754,6 +785,56 @@ function onCloseTimerModal() {
   outline: none;
   border-color: var(--green);
   box-shadow: 0 0 8px rgba(79, 111, 95, 0.2);
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  min-height: 170px;
+  border: 1px solid #e7ece9;
+}
+
+.avatar-wrapper {
+  width: 82px;
+  height: 82px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #355d4c, #4f6f5f);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: 24px;
+  border: 3px solid #f3f6f4;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.avatar-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 1px;
+}
+
+.bg-success-soft {
+  background: #e6f4ec;
+  color: #2f6f4f;
+}
+
+.bg-primary-soft {
+  background: #e8f0ff;
+  color: #2c4f7f;
 }
 
 /* FORM CARD */

@@ -31,6 +31,13 @@ import {
   faCheckCircle,
   faChartBar,
   faHourglass,
+  faPlusCircle,
+  faPenFancy,
+  faFlag,
+  faList,
+  faChartPie,
+  faCircleNotch,
+  faBars,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -54,6 +61,13 @@ library.add(
   faCheckCircle,
   faChartBar,
   faHourglass,
+  faPlusCircle,
+  faPenFancy,
+  faFlag,
+  faList,
+  faChartPie,
+  faCircleNotch,
+  faBars
 )
 
 const app = createApp(App)
