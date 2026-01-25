@@ -7,40 +7,41 @@
 
     <section class="settings-card">
       <header class="profile-header">
-        <div class="avatar" id="avatar">
+        <div class="avatar" id="avatar" v-show="showAvatar">
           <img
             src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400"
             alt="Profile"
           />
+          <button class="card-button btn-avatar-edit" @click="openDecoration">✎</button>
+          <img
+            v-if="selectedDecoration"
+            :src="selectedDecoration"
+            class="avatar-decoration"
+            alt=""
+          />
         </div>
-        <div class="swiper" id="avatar-decoration">
+
+        <div class="swiper" id="avatar-decoration" v-show="!showAvatar">
           <div class="card-wrapper">
-            <button class="card-button btn-avatar-check">&#10003;</button>
-            <button class="card-button btn-avatar-exit">&#10005;</button>
-            <ul class="card-list swiper-wrapper">
-              <li class="card-item swiper-slide">
-                <img src="/src/images/avatar_decoration/solarSystem.png" alt="solarSystem">
-              </li>
-              <li class="card-item swiper-slide">
-                <img src="/src/images/avatar_decoration/garden.png" alt="garden">
-              </li>
-              <li class="card-item swiper-slide">
-                <img src="/src/images/avatar_decoration/olives.png" alt="olives">
-              </li>
-              <li class="card-item swiper-slide">
-                <img src="/src/images/avatar_decoration/cat.png" alt="cat">
-              </li>
-              <li class="card-item swiper-slide">
-                <img src="/src/images/avatar_decoration/summer.png" alt="summer">
-              </li>
-              <li class="card-item swiper-slide">
-                <img src="/src/images/avatar_decoration/zoo.png" alt="zoo">
+            <button class="card-button btn-avatar-exit" @click="closeDecoration">✕</button>
+            <ul
+              class="card-list swiper-wrapper" :style="{ transform: `translateX(-${currentIndex * slideWidth}px)` }"
+            >
+              <li
+                v-for="item in decorations"
+                :key="item.name"
+                class="card-item swiper-slide"
+              >
+                <button class="card-button btn-avatar-check" @click="selectDecoration(item.src)">✓</button>
+                <img :src="item.src" :alt="item.name" />
               </li>
             </ul>
-            <button class="swiper-button-prev">&#8592;</button>
-            <button class="swiper-button-next">&#8594;</button>
+
+            <button class="swiper-button-prev" @click="prevSlide">←</button>
+            <button class="swiper-button-next" @click="nextSlide">→</button>
           </div>
         </div>
+        
         <div class="profile-info">
           <h2>Welcome back, {{ user.name }}</h2>
           <p>{{user.email}}</p>
@@ -115,6 +116,7 @@
 <script setup>
 import { useUserStore } from '../stores/userStore'
 import { computed } from 'vue'
+import { ref } from 'vue'
 import NavBar from '@/Components/NavBar.vue'
 
 const userStore = useUserStore()
@@ -124,6 +126,48 @@ defineOptions({             // export default {
   name: 'SettingsView',     //  name: 'SettingsView',
 })                          //}
 
+// ESTADO
+const showAvatar = ref(true)
+const currentIndex = ref(0)
+const slideWidth = 96
+
+const selectedDecoration = ref(null)
+
+// LISTA DE DECORAÇÕES
+const decorations = [
+  { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png' },
+  { name: 'garden', src: '/src/images/avatar_decoration/garden.png' },
+  { name: 'olives', src: '/src/images/avatar_decoration/olives.png' },
+  { name: 'cat', src: '/src/images/avatar_decoration/cat.png' },
+  { name: 'summer', src: '/src/images/avatar_decoration/summer.png' },
+  { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png' }
+]
+
+// FUNÇÕES
+const openDecoration = () => {
+  showAvatar.value = false
+}
+
+const closeDecoration = () => {
+  showAvatar.value = true
+}
+
+const nextSlide = () => {
+  if (currentIndex.value < decorations.length - 1) {
+    currentIndex.value++
+  }
+}
+
+const prevSlide = () => {
+  if (currentIndex.value > 0) {
+    currentIndex.value--
+  }
+}
+
+const selectDecoration = (src) => {
+  selectedDecoration.value = src
+  showAvatar.value = true
+}
 </script>
 
 <style src="../css/styles.css"></style>
@@ -177,17 +221,17 @@ defineOptions({             // export default {
     }
 
     .avatar {
+      position: relative;
+      display: flex;
       width: 96px;
       height: 96px;
-      border-radius: 50%;
-      background: #fff;
-      overflow: hidden;
       flex-shrink: 0;
     }
 
     .avatar img {
       width: 100%;
       height: 100%;
+      border-radius: 50%;
       object-fit: cover;
     }
 
@@ -358,14 +402,90 @@ defineOptions({             // export default {
       display: flex;
       width: 96px;
       height: 96px;
-      background: #fff;
-      /* overflow: hidden; */
-      list-style: none;
+      overflow: hidden;
+    }
+
+    .swiper img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
     }
 
     .card-list img {
       width: 96px;
       height: 96px;
+    }
+
+    .card-wrapper {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      padding: 0px;
+    }
+
+    .swiper-wrapper {
+      display: flex;
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      transition: transform 0.3s ease;
+    }
+
+    .btn-avatar-exit {
+      position: absolute;
+      top: 0px;
+      left: 0px;
+      z-index: 2;
+    }
+
+    .btn-avatar-check {
+      position: absolute;
+      top: 0px;
+      right: 0px;
+      z-index: 2;
+    }
+
+    .swiper-button-prev {
+      position: absolute;
+      bottom: 0px;
+      left: 0px;
+      z-index: 2;
+    }
+
+    .swiper-button-next{
+      position: absolute;
+      bottom: 0px;
+      right: 0px;
+      z-index: 2;
+    }
+
+    .swiper-slide {
+      width: 96px;
+      height: 96px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .btn-avatar-edit {
+      position: absolute;
+      bottom: -10px;
+      right: -10px;
+      z-index: 2;
+    }
+
+    .avatar-decoration {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      transform: scale(1.3);
+      transform-origin: center;
     }
 
 </style>
