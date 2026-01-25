@@ -39,9 +39,13 @@
 
             <button class="swiper-button-prev" @click="prevSlide">←</button>
             <button class="swiper-button-next" @click="nextSlide">→</button>
+            <img
+            src="https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400"
+            alt="Profile"
+            />
           </div>
         </div>
-        
+
         <div class="profile-info">
           <h2>Welcome back, {{ user.name }}</h2>
           <p>{{user.email}}</p>
@@ -441,6 +445,25 @@ const selectDecoration = (src) => {
       top: 0px;
       left: 0px;
       z-index: 2;
+      color: #fff;
+
+      border-radius: 50%;
+
+      /* estilo glass */
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-avatar-exit:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
     }
 
     .btn-avatar-check {
@@ -448,6 +471,25 @@ const selectDecoration = (src) => {
       top: 0px;
       right: 0px;
       z-index: 2;
+      color: #fff;
+
+      border-radius: 50%;
+
+      /* estilo glass */
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-avatar-check:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
     }
 
     .swiper-button-prev {
@@ -455,6 +497,25 @@ const selectDecoration = (src) => {
       bottom: 0px;
       left: 0px;
       z-index: 2;
+      color: #fff;
+
+      border-radius: 50%;
+
+      /* estilo glass */
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .swiper-button-prev:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
     }
 
     .swiper-button-next{
@@ -462,6 +523,25 @@ const selectDecoration = (src) => {
       bottom: 0px;
       right: 0px;
       z-index: 2;
+      color: #fff;
+
+      border-radius: 50%;
+
+      /* estilo glass */
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .swiper-button-next:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
     }
 
     .swiper-slide {
@@ -478,6 +558,26 @@ const selectDecoration = (src) => {
       bottom: -10px;
       right: -10px;
       z-index: 2;
+      color: #fff;
+
+      border-radius: 50%;
+
+      /* estilo glass */
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-avatar-edit:hover {
+      background: rgba(255, 255, 255, 0.3);
+      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+      transform: scale(1.1);
     }
 
     .avatar-decoration {
