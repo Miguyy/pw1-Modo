@@ -1,23 +1,13 @@
 <template>
   <div class="admin-panel">
     <NavBar />
-    <div class="container py-2">
-      <div class="page-title">
-        <h2>ADMIN PANEL</h2>
-      </div>
-      <div class="row">
-        <!-- Divider -->
-        <div class="col-12">
-          <hr class="my-4" style="border: dotted 1px; color: #355d4c" />
-        </div>
-      </div>
-      <!-- Title Section -->
+    <div class="container">
       <div class="page-title">
         <h2>ADMIN PANEL</h2>
       </div>
     </div>
 
-    <div class="container py-3">
+    <div class="container">
       <div
         class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-3"
       >
@@ -413,11 +403,11 @@ function formatDate(value) {
   max-width: 1080px;
   margin: 10px auto 50px auto;
   padding-top: 10px;
-  border-top: 2px dotted #355D4C;
+  border-top: 2px dotted #355d4c;
 }
 
 .page-title h2 {
-  color: #355D4C;
+  color: #355d4c;
   letter-spacing: 0.3em;
 }
 
