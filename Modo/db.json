@@ -260,14 +260,12 @@
       "email": "testeresponsividade@gmail.com",
       "password": "M1guelito!",
       "avatar": null,
-      "points": 295,
+      "points": 315,
       "priority": 1,
       "createdAt": "2026-01-07T16:20:31.756Z",
       "habits": [
-        "f036",
         "7aa3",
         "a03c",
-        "c793",
         "6538",
         "eb8e",
         "5db6",
@@ -283,7 +281,10 @@
         "9e35",
         "65d5",
         "698b",
-        "69dc"
+        "b2d2",
+        "782f",
+        "1c5e",
+        "768c"
       ]
     },
     {
@@ -314,6 +315,184 @@
         1767885995304,
         "6a1a"
       ]
+    },
+    {
+      "id": "6ac8",
+      "name": "testehabitsmanager",
+      "email": "testehabitsmanager@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 15,
+      "priority": 1,
+      "createdAt": "2026-01-24T18:17:40.763Z",
+      "habits": [
+        "5888"
+      ]
+    },
+    {
+      "id": "9acb",
+      "name": "toast",
+      "email": "toast@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:12:43.002Z",
+      "habits": []
+    },
+    {
+      "id": "d53f",
+      "name": "toastadmin",
+      "email": "toastadmin@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "createdAt": "2026-01-24T21:13:29.227Z",
+      "points": 30,
+      "priority": "2",
+      "habits": []
+    },
+    {
+      "id": "74b7",
+      "name": "toasttest2",
+      "email": "toasttest2",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:17:34.688Z",
+      "habits": []
+    },
+    {
+      "id": "2256",
+      "name": "TESTEFINALTOASTREGISTER",
+      "email": "TESTEFINALTOASTREGISTER",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:22:00.285Z",
+      "habits": []
+    },
+    {
+      "id": "3dbe",
+      "name": "ultimoteste",
+      "email": "ultimoteste@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:32:38.687Z",
+      "habits": []
+    },
+    {
+      "id": "f27a",
+      "name": "testuser",
+      "email": "test@example.com",
+      "password": "TestPassword123!",
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T21:50:05.826Z",
+      "habits": []
+    },
+    {
+      "id": "b6f0",
+      "name": "testuser",
+      "email": "test@example.com",
+      "password": "TestPassword123!",
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-24T22:06:51.896Z",
+      "habits": []
+    },
+    {
+      "id": "01d5",
+      "name": "testuser",
+      "email": "test@example.com",
+      "password": "TestPassword123!",
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-25T08:10:14.042Z",
+      "habits": []
+    },
+    {
+      "id": "2573",
+      "name": "testuser",
+      "email": "test@example.com",
+      "password": "TestPassword123!",
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-25T09:07:12.519Z",
+      "habits": []
+    },
+    {
+      "id": "2911",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:07:12.519Z",
+      "habits": []
+    },
+    {
+      "id": "c35f",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:07:30.927Z",
+      "habits": []
+    },
+    {
+      "id": "3d55",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:07:50.554Z",
+      "habits": []
+    },
+    {
+      "id": "282c",
+      "name": "testuser",
+      "email": "test@example.com",
+      "password": "TestPassword123!",
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-25T09:07:50.554Z",
+      "habits": []
+    },
+    {
+      "id": "ea60",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:07:56.098Z",
+      "habits": []
+    },
+    {
+      "id": "0470",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:08:43.832Z",
+      "habits": []
+    },
+    {
+      "id": "1abd",
+      "name": "adminuser",
+      "email": "admin@example.com",
+      "password": "AdminPass123!",
+      "points": 0,
+      "priority": 2,
+      "createdAt": "2026-01-25T09:09:23.806Z",
+      "habits": []
     }
   ],
   "habits": [
@@ -773,19 +952,6 @@
       "remaining_minutes": null
     },
     {
-      "id": "f036",
-      "user_id": "76a8",
-      "description": "dwdwd",
-      "type": "count",
-      "priority": "high",
-      "target_count": 1,
-      "increment_value": 1,
-      "target_minutes": null,
-      "created_at": "2026-01-07T16:20:58.835Z",
-      "remaining_minutes": null,
-      "points_awarded": true
-    },
-    {
       "id": "7aa3",
       "user_id": "76a8",
       "description": "ojurgbfhrg",
@@ -809,18 +975,6 @@
       "created_at": "2026-01-07T21:01:57.105Z",
       "remaining_minutes": null,
       "points_awarded": true
-    },
-    {
-      "id": "c793",
-      "user_id": "76a8",
-      "description": "fhegfhefgehf",
-      "type": "count",
-      "priority": "medium",
-      "target_count": 1,
-      "increment_value": 1,
-      "target_minutes": null,
-      "created_at": "2026-01-07T21:05:37.561Z",
-      "remaining_minutes": null
     },
     {
       "id": "6538",
@@ -858,7 +1012,8 @@
       "increment_value": 1,
       "target_minutes": null,
       "created_at": "2026-01-07T22:27:57.436Z",
-      "remaining_minutes": null
+      "remaining_minutes": null,
+      "points_awarded": true
     },
     {
       "id": "d00b",
@@ -1017,19 +1172,6 @@
       "remaining_minutes": 15
     },
     {
-      "id": "69dc",
-      "user_id": "76a8",
-      "description": "time2",
-      "type": "time",
-      "priority": "medium",
-      "location": "inside",
-      "target_count": null,
-      "increment_value": 1,
-      "target_minutes": 1,
-      "created_at": "2026-01-08T09:42:24.064Z",
-      "remaining_minutes": 1
-    },
-    {
       "id": "fc5a",
       "user_id": "f4be",
       "description": "Drink 5L of water",
@@ -1069,6 +1211,294 @@
       "target_minutes": null,
       "created_at": "2026-01-08T15:28:07.432Z",
       "remaining_minutes": null
+    },
+    {
+      "id": "5888",
+      "user_id": "6ac8",
+      "description": "testehabitsmanager1",
+      "type": "count",
+      "priority": "high",
+      "location": "inside",
+      "target_count": 36,
+      "increment_value": 12,
+      "target_minutes": null,
+      "created_at": "2026-01-24T18:18:27.603Z",
+      "remaining_minutes": null,
+      "points_awarded": true
+    },
+    {
+      "id": "b2d2",
+      "user_id": "76a8",
+      "description": "fefef",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "target_count": null,
+      "increment_value": 1,
+      "target_minutes": null,
+      "created_at": "2026-01-24T18:53:37.351Z",
+      "remaining_minutes": null,
+      "points_awarded": true
+    },
+    {
+      "id": "782f",
+      "user_id": "76a8",
+      "description": "dwdwdwd",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "target_count": null,
+      "increment_value": 1,
+      "target_minutes": null,
+      "created_at": "2026-01-24T18:53:46.779Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "1c5e",
+      "user_id": "76a8",
+      "description": "testeULTIMO",
+      "type": "count",
+      "priority": "low",
+      "location": "outside",
+      "target_count": 1,
+      "increment_value": 1,
+      "target_minutes": null,
+      "created_at": "2026-01-24T19:38:33.219Z",
+      "remaining_minutes": null,
+      "points_awarded": true
+    },
+    {
+      "id": "2cf7",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T19:44:56.789Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "39c8",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T19:45:18.268Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "3b04",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T21:45:47.417Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "e0ce",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T21:48:54.782Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "9a4d",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T21:57:36.584Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "28df",
+      "user_id": "u1",
+      "description": "Test habit via wrapper props",
+      "type": "check",
+      "priority": "medium",
+      "location": "inside",
+      "created_at": "2026-01-24T21:58:43.989Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "b51d",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T21:58:53.081Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "2045",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T21:59:13.629Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "910b",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:00:29.946Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "3e9d",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:01:27.886Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "9aa3",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:04:04.313Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "5238",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:05:49.775Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "ce5b",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:05:53.906Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "7af6",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:06:08.401Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "fc31",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:06:11.353Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "0524",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:06:30.520Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "ea2f",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:07:15.877Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "3fe9",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:07:28.373Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "1813",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-24T22:07:41.212Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "b435",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-25T08:10:14.043Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "3c2a",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-25T09:07:12.520Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "6f9c",
+      "user_id": "u1",
+      "description": "Test habit from unit test",
+      "type": "check",
+      "priority": "low",
+      "location": "inside",
+      "created_at": "2026-01-25T09:07:50.556Z",
+      "remaining_minutes": null
+    },
+    {
+      "id": "768c",
+      "user_id": "76a8",
+      "description": "habit teste",
+      "type": "time",
+      "priority": "low",
+      "location": "inside",
+      "target_count": null,
+      "increment_value": 1,
+      "target_minutes": 15,
+      "created_at": "2026-01-25T09:10:18.648Z",
+      "remaining_minutes": 15
     }
   ]
 }

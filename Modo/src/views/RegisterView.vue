@@ -37,6 +37,18 @@
         >
       </p>
     </div>
+    <!-- Toast notification -->
+    <Transition name="toast-slide">
+      <div v-if="toast.visible" class="toast-notification">
+        <div class="toast-icon">
+          <FontAwesomeIcon icon="info-circle" />
+        </div>
+        <div class="toast-content">
+          <strong>{{ toast.title }}</strong>
+          <small>{{ toast.message }}</small>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -51,6 +63,7 @@ export default {
       email: '',
       password: '',
       userStore: null,
+      toast: { visible: false, title: '', message: '', timeout: null },
     }
   },
   created() {
@@ -72,20 +85,22 @@ export default {
   methods: {
     async registerUser() {
       if (!this.name || !this.email || !this.password) {
-        alert('Please fill in all fields.')
+        this.showToast('Missing fields', 'Please fill in all fields.', 3000)
         return
       }
 
       const passwordChar = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/
       if (!passwordChar.test(this.password)) {
-        alert(
+        this.showToast(
+          'Weak password',
           'Password must be at least 8 characters and include uppercase, lowercase, number, and special character.',
+          4500,
         )
         return
       }
 
       if (this.userStore.users.some((user) => user.email === this.email)) {
-        alert('Email is already registered.')
+        this.showToast('Email in use', 'Email is already registered.', 3000)
         return
       }
 
@@ -101,19 +116,81 @@ export default {
 
         localStorage.setItem('users', JSON.stringify(this.userStore.users))
 
-        alert('User registered successfully!')
+        // show toast instead of alert
+        this.showToast('Account created', 'User registered successfully!', 2500)
+
+        // clear inputs
         this.name = ''
         this.email = ''
         this.password = ''
-        this.$router.push('/login')
+
+        // navigate to login after a short delay so the toast is visible briefly
+        setTimeout(() => this.$router.push('/login'), 2000)
       } catch (e) {
         console.error(e)
-        alert('Failed to register user.')
+        this.showToast('Registration failed', 'Failed to register user.', 3000)
       }
+    },
+    // Toast helper (simple local toast matching HabitManagerView)
+    showToast(title, message, duration = 3000) {
+      if (!this.toast) this.toast = { visible: false, title: '', message: '', timeout: null }
+      this.toast.title = title
+      this.toast.message = message
+      this.toast.visible = true
+
+      if (this.toast.timeout) clearTimeout(this.toast.timeout)
+      this.toast.timeout = setTimeout(() => {
+        this.toast.visible = false
+      }, duration)
     },
   },
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+/* Toast styles (local to register view) */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #355d4c, #4f6f5f);
+  color: #fff;
+  padding: 12px 16px;
+  border-radius: 12px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  min-width: 240px;
+}
+.toast-icon {
+  font-size: 20px;
+}
+.toast-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.toast-content strong {
+  font-size: 14px;
+}
+.toast-content small {
+  font-size: 12px;
+  opacity: 0.95;
+}
+
+.toast-slide-enter-active,
+.toast-slide-leave-active {
+  transition: all 0.35s ease;
+}
+.toast-slide-enter-from {
+  opacity: 0;
+  transform: translateY(-12px) translateX(8px);
+}
+.toast-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-8px) translateX(8px);
+}
+</style>
 <style src="../css/styles.css"></style>
