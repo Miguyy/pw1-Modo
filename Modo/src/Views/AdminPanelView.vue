@@ -137,6 +137,71 @@
           </nav>
         </div>
       </div>
+
+      <!-- Avatar Decorations Section -->
+      <div
+        class="d-flex flex-row justify-content-between align-items-center gap-3 mb-3 mt-5"
+      >
+        <div class="d-flex gap-2 align-items-center flex-nowrap">
+          <h5 class="mb-0 decoration-title">Avatar Decorations</h5>
+          <div class="total-badge">
+            Total: <strong>{{ decorations.length }}</strong>
+          </div>
+        </div>
+        <button class="btn btn-add-decoration flex-shrink-0" @click="openAddDecorationModal">
+          <i class="bi bi-plus-lg me-1"></i>Add
+        </button>
+      </div>
+
+      <div class="card shadow-sm border-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0 admin-table">
+            <thead>
+              <tr>
+                <th style="width: 80px">Preview</th>
+                <th class="sortable" @click="toggleDecorationSort('name')">
+                  Name
+                  <span class="sort-indicator" v-if="decorationSortKey === 'name'">{{ decorationSortDir === 'asc' ? '▲' : '▼' }}</span>
+                </th>
+                <th style="width: 300px">Path</th>
+                <th style="width: 120px">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="decoration in sortedDecorations" :key="decoration.name">
+                <td>
+                  <img 
+                    :src="decoration.src" 
+                    :alt="decoration.name" 
+                    class="decoration-preview"
+                  />
+                </td>
+                <td class="fw-medium">{{ decoration.name }}</td>
+                <td class="text-muted text-truncate" style="max-width: 300px">{{ decoration.src }}</td>
+                <td>
+                  <button
+                    class="action-icon action-edit me-2"
+                    @click="editDecoration(decoration)"
+                    title="Edit"
+                  >
+                    <i class="bi bi-pencil" aria-hidden="true"></i>
+                  </button>
+                  <button
+                    class="action-icon action-delete"
+                    @click="deleteDecoration(decoration.name)"
+                    title="Delete"
+                  >
+                    <i class="bi bi-trash" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr v-if="decorations.length === 0">
+                <td colspan="4" class="text-center py-4 text-muted">No decorations found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -173,6 +238,50 @@
     </div>
   </div>
 
+  <!-- Edit/Add Decoration Modal -->
+  <div v-if="decorationModalVisible" class="modal-backdrop">
+    <div class="modal-panel">
+      <h5 class="mb-3">{{ isNewDecoration ? 'Add Decoration' : 'Edit Decoration' }}</h5>
+      <div class="mb-3">
+        <label class="form-label">Name</label>
+        <input 
+          v-model="editingDecoration.name" 
+          class="form-control" 
+          :disabled="!isNewDecoration"
+          placeholder="e.g., rainbow"
+        />
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Choose Image</label>
+        <div class="file-input-wrapper">
+          <input 
+            type="file"
+            ref="decorationFileInput"
+            accept="image/*"
+            class="form-control"
+            @change="handleDecorationFileUpload"
+          />
+        </div>
+        <small class="text-muted mt-1 d-block">Current: {{ editingDecoration.src || 'No image selected' }}</small>
+      </div>
+      <div v-if="editingDecoration.src" class="mb-3 text-center">
+        <label class="form-label d-block">Preview</label>
+        <img 
+          :src="editingDecoration.src" 
+          :alt="editingDecoration.name"
+          class="decoration-modal-preview"
+        />
+      </div>
+
+      <div class="d-flex justify-content-end gap-2 mt-3">
+        <button class="btn btn-outline-secondary" @click="cancelDecorationEdit">Cancel</button>
+        <button class="btn btn-success" @click="saveDecoration">
+          {{ isNewDecoration ? 'Add' : 'Save' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast notification -->
   <Transition name="toast-slide">
     <div v-if="toast.visible" class="toast-notification">
@@ -201,6 +310,71 @@ const userStore = useUserStore()
 const search = ref('')
 const perPage = ref(5)
 const currentPage = ref(1)
+
+// Default avatar decorations
+const defaultDecorations = [
+  { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png' },
+  { name: 'garden', src: '/src/images/avatar_decoration/garden.png' },
+  { name: 'olives', src: '/src/images/avatar_decoration/olives.png' },
+  { name: 'cat', src: '/src/images/avatar_decoration/cat.png' },
+  { name: 'summer', src: '/src/images/avatar_decoration/summer.png' },
+  { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png' }
+]
+
+// Load decorations from localStorage or use defaults
+function loadDecorations() {
+  const saved = localStorage.getItem('avatarDecorations')
+  if (saved) {
+    try {
+      return JSON.parse(saved)
+    } catch {
+      return [...defaultDecorations]
+    }
+  }
+  return [...defaultDecorations]
+}
+
+function saveDecorations() {
+  localStorage.setItem('avatarDecorations', JSON.stringify(decorations.value))
+}
+
+// Avatar decorations data
+const decorations = ref(loadDecorations())
+
+// Decoration modal state
+const decorationModalVisible = ref(false)
+const editingDecoration = ref(null)
+const isNewDecoration = ref(false)
+const decorationFileInput = ref(null)
+
+// Decoration sorting
+const decorationSortKey = ref('name')
+const decorationSortDir = ref('asc')
+
+const sortedDecorations = computed(() => {
+  const list = [...decorations.value]
+  const key = decorationSortKey.value
+  const dir = decorationSortDir.value === 'asc' ? 1 : -1
+  
+  list.sort((a, b) => {
+    const va = (a[key] || '').toString().toLowerCase()
+    const vb = (b[key] || '').toString().toLowerCase()
+    if (va < vb) return -1 * dir
+    if (va > vb) return 1 * dir
+    return 0
+  })
+  
+  return list
+})
+
+function toggleDecorationSort(key) {
+  if (decorationSortKey.value === key) {
+    decorationSortDir.value = decorationSortDir.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    decorationSortKey.value = key
+    decorationSortDir.value = 'asc'
+  }
+}
 
 // Sorting state: which key and direction ('asc'|'desc')
 const sortKey = ref('id')
@@ -387,6 +561,89 @@ function formatDate(value) {
   } catch {
     return value
   }
+}
+
+// Decoration management functions
+function editDecoration(decoration) {
+  editingDecoration.value = { ...decoration }
+  isNewDecoration.value = false
+  decorationModalVisible.value = true
+}
+
+function deleteDecoration(name) {
+  if (!confirm(`Are you sure you want to delete the "${name}" decoration?`)) return
+  decorations.value = decorations.value.filter(d => d.name !== name)
+  saveDecorations()
+  showToast('Decoration deleted', `"${name}" was removed`)
+}
+
+function openAddDecorationModal() {
+  editingDecoration.value = { name: '', src: '' }
+  isNewDecoration.value = true
+  decorationModalVisible.value = true
+}
+
+function cancelDecorationEdit() {
+  decorationModalVisible.value = false
+  editingDecoration.value = null
+  // Reset file input
+  if (decorationFileInput.value) {
+    decorationFileInput.value.value = ''
+  }
+}
+
+function handleDecorationFileUpload(event) {
+  const file = event.target.files[0]
+  if (!file) return
+
+  // Validate file type
+  if (!file.type.startsWith('image/')) {
+    showToast('Invalid file', 'Please select an image file')
+    return
+  }
+
+  // Validate file size (max 5MB)
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('File too large', 'Please select an image smaller than 5MB')
+    return
+  }
+
+  // Convert to base64
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    editingDecoration.value.src = e.target.result
+  }
+  reader.onerror = () => {
+    showToast('Error', 'Failed to read the image file')
+  }
+  reader.readAsDataURL(file)
+}
+
+function saveDecoration() {
+  if (!editingDecoration.value.name || !editingDecoration.value.src) {
+    showToast('Error', 'Please fill in all fields')
+    return
+  }
+
+  if (isNewDecoration.value) {
+    // Check for duplicate name
+    if (decorations.value.some(d => d.name === editingDecoration.value.name)) {
+      showToast('Error', 'A decoration with this name already exists')
+      return
+    }
+    decorations.value.push({ ...editingDecoration.value })
+    showToast('Decoration added', `"${editingDecoration.value.name}" was added`)
+  } else {
+    const idx = decorations.value.findIndex(d => d.name === editingDecoration.value.name)
+    if (idx !== -1) {
+      decorations.value[idx] = { ...editingDecoration.value }
+    }
+    showToast('Decoration updated', `"${editingDecoration.value.name}" was updated`)
+  }
+
+  saveDecorations()
+  decorationModalVisible.value = false
+  editingDecoration.value = null
 }
 </script>
 
@@ -700,5 +957,52 @@ function formatDate(value) {
   padding: 18px;
   border-radius: 12px;
   box-shadow: 0 24px 60px rgba(10, 30, 20, 0.15);
+}
+
+/* Avatar Decorations styles */
+.decoration-title {
+  color: #355d4c;
+  font-weight: 700;
+}
+
+.card-header {
+  background: linear-gradient(90deg, #f0fbf5, #e6f7ee);
+  border-bottom: 1px solid rgba(53, 93, 76, 0.08);
+  padding: 14px 18px;
+}
+
+.decoration-preview {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: rgba(53, 93, 76, 0.05);
+  padding: 4px;
+}
+
+.decoration-modal-preview {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: rgba(53, 93, 76, 0.08);
+  padding: 8px;
+}
+
+.btn-add-decoration {
+  background: linear-gradient(135deg, #355d4c, #4f6f5f);
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 600;
+  transition: all 160ms ease;
+}
+
+.btn-add-decoration:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(53, 93, 76, 0.25);
+  background: linear-gradient(135deg, #2a4d3e, #3f5f4f);
+  color: #fff;
 }
 </style>
