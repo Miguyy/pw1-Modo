@@ -1,33 +1,9 @@
 <template>
   <NavBar />
-  <!-- NavBar component -->
-  <br />
-  <!-- Spacer -->
-  <div class="container py-2">
-    <!-- Title Section -->
-    <h2
-      style="
-        color: #355d4c;
-        font-family: Heebo;
-        font-size: 24px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: normal;
-        letter-spacing: 4.8px;
-      "
-    >
-      HABITS MANAGER
-    </h2>
-
-    <div class="row">
-      <!-- Divider -->
-      <div class="col-12">
-        <hr class="my-4" style="border: dotted 1px; color: #355d4c" />
-      </div>
+  <div class="container">
+    <div class="page-title">
+      <h2>HABITS MANAGER</h2>
     </div>
-  </div>
-
-  <div class="container py-2">
     <!-- Main Content Container -->
     <div class="row mt-2 g-3 align-items-stretch">
       <div class="col-12 col-md-4 col-lg-3">
@@ -821,7 +797,7 @@ function onCloseTimerModal() {
 }
 </script>
 
-<style scoped>
+<style>
 :root {
   --bg: #f3f3f1;
   --green-dark: #3f5f4f;
@@ -837,6 +813,13 @@ function onCloseTimerModal() {
 
 * {
   box-sizing: border-box;
+}
+
+.container {
+  width: 1080px;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 30px 0px 0px;
 }
 
 .weather-box {
@@ -1510,5 +1493,18 @@ function onCloseTimerModal() {
   50% {
     opacity: 0.7;
   }
+}
+  
+ .page-title {
+  width: 100%;
+  max-width: 1080px;
+  margin: 10px auto 50px auto;
+  padding-top: 10px;
+  border-top: 2px dotted #355D4C;
+}
+
+.page-title h2 {
+  color: #355D4C;
+  letter-spacing: 0.3em;
 }
 </style>

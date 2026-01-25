@@ -473,16 +473,16 @@ const saveChanges = async () => {
     * { box-sizing: border-box; }
 
     body {
-      margin: 0;
       font-family: 'Heebo', sans-serif;
       background: var(--bg);
       color: #1e1e1e;
     }
 
     .page {
-      max-width: 1200px;
+      max-width: 1140px;
+      padding: 0px 30px 0px 30px;
       margin: 0 auto;
-      padding: 32px 24px 80px;
+      padding-top: 30px;
     }
 
 
@@ -824,6 +824,8 @@ const saveChanges = async () => {
     }
 
     .btn-avatar-exit {
+      width: 30px;
+      height: 30px;
       position: absolute;
       top: 0px;
       left: 0px;
@@ -850,6 +852,8 @@ const saveChanges = async () => {
     }
 
     .btn-avatar-check {
+      width: 30px;
+      height: 30px;
       position: absolute;
       top: 0px;
       right: 0px;
@@ -876,6 +880,8 @@ const saveChanges = async () => {
     }
 
     .swiper-button-prev {
+      width: 30px;
+      height: 30px;
       position: absolute;
       bottom: 0px;
       left: 0px;
@@ -902,6 +908,8 @@ const saveChanges = async () => {
     }
 
     .swiper-button-next{
+      width: 30px;
+      height: 30px;
       position: absolute;
       bottom: 0px;
       right: 0px;
@@ -937,6 +945,8 @@ const saveChanges = async () => {
     }
 
     .btn-avatar-edit {
+      width: 30px;
+      height: 30px;
       position: absolute;
       bottom: -10px;
       right: -10px;
