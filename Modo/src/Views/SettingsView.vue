@@ -297,7 +297,7 @@ function cancelConfirm() {
 const isEditingName = ref(false)
 const userName = ref(user.value?.name || '')
 
-const toggleEditName = () => {
+const toggleEditName = async () => {
   if (isEditingName.value) {
     if (userName.value !== user.value.name) {
       
@@ -311,8 +311,14 @@ const toggleEditName = () => {
         return
       }
       
-      // Se não existe, atualiza
-      user.value.name = userName.value
+      // Se não existe, atualiza e persiste
+      try {
+        await userStore.updateUserProfile({ name: userName.value })
+        showToast('Success', 'Name updated successfully!', 'success')
+      } catch (e) {
+        showToast('Error', 'Failed to update name: ' + e.message, 'error')
+        return
+      }
     }
 
     isEditingName.value = false
