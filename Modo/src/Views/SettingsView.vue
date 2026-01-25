@@ -178,26 +178,9 @@
 
   <footer>
     <div class="footer-grid">
-      <div>
-        <p>The best tracker to change who you are.</p>
-      </div>
-      <div>
-        <h4>Products</h4>
-        <a href="#">iOS App</a>
-        <a href="#">Android App</a>
-        <a href="#">Web App</a>
-        <a href="#">Updates</a>
-      </div>
-      <div>
-        <h4>About</h4>
-        <a href="#">Our Team</a>
-        <a href="#">Our Mission</a>
-      </div>
-      <div>
-        <h4>Legal</h4>
-        <a href="#">Privacy</a>
-        <a href="#">Terms of Service</a>
-      </div>
+      <img src="/src/images/modoIcon.png" alt="logo" style="filter: brightness(0) invert(90%); height: 30px; margin: 0px;">
+      <p>The best tracker to change who you are.</p>
+      <p>MODO 2026 | ESMAD</p>
     </div>
   </footer>
 
@@ -1330,3 +1313,4 @@ footer a:hover {
   transform: scale(0.9);
 }
 </style>
+<style src="../css/styles.css"></style>

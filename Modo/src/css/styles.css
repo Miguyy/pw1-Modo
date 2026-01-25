@@ -807,5 +807,14 @@
   letter-spacing: 0.3em;
 }
 
-/* ------------ SETTINGS -------------- */
+/* ------------ FOOTER -------------- */
+.footer-grid {
+  justify-content: space-between;
+  max-width: 1080px;
+  margin: 0 auto;
+  margin-top: 0px;
+  display: flex;
+  gap: 24px;
+}
 
+.footer p { font-size: 14px; opacity: 0.85; }
