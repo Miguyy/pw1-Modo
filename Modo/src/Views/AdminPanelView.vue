@@ -1,10 +1,10 @@
 <template>
   <div class="admin-panel">
     <NavBar />
-    <!-- NavBar component -->
-    <br />
-    <!-- Spacer -->
     <div class="container py-2">
+      <div class="page-title">
+        <h2>ADMIN PANEL</h2>
+      </div>
       <div class="row">
         <!-- Divider -->
         <div class="col-12">
@@ -401,6 +401,26 @@ function formatDate(value) {
 </script>
 
 <style scoped>
+.container {
+  max-width: 1140px;
+  padding: 0px 30px 0px 30px;
+  margin: 0 auto;
+  padding-top: 30px;
+}
+
+.page-title {
+  width: 100%;
+  max-width: 1080px;
+  margin: 10px auto 50px auto;
+  padding-top: 10px;
+  border-top: 2px dotted #355D4C;
+}
+
+.page-title h2 {
+  color: #355D4C;
+  letter-spacing: 0.3em;
+}
+
 .admin-heading {
   color: #355d4c;
   font-family: Heebo, sans-serif;

@@ -54,33 +54,6 @@ const logout = () => {
           </RouterLink>
 
           <RouterLink
-            to="/statistics"
-            class="nav-link-custom me-3"
-            title="Statistics"
-            aria-label="Statistics"
-          >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              class="svg-icon" 
-              style="width: 1.5em; height: 1.5em;vertical-align: middle;fill: currentColor;overflow: hidden;" 
-              viewBox="0 0 1000 1000" 
-              version="1.1">
-              <path d="M918.025138 862.417905l-811.443431 0c-23.205442 0-41.972623-18.789948-41.972623-41.971927l0-671.513994c0-23.180955 18.767181-41.959647 41.972623-41.959647 23.158368 0 41.972623 18.778692 41.972623 41.959647l0 531.617803 0 97.925287 769.470807 0c23.158368 0 41.973647 18.789948 41.973647 41.970904C959.997761 843.626933 941.182483 862.417905 918.025138 862.417905M820.072302 736.50417l-83.945247 0c-23.158368 0-41.972623-18.778692-41.972623-41.959647L694.154432 400.75843c0-23.193235 18.814255-41.970904 41.972623-41.970904l83.945247 0c23.206465 0 41.973647 18.778692 41.973647 41.970904l0 293.786093C862.044925 717.725478 843.278767 736.50417 820.072302 736.50417M582.242104 736.50417l-83.945247 0c-23.181905 0-41.973647-18.778692-41.973647-41.959647L456.32321 232.874815c0-23.180955 18.791742-41.970904 41.973647-41.970904l83.945247 0c23.180882 0 41.972623 18.789948 41.972623 41.970904l0 461.669708C624.214727 717.725478 605.424009 736.50417 582.242104 736.50417M344.411906 736.50417l-83.945247 0c-23.205442 0-41.972623-18.778692-41.972623-41.959647l0-83.941807c0-23.179932 18.767181-41.970904 41.972623-41.970904l83.945247 0c23.181905 0 41.973647 18.789948 41.973647 41.970904l0 83.941807C386.384529 717.725478 367.593811 736.50417 344.411906 736.50417"/>
-            </svg>
-            <!-- <svg
-              class="nav-icon"
-              viewBox="0 0 20 20"
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-              role="img"
-            >
-              <rect x="3" y="12" width="3.8" height="8" rx="0.9" fill="currentColor" />
-              <rect x="9.6" y="7.5" width="3.8" height="12.5" rx="0.9" fill="currentColor" />
-              <rect x="16.2" y="3" width="3.8" height="17" rx="0.9" fill="currentColor" />
-            </svg> -->
-          </RouterLink>
-
-          <RouterLink
             to="/settings"
             class="nav-link-custom me-3"
             title="Settings"
@@ -96,17 +69,16 @@ const logout = () => {
             </svg>
           </RouterLink>
         </div>
+
+        <span class="me-3 fw-semibold">{{ user.name }}</span>
         <img
           v-if="user.avatar"
           :src="user.avatar"
           alt="avatar"
           class="rounded-circle me-2"
-          style="width: 40px; height: 40px; object-fit: cover"
+          style="width: 40px; height: 40px; object-fit: cover;"
         />
-        <span class="me-3 fw-semibold">Points: {{ user.points }} </span>
-        <span class="me-3 fw-semibold">{{ user.name }}</span>
-
-        <button class="btn btn-outline-danger btn-sm" @click="logout">Logout</button>
+        <button class="fa logout-btn" @click="logout">&#xf08b;</button>
       </div>
 
       <div v-else class="ms-auto">
@@ -116,7 +88,7 @@ const logout = () => {
   </div>
 </template>
 
-<style scoped>
+<style>
 .nav-icon {
   width: 20px;
   height: 20px;
@@ -132,6 +104,29 @@ const logout = () => {
 }
 .nav-link-custom:hover .nav-icon {
   color: #1f3d30;
+}
+
+.navbar-center {
+  left: 0px;
+  margin-right: 100px;
+}
+
+.logout-btn {
+  color: brown;
+  font-size: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 </style>
 <style src="../css/styles.css"></style>
