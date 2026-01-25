@@ -54,3 +54,4 @@ import HabitStatsChart from '@/Components/HabitStatsChart.vue'
     letter-spacing: 0.3em;
   }
 </style>
+<style src="../css/styles.css"></style>

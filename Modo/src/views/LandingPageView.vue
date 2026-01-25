@@ -369,45 +369,11 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
-        <footer class="site-footer inside-wave">
-          <div class="footer-inner">
-            <div class="footer-brand">
-              <img src="../images/modoIcon.png" alt="Modo" class="footer-logo" />
-              <p class="footer-tag">The best tracker to change who you are.</p>
-              <p class="footer-copy">Copyright 2025 Modo Services, Inc. All Rights Reserved.</p>
-            </div>
-
-            <div class="footer-columns">
-              <div class="footer-col">
-                <h4>Products</h4>
-                <ul>
-                  <li>
-                    <a href="#" style="text-decoration: none; color: #ededed">iOS App</a>
-                  </li>
-                  <li><a href="#" style="text-decoration: none; color: #ededed">Android App</a></li>
-                  <li><a href="#" style="text-decoration: none; color: #ededed">Web App</a></li>
-                  <li><a href="#" style="text-decoration: none; color: #ededed">Updates</a></li>
-                </ul>
-              </div>
-
-              <div class="footer-col">
-                <h4>About</h4>
-                <ul>
-                  <li><a href="#" style="text-decoration: none; color: #ededed">Our Team</a></li>
-                  <li><a href="#" style="text-decoration: none; color: #ededed">Our Mission</a></li>
-                </ul>
-              </div>
-
-              <div class="footer-col">
-                <h4>Legal</h4>
-                <ul>
-                  <li><a href="#" style="text-decoration: none; color: #ededed">Privacy</a></li>
-                  <li>
-                    <a href="#" style="text-decoration: none; color: #ededed">Terms of Service</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
+        <footer>
+          <div class="footer-grid">
+            <img src="/src/images/modoIcon.png" alt="logo" style="filter: brightness(0) invert(90%); height: 30px; margin: 0px;">
+            <p>The best tracker to change who you are.</p>
+            <p>MODO 2026 | ESMAD</p>
           </div>
         </footer>
       </div>
@@ -430,5 +396,4 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style scoped></style>
 <style src="../css/styles.css"></style>
