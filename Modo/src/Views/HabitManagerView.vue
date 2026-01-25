@@ -29,13 +29,15 @@
             />
             <div v-else class="avatar-fallback">{{ userInitials }}</div>
           </div>
-          <div class="flex-grow-1">
-            <h5 class="mb-1 text-capitalize">{{ currentUser?.name || 'Guest' }}</h5>
+
+          <div class="user-info">
+            <h2 class="mb-1 text-capitalize">{{ currentUser?.name || 'Guest' }}</h2>
             <p class="mb-2 text-muted small">{{ currentUser?.email || 'Not signed in' }}</p>
-            <div class="d-flex flex-wrap gap-2 align-items-center">
-              <span class="badge bg-success-soft">Points: {{ currentUser?.points ?? 0 }}</span>
-              <span class="badge bg-primary-soft">Level: {{ userLevel }}</span>
-            </div>
+          </div>
+
+          <div class="habits-user-points d-flex flex-wrap gap-2 align-items-center">
+            <span class="badge bg-success-soft">Points: {{ currentUser?.points ?? 0 }}</span>
+            <span class="badge bg-primary-soft">Level: {{ userLevel }}</span>
           </div>
         </div>
       </div>
@@ -906,6 +908,8 @@ function onCloseTimerModal() {
 }
 
 .profile-card {
+  display: flex;
+  position: relative;
   background: #fff;
   border-radius: var(--radius);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
@@ -913,10 +917,35 @@ function onCloseTimerModal() {
   border: 1px solid #e7ece9;
 }
 
+.user-info {
+  position: absolute;
+  right: 16px;
+  top: 20px;
+  height: 90px;
+  text-align: end;
+}
+
+.user-info p {
+  font-size: 20px;
+}
+
+.habits-user-points {
+  margin-top: 0px;
+}
+
+@media (max-width: 990px) {
+  .habits-user-points {
+    margin-top: 122px;
+  }
+}
+
 .avatar-wrapper {
-  width: 82px;
-  height: 82px;
-  border-radius: 16px;
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  left: 16px;
+  top: 16px;
+  border-radius: 50%;
   overflow: hidden;
   background: linear-gradient(135deg, #355d4c, #4f6f5f);
   display: flex;
