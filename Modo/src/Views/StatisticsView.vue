@@ -1,6 +1,10 @@
 <template>
   <NavBar />
+
   <div class="container py-4">
+    <div class="page-title">
+      <h2>STATISTICS</h2>
+    </div>
     <HabitStatsChart />
   </div>
 </template>

@@ -5,19 +5,9 @@
   <!-- Spacer -->
   <div class="container py-2">
     <!-- Title Section -->
-    <h2
-      style="
-        color: #355d4c;
-        font-family: Heebo;
-        font-size: 24px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: normal;
-        letter-spacing: 4.8px;
-      "
-    >
-      HABITS MANAGER
-    </h2>
+    <div class="page-title">
+      <h2>HABITS MANAGER</h2>
+    </div>
 
     <div class="row">
       <!-- Divider -->
@@ -1375,5 +1365,18 @@ function onCloseTimerModal() {
 .toast-slide-leave-to {
   opacity: 0;
   transform: translateY(-10px) translateX(20px);
+}
+
+.page-title {
+  width: 100%;
+  max-width: 1080px;
+  margin: 10px auto 50px auto;
+  padding-top: 10px;
+  border-top: 2px dotted #355D4C;
+}
+
+.page-title h2 {
+  color: #355D4C;
+  letter-spacing: 0.3em;
 }
 </style>

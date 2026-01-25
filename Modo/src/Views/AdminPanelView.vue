@@ -12,19 +12,9 @@
         </div>
       </div>
       <!-- Title Section -->
-      <h2
-        style="
-          color: #355d4c;
-          font-family: Heebo;
-          font-size: 24px;
-          font-style: normal;
-          font-weight: 600;
-          line-height: normal;
-          letter-spacing: 4.8px;
-        "
-      >
-        ADMIN PANEL
-      </h2>
+      <div class="page-title">
+        <h2>ADMIN PANEL</h2>
+      </div>
     </div>
 
     <div class="container py-3">
