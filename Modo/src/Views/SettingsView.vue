@@ -5,7 +5,7 @@
       <h2>SETTINGS</h2>
     </div>
 
-    <section v-if="currentUser" class="settings-card">
+    <section v-if="user" class="settings-card">
       <header class="profile-header">
         <div class="avatar" id="avatar" v-show="showAvatar">
           <img
@@ -845,6 +845,7 @@ const selectDecoration = (src) => {
       font-size: 20px;
       transition: all 0.4s ease;
       cursor: pointer;
+      transform-origin: center;
     }
 
     .notification-card h3:hover {
