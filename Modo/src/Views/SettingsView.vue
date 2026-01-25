@@ -17,10 +17,8 @@
 
       <header class="profile-header">
         <div class="avatar" id="avatar" v-show="showAvatar">
-          <img
-            :src="profilePic || 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400'"
-            alt="Profile"
-          />
+          <img v-if="profilePic || user?.avatar" :src="profilePic || user?.avatar" alt="Profile" />
+          <div v-else class="avatar-fallback">{{ userInitials }}</div>
           <button class="card-button btn-avatar-edit" @click="openDecoration">✎</button>
           <img
             v-if="selectedDecoration"
@@ -34,8 +32,10 @@
           <div class="card-wrapper">
             <button class="card-button btn-avatar-exit" @click="closeDecoration">✕</button>
             <ul
-              class="card-list swiper-wrapper" :style="{ transform: `translateX(-${currentIndex * slideWidth}px)` }"
+              class="card-list swiper-wrapper"
+              :style="{ transform: `translateX(-${currentIndex * slideWidth}px)` }"
             >
+<<<<<<< HEAD
               <li
                 v-for="item in decorations"
                 :key="item.name"
@@ -48,6 +48,11 @@
                   :class="{ 'btn-locked': userLevel < (item.requiredLevel ?? 0) }"
                 >
                   <FontAwesomeIcon :icon="userLevel < (item.requiredLevel ?? 0) ? 'lock' : 'check'" />
+=======
+              <li v-for="item in decorations" :key="item.name" class="card-item swiper-slide">
+                <button class="card-button btn-avatar-check" @click="selectDecoration(item.src)">
+                  ✓
+>>>>>>> 7f8815a0a7cc72e2f0e9316c99279d33f0c83b7e
                 </button>
                 <img :src="item.src" :alt="item.name" />
                 <span class="decoration-level-badge" :class="{ 'unlocked': userLevel >= (item.requiredLevel ?? 0) }">
@@ -58,22 +63,27 @@
 
             <button class="swiper-button-prev" @click="prevSlide">←</button>
             <button class="swiper-button-next" @click="nextSlide">→</button>
-            <img
-            :src="profilePic || 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400'"
-            alt="Profile"
-            />
+            <div class="swiper-preview">
+              <img
+                v-if="profilePic || user?.avatar"
+                :src="profilePic || user?.avatar"
+                alt="Profile"
+              />
+              <div v-else class="avatar-fallback">{{ userInitials }}</div>
+            </div>
           </div>
         </div>
 
         <div class="profile-info">
           <h2>Welcome back, {{ user.name }}</h2>
-          <p>{{user.email}}</p>
+          <p>{{ user.email }}</p>
         </div>
         <button class="change-picture" @click="promptAvatar">Change picture</button>
       </header>
 
       <div class="settings-content">
         <aside class="sidebar">
+<<<<<<< HEAD
           <div class="nav-item" :class="{ active: activeSection === 'account' || activeSection === null }" id="account-btn" @click="toggleSection('account')">
             <span><FontAwesomeIcon icon="user" /> Account Info</span> →
           </div>
@@ -184,10 +194,82 @@
               </p>
               <small class="notification-date">{{ formatNotificationDate(notification.date) }}</small>
               <button class="clear-notification-btn" @click="dismissNotification(index)">Dismiss</button>
+=======
+          <div class="nav-item" id="notification-btn"><span>Notifications</span> →</div>
+          <div class="nav-item" id="help-btn"><span>Help</span> →</div>
+          <div class="nav-item" id="about-btn"><span>About</span> →</div>
+          <div class="nav-item danger" id="logout-btn" @click="handleLogout">Logout</div>
+          <div class="nav-item danger" id="delete-btn" @click="handleDeleteAccount">
+            Delete account
+          </div>
+        </aside>
+
+        <div class="form-section">
+          <div class="field-group">
+            <label>Name</label>
+            <div class="inline">
+              <input
+                type="text"
+                v-model="userName"
+                :readonly="!isEditingName"
+                :style="{ opacity: isEditingName ? 1 : 0.5 }"
+              />
+              <button
+                id="toggle-name"
+                type="button"
+                class="btn-change change-name"
+                @click="toggleEditName"
+              >
+                {{ isEditingName ? 'Ok' : 'Change' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label><FontAwesomeIcon icon="envelope" /> Email address</label>
+            <div class="inline">
+              <input
+                id="change-email"
+                type="email"
+                v-model="userEmail"
+                :readonly="!isEditingEmail"
+                :style="{ opacity: isEditingEmail ? 1 : 0.5 }"
+              />
+
+              <button
+                id="toggle-email"
+                type="button"
+                class="btn-change change-email"
+                @click="toggleEditEmail"
+              >
+                {{ isEditingEmail ? 'Ok' : 'Change' }}
+              </button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label><FontAwesomeIcon icon="lock" /> Password</label>
+            <div class="inline">
+              <input
+                :type="isEditingPassword ? 'text' : 'password'"
+                v-model="userPassword"
+                :readonly="!isEditingPassword"
+                :style="{ opacity: isEditingPassword ? 1 : 0.5 }"
+              />
+              <button
+                id="toggle-password"
+                type="button"
+                class="btn-change change-password"
+                @click="toggleEditPassword"
+              >
+                {{ isEditingPassword ? 'Ok' : 'Change' }}
+              </button>
+>>>>>>> 7f8815a0a7cc72e2f0e9316c99279d33f0c83b7e
             </div>
             <button v-if="notifications.length > 0" class="btn-clear-all" @click="clearAllNotifications">Clear All</button>
           </div>
 
+<<<<<<< HEAD
           <!-- Help Section -->
           <div class="form-section" id="help-section" v-show="activeSection === 'help'">
             <h3 class="section-title"><FontAwesomeIcon icon="circle-question" /> Need Help?</h3>
@@ -202,9 +284,22 @@
             </p>
             <p>
               <strong>Contact Support:</strong> For further assistance, email us at support@modo.app
+=======
+          <div class="form-actions">
+            <button class="btn-primary" @click="saveChanges">Save changes</button>
+          </div>
+        </div>
+
+        <div class="form-section" id="notification-section" hidden>
+          <div class="notification-card" id="notification">
+            <h3 class="notification-title">Wellcome to MODO!</h3>
+            <p class="notification-content">
+              🎉 Welcome aboard, {{ userName }}! We're thrilled to have you in MODO with us.
+>>>>>>> 7f8815a0a7cc72e2f0e9316c99279d33f0c83b7e
             </p>
           </div>
 
+<<<<<<< HEAD
           <!-- About Section -->
           <div class="form-section" id="about-section" v-show="activeSection === 'about'">
             <h3 class="section-title"><FontAwesomeIcon icon="info-circle" /> What about MODO?</h3>
@@ -215,6 +310,23 @@
               Live with purpose. Grow with consistency. Move with MODO.
             </p>
           </div>
+=======
+        <div class="form-section" id="help-section" hidden></div>
+
+        <div class="form-section" id="about-section" hidden>
+          <h3>What about MODO?</h3>
+          <p>
+            MODO is a minimalist and powerful habit tracker built to help you take control of your
+            daily routine. Whether you're trying to develop healthier habits, stay focused on
+            personal goals, or simply bring more structure to your day, MODO keeps you on track with
+            clarity and ease. Designed with simplicity in mind, MODO lets you create habits, track
+            your progress, and celebrate your streaks—all in a clean, distraction-free interface.
+            Smart reminders and visual insights help you stay motivated, showing you how small,
+            consistent actions lead to meaningful change. MODO isn't just about checking off tasks.
+            It's about building momentum, staying intentional, and becoming the best version of
+            yourself, one habit at a time. Live with purpose. Grow with consistency. Move with MODO.
+          </p>
+>>>>>>> 7f8815a0a7cc72e2f0e9316c99279d33f0c83b7e
         </div>
       </div>
     </section>
@@ -226,26 +338,9 @@
 
   <footer>
     <div class="footer-grid">
-      <div>
-        <p>The best tracker to change who you are.</p>
-      </div>
-      <div>
-        <h4>Products</h4>
-        <a href="#">iOS App</a>
-        <a href="#">Android App</a>
-        <a href="#">Web App</a>
-        <a href="#">Updates</a>
-      </div>
-      <div>
-        <h4>About</h4>
-        <a href="#">Our Team</a>
-        <a href="#">Our Mission</a>
-      </div>
-      <div>
-        <h4>Legal</h4>
-        <a href="#">Privacy</a>
-        <a href="#">Terms of Service</a>
-      </div>
+      <img src="/src/images/modoIcon.png" alt="logo" style="filter: brightness(0) invert(90%); height: 30px; margin: 0px;">
+      <p>The best tracker to change who you are.</p>
+      <p>MODO 2026 | ESMAD</p>
     </div>
   </footer>
 
@@ -270,7 +365,11 @@
         <p>{{ confirmModal.message }}</p>
         <div class="modal-actions">
           <button class="btn-cancel" @click="cancelConfirm">Cancel</button>
-          <button class="btn-confirm" :class="{ 'btn-danger': confirmModal.isDanger }" @click="acceptConfirm">
+          <button
+            class="btn-confirm"
+            :class="{ 'btn-danger': confirmModal.isDanger }"
+            @click="acceptConfirm"
+          >
             {{ confirmModal.confirmText || 'Confirm' }}
           </button>
         </div>
@@ -469,17 +568,16 @@ const userName = ref(user.value?.name || '')
 const toggleEditName = async () => {
   if (isEditingName.value) {
     if (userName.value !== user.value.name) {
-      
       // Verifica se já existe o nome para outro utilizador
-      const nameExists = userStore.users.find(u => 
-        u.name === userName.value && u.id !== user.value.id
+      const nameExists = userStore.users.find(
+        (u) => u.name === userName.value && u.id !== user.value.id,
       )
 
       if (nameExists) {
         showToast('Name unavailable', `The name "${userName.value}" is already taken.`, 'error')
         return
       }
-      
+
       // Se não existe, atualiza e persiste
       try {
         await userStore.updateUserProfile({ name: userName.value })
@@ -499,26 +597,29 @@ const toggleEditName = async () => {
 
 // email
 const isEditingEmail = ref(false)
-const userEmail = ref(user.value?.email || '') 
+const userEmail = ref(user.value?.email || '')
 
 const toggleEditEmail = () => {
   if (isEditingEmail.value) {
     if (userEmail.value !== user.value.email) {
-
       // Verifica se já existe o email para outro utilizador
-      const emailExists = userStore.users.find(u => 
-        u.email === userEmail.value && u.id !== user.value.id
+      const emailExists = userStore.users.find(
+        (u) => u.email === userEmail.value && u.id !== user.value.id,
       )
 
       if (emailExists) {
-        showToast('Email unavailable', `The email "${userEmail.value}" is already registered.`, 'error')
+        showToast(
+          'Email unavailable',
+          `The email "${userEmail.value}" is already registered.`,
+          'error',
+        )
         return
       }
 
       // Se não existe, atualiza
       user.value.email = userEmail.value
     }
-    
+
     isEditingEmail.value = false
     console.log('Email atualizado com sucesso.')
   } else {
@@ -533,7 +634,6 @@ const userPassword = ref(user.value?.password || '********') // Valor inicial ou
 
 const toggleEditPassword = () => {
   if (isEditingPassword.value) {
-    
     if (user.value) user.value.password = userPassword.value
     isEditingPassword.value = false
   } else {
@@ -553,6 +653,7 @@ const selectedDecoration = ref(null)
 const fileInput = ref(null)
 const profilePic = ref(user.value?.avatar || null)
 
+<<<<<<< HEAD
 // Default decorations (fallback) with level requirements
 const defaultDecorations = [
   { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png', requiredLevel: 0 },
@@ -561,6 +662,27 @@ const defaultDecorations = [
   { name: 'cat', src: '/src/images/avatar_decoration/cat.png', requiredLevel: 15 },
   { name: 'summer', src: '/src/images/avatar_decoration/summer.png', requiredLevel: 20 },
   { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png', requiredLevel: 25 }
+=======
+const userInitials = computed(() => {
+  const name = user.value?.name || ''
+  const initials = name
+    .split(' ')
+    .filter((n) => n)
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+  return initials ? initials.toUpperCase() : '?'
+})
+
+// Default decorations (fallback)
+const defaultDecorations = [
+  { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png' },
+  { name: 'garden', src: '/src/images/avatar_decoration/garden.png' },
+  { name: 'olives', src: '/src/images/avatar_decoration/olives.png' },
+  { name: 'cat', src: '/src/images/avatar_decoration/cat.png' },
+  { name: 'summer', src: '/src/images/avatar_decoration/summer.png' },
+  { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png' },
+>>>>>>> 7f8815a0a7cc72e2f0e9316c99279d33f0c83b7e
 ]
 
 // Load decorations from localStorage (synced with Admin Panel)
@@ -710,14 +832,10 @@ const selectDecoration = async (src) => {
 
 // Logout function
 const handleLogout = () => {
-  showConfirm(
-    'Logout',
-    'Are you sure you want to logout?',
-    () => {
-      userStore.logout()
-      router.push('/login')
-    }
-  )
+  showConfirm('Logout', 'Are you sure you want to logout?', () => {
+    userStore.logout()
+    router.push('/login')
+  })
 }
 
 // Delete account function
@@ -733,7 +851,7 @@ const handleDeleteAccount = () => {
         showToast('Error', 'Failed to delete account: ' + e.message, 'error')
       }
     },
-    { confirmText: 'Delete', isDanger: true }
+    { confirmText: 'Delete', isDanger: true },
   )
 }
 
@@ -745,7 +863,7 @@ const saveChanges = async () => {
       email: userEmail.value,
       password: userPassword.value,
       avatar: profilePic.value,
-      avatarDecoration: selectedDecoration.value
+      avatarDecoration: selectedDecoration.value,
     })
     showToast('Success', 'Changes saved successfully!', 'success')
   } catch (e) {
@@ -756,6 +874,7 @@ const saveChanges = async () => {
 
 <style src="../css/styles.css"></style>
 <style>
+<<<<<<< HEAD
   :root {
       --bg: #f3f3f1;
       --green-dark: #3f5f4f;
@@ -1719,4 +1838,781 @@ const saveChanges = async () => {
         text-align: center;
       }
     }
+=======
+:root {
+  --bg: #f3f3f1;
+  --green-dark: #3f5f4f;
+  --green: #4f6f5f;
+  --green-light: #dff3e4;
+  --card: #466555;
+  --text-light: #e9efe9;
+  --text-muted: #b9c7bf;
+  --danger: #b4554d;
+  --radius: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Heebo', sans-serif;
+  background: var(--bg);
+  color: #1e1e1e;
+}
+
+.page {
+  max-width: 1140px;
+  padding: 0px 30px 0px 30px;
+  margin: 0 auto;
+  padding-top: 30px;
+}
+
+/* Card */
+.settings-card {
+  max-width: 1080px;
+  margin: 0 auto 0 auto;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  color: var(--text-light);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Header */
+.profile-header {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding-bottom: 24px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
+}
+
+.avatar {
+  position: relative;
+  display: flex;
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatar-fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #355d4c, #4f6f5f);
+  color: #fff;
+  font-weight: 700;
+  font-size: 28px;
+  border: 3px solid rgba(243, 246, 244, 0.9);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.profile-info h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.profile-info p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.change-picture {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
+
+.change-picture:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Content */
+.settings-content {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+/* Sidebar */
+.sidebar {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  gap: 10px;
+}
+
+.nav-item svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateX(4px);
+}
+
+.nav-item span {
+  opacity: 0.85;
+}
+
+.danger {
+  background: var(--danger);
+  color: #fff;
+}
+
+/* Form */
+.form-section {
+  right: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.field-group {
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
+  padding-bottom: 20px;
+}
+
+.field-group:last-child {
+  border-bottom: none;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+label svg {
+  font-size: 14px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
+
+.row input {
+  min-width: 0;
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: #e7efe9;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+input:hover {
+  background: #f5f9f7;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+input:focus {
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(79, 111, 95, 0.1);
+}
+
+.inline {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.inline input {
+  flex: 1;
+  max-width: 650px;
+}
+
+.btn-change {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-change:hover {
+  background: rgba(255, 255, 255, 0.28);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-change:active {
+  transform: translateY(0);
+}
+
+/* Footer */
+footer {
+  margin-top: 80px;
+  padding: 40px 24px;
+  background: var(--green-dark);
+  color: var(--text-light);
+}
+
+.footer-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 24px;
+}
+
+footer p {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+footer h4 {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+footer a {
+  display: block;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-bottom: 6px;
+  transition: all 0.3s ease;
+}
+
+footer a:hover {
+  color: var(--text-light);
+  transform: translateX(4px);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-primary {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 999px;
+  background: #2f4f40;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.btn-primary:hover {
+  background: #1f3f30;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+  .settings-content {
+    grid-template-columns: 1fr;
+  }
+
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Changes */
+
+.page-title {
+  width: 100%;
+  max-width: 1080px;
+  margin: 10px auto 50px auto;
+  padding-top: 10px;
+  border-top: 2px dotted #355d4c;
+}
+
+.page-title h2 {
+  color: #355d4c;
+  letter-spacing: 0.3em;
+}
+
+.swiper {
+  display: flex;
+  width: 96px;
+  height: 96px;
+  overflow: hidden;
+}
+
+.swiper img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.card-list img {
+  width: 96px;
+  height: 96px;
+}
+
+.card-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+}
+
+.swiper-wrapper {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  transition: transform 0.3s ease;
+}
+
+.btn-avatar-exit {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 2;
+  color: #fff;
+
+  border-radius: 50%;
+
+  /* estilo glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-avatar-exit:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn-avatar-check {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: 2;
+  color: #fff;
+
+  border-radius: 50%;
+
+  /* estilo glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-avatar-check:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.swiper-button-prev {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  z-index: 2;
+  color: #fff;
+
+  border-radius: 50%;
+
+  /* estilo glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.swiper-button-prev:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.swiper-button-next {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  z-index: 2;
+  color: #fff;
+
+  border-radius: 50%;
+
+  /* estilo glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.swiper-button-next:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.swiper-slide {
+  width: 96px;
+  height: 96px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-preview {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.swiper-preview img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.btn-avatar-edit {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  z-index: 2;
+  color: #fff;
+
+  border-radius: 50%;
+
+  /* estilo glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-avatar-edit:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  transform: scale(1.1);
+}
+
+.avatar-decoration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: scale(1.3);
+  transform-origin: center;
+}
+
+.notification-card {
+  width: 100%;
+  height: 80px;
+  padding: 10px 15px 10px 15px;
+  position: relative;
+  border: 1px solid var(--green);
+  border-radius: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notification-card h3 {
+  font-size: 20px;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  transform-origin: center;
+}
+
+.notification-card h3:hover {
+  transform: scale(1.1);
+}
+
+.clear-notification-btn {
+  width: 50px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  color: #fff;
+
+  border-radius: 10px;
+
+  /* estilo glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clear-notification-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  transform: scale(1.1);
+}
+
+/* Toast Notifications */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #355d4c, #4f6f5f);
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  min-width: 280px;
+  max-width: 380px;
+}
+
+.toast-notification.error {
+  background: linear-gradient(135deg, #b4554d, #d46a5f);
+}
+
+.toast-notification.warning {
+  background: linear-gradient(135deg, #c4842d, #e5a03d);
+}
+
+.toast-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.toast-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toast-content strong {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.toast-content small {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Toast Animation */
+.toast-slide-enter-active,
+.toast-slide-leave-active {
+  transition: all 0.35s ease;
+}
+
+.toast-slide-enter-from {
+  opacity: 0;
+  transform: translateY(-20px) translateX(20px);
+}
+
+.toast-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) translateX(20px);
+}
+
+/* Confirmation Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.confirm-modal {
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.confirm-modal h3 {
+  margin: 0 0 12px 0;
+  color: var(--green-dark);
+  font-size: 20px;
+}
+
+.confirm-modal p {
+  margin: 0 0 24px 0;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: #d1d5db;
+}
+
+.btn-confirm {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-confirm:hover {
+  background: var(--green-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-confirm.btn-danger {
+  background: var(--danger);
+}
+
+.btn-confirm.btn-danger:hover {
+  background: #943f38;
+}
+
+/* Modal Animation */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+.modal-fade-enter-from .confirm-modal,
+.modal-fade-leave-to .confirm-modal {
+  transform: scale(0.9);
+}
+>>>>>>> 7f8815a0a7cc72e2f0e9316c99279d33f0c83b7e
 </style>
+<style src="../css/styles.css"></style>
