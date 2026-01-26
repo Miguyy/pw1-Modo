@@ -496,28 +496,6 @@ onMounted(() => {
   if (userStore.loadFromLocalStorage) userStore.loadFromLocalStorage()
 })
 
-watch(
-  () => weatherStore.weatherData,
-  (newWeather) => {
-    if (!newWeather) return
-
-    // Check if it's raining
-    const condition = newWeather.weather[0].main.toLowerCase()
-    if (condition.includes('rain')) {
-      // Find outside habits
-      const outsideHabits = displayHabits.value.filter((h) => h.location === 'outside')
-      if (outsideHabits.length) {
-        showToast(
-          'Weather Alert',
-          `It's raining! You might want to postpone your outside tasks.`,
-          10000,
-        )
-      }
-    }
-  },
-  { immediate: true },
-)
-
 const currentUser = computed(() => userStore.currentUser)
 const userLevel = computed(() => {
   if (!currentUser.value || Number.isNaN(Number(currentUser.value.points))) return 0
@@ -595,6 +573,29 @@ const displayHabits = computed(() => {
 
   return filtered
 })
+
+// Watch for weather changes to alert user about outside habits when raining
+watch(
+  () => weatherStore.weatherData,
+  (newWeather) => {
+    if (!newWeather) return
+
+    // Check if it's raining
+    const condition = newWeather.weather[0].main.toLowerCase()
+    if (condition.includes('rain')) {
+      // Find outside habits
+      const outsideHabits = displayHabits.value.filter((h) => h.location === 'outside')
+      if (outsideHabits.length) {
+        showToast(
+          'Weather Alert',
+          `It's raining! You might want to postpone your outside tasks.`,
+          10000,
+        )
+      }
+    }
+  },
+  { immediate: true },
+)
 
 // Reset filters to their default values
 function resetFilters() {
