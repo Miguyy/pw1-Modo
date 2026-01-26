@@ -747,7 +747,7 @@ footer p { font-size: 14px; opacity: 0.85; }
 }
 
 /* ------------ FOOTER -------------- */
-.footer-grid {
+.footer {
   justify-content: space-between;
   max-width: 1080px;
   margin: 0 auto;
