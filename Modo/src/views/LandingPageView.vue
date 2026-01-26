@@ -369,25 +369,6 @@ onUnmounted(() => {
             </div>
           </div>
         </div>
-        <footer class="site-footer inside-wave">
-          <div class="footer-inner">
-            <div class="footer-brand">
-              <img src="../images/modoIcon.png" alt="Modo" class="footer-logo" />
-              <p class="footer-tag">The best tracker to change who you are.</p>
-              <p class="footer-copy">Copyright 2025 Modo Services, Inc. All Rights Reserved.</p>
-            </div>
-
-            <div class="footer-columns">
-              <footer>
-                <div class="footer-grid">
-                  <img src="/src/images/modoIcon.png" alt="logo" style="filter: brightness(0) invert(90%); height: 30px; margin: 0px;">
-                  <p>The best tracker to change who you are.</p>
-                  <p>MODO 2026 | ESMAD</p>
-                </div>
-              </footer>
-            </div>
-          </div>
-        </footer>
       </div>
 
       <div class="wave-back-3">
@@ -407,6 +388,3 @@ onUnmounted(() => {
     </section>
   </div>
 </template>
-
-<style scoped></style>
-<style src="../css/styles.css"></style>
