@@ -17,8 +17,12 @@
 
       <header class="profile-header">
         <div class="avatar" id="avatar" v-show="showAvatar">
-          <img v-if="profilePic || user?.avatar" :src="profilePic || user?.avatar" alt="Profile" />
-          <div v-else class="avatar-fallback">{{ userInitials }}</div>
+          <template v-if="profilePic || user?.avatar">
+            <img :src="profilePic || user?.avatar" alt="Profile" />
+          </template>
+          <template v-else>
+            <div class="avatar-fallback">{{ userInitials }}</div>
+          </template>
           <button class="card-button btn-avatar-edit" @click="openDecoration">✎</button>
           <img
             v-if="selectedDecoration"
@@ -41,15 +45,20 @@
                 class="card-item swiper-slide"
                 :class="{ 'decoration-locked': userLevel < (item.requiredLevel ?? 0) }"
               >
-                <button 
-                  class="card-button btn-avatar-check" 
+                <button
+                  class="card-button btn-avatar-check"
                   @click="selectDecoration(item.src)"
                   :class="{ 'btn-locked': userLevel < (item.requiredLevel ?? 0) }"
                 >
-                  <FontAwesomeIcon :icon="userLevel < (item.requiredLevel ?? 0) ? 'lock' : 'check'" />
+                  <FontAwesomeIcon
+                    :icon="userLevel < (item.requiredLevel ?? 0) ? 'lock' : 'check'"
+                  />
                 </button>
                 <img :src="item.src" :alt="item.name" />
-                <span class="decoration-level-badge" :class="{ 'unlocked': userLevel >= (item.requiredLevel ?? 0) }">
+                <span
+                  class="decoration-level-badge"
+                  :class="{ unlocked: userLevel >= (item.requiredLevel ?? 0) }"
+                >
                   Lv. {{ item.requiredLevel ?? 0 }}
                 </span>
               </li>
@@ -58,12 +67,12 @@
             <button class="swiper-button-prev" @click="prevSlide">←</button>
             <button class="swiper-button-next" @click="nextSlide">→</button>
             <div class="swiper-preview">
-              <img
-                v-if="profilePic || user?.avatar"
-                :src="profilePic || user?.avatar"
-                alt="Profile"
-              />
-              <div v-else class="avatar-fallback">{{ userInitials }}</div>
+              <template v-if="profilePic || user?.avatar">
+                <img :src="profilePic || user?.avatar" alt="Profile" />
+              </template>
+              <template v-else>
+                <div class="avatar-fallback">{{ userInitials }}</div>
+              </template>
             </div>
           </div>
         </div>
@@ -77,18 +86,40 @@
 
       <div class="settings-content">
         <aside class="sidebar">
-          <div class="nav-item" :class="{ active: activeSection === 'account' || activeSection === null }" id="account-btn" @click="toggleSection('account')">
+          <div
+            class="nav-item"
+            :class="{ active: activeSection === 'account' || activeSection === null }"
+            id="account-btn"
+            @click="toggleSection('account')"
+          >
             <span><FontAwesomeIcon icon="user" /> Account Info</span> →
           </div>
-          <div class="nav-item" :class="{ active: activeSection === 'notifications' }" id="notification-btn" @click="toggleSection('notifications')">
+          <div
+            class="nav-item"
+            :class="{ active: activeSection === 'notifications' }"
+            id="notification-btn"
+            @click="toggleSection('notifications')"
+          >
             <span><FontAwesomeIcon icon="bell" /> Notifications</span>
-            <span v-if="notifications.length > 0" class="notification-badge">{{ notifications.length }}</span>
+            <span v-if="notifications.length > 0" class="notification-badge">{{
+              notifications.length
+            }}</span>
             <span v-else>→</span>
           </div>
-          <div class="nav-item" :class="{ active: activeSection === 'help' }" id="help-btn" @click="toggleSection('help')">
+          <div
+            class="nav-item"
+            :class="{ active: activeSection === 'help' }"
+            id="help-btn"
+            @click="toggleSection('help')"
+          >
             <span><FontAwesomeIcon icon="circle-question" /> Help</span> →
           </div>
-          <div class="nav-item" :class="{ active: activeSection === 'about' }" id="about-btn" @click="toggleSection('about')">
+          <div
+            class="nav-item"
+            :class="{ active: activeSection === 'about' }"
+            id="about-btn"
+            @click="toggleSection('about')"
+          >
             <span><FontAwesomeIcon icon="info-circle" /> About</span> →
           </div>
           <div class="nav-item danger" id="logout-btn" @click="handleLogout">
@@ -106,16 +137,16 @@
             <div class="field-group">
               <label>Name</label>
               <div class="inline">
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   v-model="userName"
                   :readonly="!isEditingName"
                   :style="{ opacity: isEditingName ? 1 : 0.5 }"
                 />
-                <button 
-                  id="toggle-name" 
-                  type="button" 
-                  class="btn-change change-name" 
+                <button
+                  id="toggle-name"
+                  type="button"
+                  class="btn-change change-name"
                   @click="toggleEditName"
                 >
                   {{ isEditingName ? 'Ok' : 'Change' }}
@@ -126,18 +157,18 @@
             <div class="field-group">
               <label><FontAwesomeIcon icon="envelope" /> Email address</label>
               <div class="inline">
-                <input 
-                  id="change-email" 
-                  type="email" 
-                  v-model="userEmail" 
-                  :readonly="!isEditingEmail" 
+                <input
+                  id="change-email"
+                  type="email"
+                  v-model="userEmail"
+                  :readonly="!isEditingEmail"
                   :style="{ opacity: isEditingEmail ? 1 : 0.5 }"
                 />
 
-                <button 
-                  id="toggle-email" 
-                  type="button" 
-                  class="btn-change change-email" 
+                <button
+                  id="toggle-email"
+                  type="button"
+                  class="btn-change change-email"
                   @click="toggleEditEmail"
                 >
                   {{ isEditingEmail ? 'Ok' : 'Change' }}
@@ -148,16 +179,16 @@
             <div class="field-group">
               <label><FontAwesomeIcon icon="lock" /> Password</label>
               <div class="inline">
-                <input 
-                  :type="isEditingPassword ? 'text' : 'password'" 
+                <input
+                  :type="isEditingPassword ? 'text' : 'password'"
                   v-model="userPassword"
                   :readonly="!isEditingPassword"
                   :style="{ opacity: isEditingPassword ? 1 : 0.5 }"
                 />
-                <button 
-                  id="toggle-password" 
-                  type="button" 
-                  class="btn-change change-password" 
+                <button
+                  id="toggle-password"
+                  type="button"
+                  class="btn-change change-password"
                   @click="toggleEditPassword"
                 >
                   {{ isEditingPassword ? 'Ok' : 'Change' }}
@@ -171,37 +202,54 @@
           </div>
 
           <!-- Notifications Section -->
-          <div class="form-section" id="notification-section" v-show="activeSection === 'notifications'">
+          <div
+            class="form-section"
+            id="notification-section"
+            v-show="activeSection === 'notifications'"
+          >
             <h3 class="section-title"><FontAwesomeIcon icon="bell" /> Notifications</h3>
             <div v-if="notifications.length === 0" class="no-notifications">
               <p>No notifications yet!</p>
             </div>
-            <div 
-              v-for="(notification, index) in notifications" 
-              :key="index" 
+            <div
+              v-for="(notification, index) in notifications"
+              :key="index"
               class="notification-card"
             >
               <h3 class="notification-title">{{ notification.title }}</h3>
               <p class="notification-content">
                 {{ notification.message }}
               </p>
-              <small class="notification-date">{{ formatNotificationDate(notification.date) }}</small>
-              <button class="clear-notification-btn" @click="dismissNotification(index)">Dismiss</button>
+              <small class="notification-date">{{
+                formatNotificationDate(notification.date)
+              }}</small>
+              <button class="clear-notification-btn" @click="dismissNotification(index)">
+                Dismiss
+              </button>
             </div>
-            <button v-if="notifications.length > 0" class="btn-clear-all" @click="clearAllNotifications">Clear All</button>
+            <button
+              v-if="notifications.length > 0"
+              class="btn-clear-all"
+              @click="clearAllNotifications"
+            >
+              Clear All
+            </button>
           </div>
 
           <!-- Help Section -->
           <div class="form-section" id="help-section" v-show="activeSection === 'help'">
             <h3 class="section-title"><FontAwesomeIcon icon="circle-question" /> Need Help?</h3>
             <p>
-              <strong>Getting Started:</strong> Create your first habit by navigating to the Habit Manager page. Click "Create new habit" and fill in the details.
+              <strong>Getting Started:</strong> Create your first habit by navigating to the Habit
+              Manager page. Click "Create new habit" and fill in the details.
             </p>
             <p>
-              <strong>Tracking Progress:</strong> Mark habits as complete daily to earn points and level up. Each completed habit awards you 10 points!
+              <strong>Tracking Progress:</strong> Mark habits as complete daily to earn points and
+              level up. Each completed habit awards you 10 points!
             </p>
             <p>
-              <strong>Avatar Decorations:</strong> Unlock new avatar decorations every 5 levels. Visit Settings to customize your profile.
+              <strong>Avatar Decorations:</strong> Unlock new avatar decorations every 5 levels.
+              Visit Settings to customize your profile.
             </p>
             <p>
               <strong>Contact Support:</strong> For further assistance, email us at support@modo.app
@@ -212,10 +260,16 @@
           <div class="form-section" id="about-section" v-show="activeSection === 'about'">
             <h3 class="section-title"><FontAwesomeIcon icon="info-circle" /> What about MODO?</h3>
             <p>
-              MODO is a minimalist and powerful habit tracker built to help you take control of your daily routine. Whether you're trying to develop healthier habits, stay focused on personal goals, or simply bring more structure to your day, MODO keeps you on track with clarity and ease.
-              Designed with simplicity in mind, MODO lets you create habits, track your progress, and celebrate your streaks—all in a clean, distraction-free interface. Smart reminders and visual insights help you stay motivated, showing you how small, consistent actions lead to meaningful change.
-              MODO isn't just about checking off tasks. It's about building momentum, staying intentional, and becoming the best version of yourself, one habit at a time.
-              Live with purpose. Grow with consistency. Move with MODO.
+              MODO is a minimalist and powerful habit tracker built to help you take control of your
+              daily routine. Whether you're trying to develop healthier habits, stay focused on
+              personal goals, or simply bring more structure to your day, MODO keeps you on track
+              with clarity and ease. Designed with simplicity in mind, MODO lets you create habits,
+              track your progress, and celebrate your streaks—all in a clean, distraction-free
+              interface. Smart reminders and visual insights help you stay motivated, showing you
+              how small, consistent actions lead to meaningful change. MODO isn't just about
+              checking off tasks. It's about building momentum, staying intentional, and becoming
+              the best version of yourself, one habit at a time. Live with purpose. Grow with
+              consistency. Move with MODO.
             </p>
           </div>
         </div>
@@ -308,7 +362,7 @@ function addNotification(title, message) {
   notifications.value.unshift({
     title,
     message,
-    date: new Date().toISOString()
+    date: new Date().toISOString(),
   })
   saveNotifications()
 }
@@ -327,19 +381,23 @@ function clearAllNotifications() {
 
 function formatNotificationDate(dateStr) {
   const date = new Date(dateStr)
-  return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  return (
+    date.toLocaleDateString() +
+    ' ' +
+    date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  )
 }
 
 // Check for newly unlocked decorations based on user level
 function checkDecorationUnlocks() {
   const userId = user.value?.id
   if (!userId) return
-  
+
   const level = Math.floor((user.value.points || 0) / 100)
   const unlockedKey = `unlockedDecorations_${userId}`
   const savedUnlocked = localStorage.getItem(unlockedKey)
   let previouslyUnlocked = []
-  
+
   if (savedUnlocked) {
     try {
       previouslyUnlocked = JSON.parse(savedUnlocked)
@@ -347,7 +405,7 @@ function checkDecorationUnlocks() {
       previouslyUnlocked = []
     }
   }
-  
+
   // Load decorations
   const saved = localStorage.getItem('avatarDecorations')
   let decorationsList = []
@@ -358,7 +416,7 @@ function checkDecorationUnlocks() {
       decorationsList = []
     }
   }
-  
+
   // Default decorations fallback
   if (decorationsList.length === 0) {
     decorationsList = [
@@ -367,25 +425,25 @@ function checkDecorationUnlocks() {
       { name: 'olives', requiredLevel: 10 },
       { name: 'cat', requiredLevel: 15 },
       { name: 'summer', requiredLevel: 20 },
-      { name: 'zoo', requiredLevel: 25 }
+      { name: 'zoo', requiredLevel: 25 },
     ]
   }
-  
+
   // Check for newly unlocked decorations
-  const newlyUnlocked = decorationsList.filter(d => {
+  const newlyUnlocked = decorationsList.filter((d) => {
     const requiredLevel = d.requiredLevel ?? 0
     return level >= requiredLevel && !previouslyUnlocked.includes(d.name)
   })
-  
+
   // Add notifications for newly unlocked decorations
-  newlyUnlocked.forEach(d => {
+  newlyUnlocked.forEach((d) => {
     addNotification(
       '🎉 New Decoration Unlocked!',
-      `Congratulations! You've unlocked the "${d.name}" avatar decoration at Level ${d.requiredLevel ?? 0}!`
+      `Congratulations! You've unlocked the "${d.name}" avatar decoration at Level ${d.requiredLevel ?? 0}!`,
     )
     previouslyUnlocked.push(d.name)
   })
-  
+
   // Save updated unlocked list
   localStorage.setItem(unlockedKey, JSON.stringify(previouslyUnlocked))
 }
@@ -536,6 +594,7 @@ const selectedDecoration = ref(null)
 const fileInput = ref(null)
 const profilePic = ref(user.value?.avatar || null)
 
+// initials fallback (like HabitManager profile-card)
 const userInitials = computed(() => {
   const name = user.value?.name || ''
   const initials = name
@@ -547,7 +606,7 @@ const userInitials = computed(() => {
   return initials ? initials.toUpperCase() : '?'
 })
 
-// Default decorations (fallback)
+// Default decorations (fallback) with requiredLevel
 const defaultDecorations = [
   { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png', requiredLevel: 0 },
   { name: 'garden', src: '/src/images/avatar_decoration/garden.png', requiredLevel: 5 },
@@ -570,12 +629,7 @@ function loadDecorations() {
   return [...defaultDecorations]
 }
 
-const decorationsRaw = ref(loadDecorations())
-
-// Sort decorations by required level
-const decorations = computed(() => {
-  return [...decorationsRaw.value].sort((a, b) => (a.requiredLevel ?? 0) - (b.requiredLevel ?? 0))
-})
+const decorations = ref(loadDecorations())
 
 // Load saved decoration and profile pic on mount
 onMounted(() => {
@@ -585,20 +639,19 @@ onMounted(() => {
   if (user.value?.avatar) {
     profilePic.value = user.value.avatar
   }
-  // Load notifications
+  // load notifications and check for unlocked decorations on mount
   loadNotifications()
-  // Check for newly unlocked decorations
   checkDecorationUnlocks()
 })
 
-// Watch for user points changes to check for new decoration unlocks
+// Re-check unlocks when user points change
 watch(
   () => user.value?.points,
   (newPoints, oldPoints) => {
     if (newPoints !== oldPoints && newPoints !== undefined) {
       checkDecorationUnlocks()
     }
-  }
+  },
 )
 
 // Handle profile picture upload
@@ -669,37 +722,41 @@ const userLevel = computed(() => {
 
 // Find decoration by src to get its required level
 const getDecorationBySource = (src) => {
-  return decorations.value.find(d => d.src === src)
+  return decorations.value.find((d) => d.src === src)
 }
 
 const selectDecoration = async (src) => {
   const decoration = getDecorationBySource(src)
   const requiredLevel = decoration?.requiredLevel ?? 0
-  
+
   // Check if user has sufficient level
   if (userLevel.value < requiredLevel) {
     showToast(
       'Level Required',
       `You need to be Level ${requiredLevel} to use this decoration. You are currently Level ${userLevel.value}.`,
       'warning',
-      4000
+      4000,
     )
     return
   }
-  
+
   selectedDecoration.value = src
   showAvatar.value = true
   // Save to user profile using updateUserProfile for proper persistence
   if (user.value) {
     try {
       await userStore.updateUserProfile({ avatarDecoration: src })
-    } catch (e) {
+    } catch {
       // Fallback: save directly
       user.value.avatarDecoration = src
       userStore.saveToLocalStorage()
     }
   }
-  showToast('Decoration Applied', `"${decoration?.name || 'Decoration'}" has been equipped!`, 'success')
+  showToast(
+    'Decoration Applied',
+    `"${decoration?.name || 'Decoration'}" has been equipped!`,
+    'success',
+  )
 }
 
 // Logout function
