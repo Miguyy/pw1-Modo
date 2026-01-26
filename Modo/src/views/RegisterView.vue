@@ -37,14 +37,6 @@
         >
       </p>
     </div>
-
-    <footer>
-      <div class="footer-grid">
-        <img src="/src/images/modoIcon.png" alt="logo" style="filter: brightness(0) invert(90%); height: 30px; margin: 0px;">
-        <p>The best tracker to change who you are.</p>
-        <p>MODO 2026 | ESMAD</p>
-      </div>
-    </footer>
     
     <!-- Toast notification -->
     <Transition name="toast-slide">
@@ -155,51 +147,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-/* Toast styles (local to register view) */
-.toast-notification {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 9999;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: linear-gradient(135deg, #355d4c, #4f6f5f);
-  color: #fff;
-  padding: 12px 16px;
-  border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
-  min-width: 240px;
-}
-.toast-icon {
-  font-size: 20px;
-}
-.toast-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.toast-content strong {
-  font-size: 14px;
-}
-.toast-content small {
-  font-size: 12px;
-  opacity: 0.95;
-}
-
-.toast-slide-enter-active,
-.toast-slide-leave-active {
-  transition: all 0.35s ease;
-}
-.toast-slide-enter-from {
-  opacity: 0;
-  transform: translateY(-12px) translateX(8px);
-}
-.toast-slide-leave-to {
-  opacity: 0;
-  transform: translateY(-8px) translateX(8px);
-}
-</style>
-<style src="../css/styles.css"></style>

@@ -388,5 +388,3 @@ onUnmounted(() => {
     </section>
   </div>
 </template>
-
-<style src="../css/styles.css"></style>

@@ -160,36 +160,3 @@ onBeforeUnmount(() => {
   window.removeEventListener('habitCompleted', handleStorageChange)
 })
 </script>
-
-<style scoped>
-.stats-wrapper {
-  max-width: 400px;
-  margin: 0 auto;
-}
-
-.stats-header {
-  padding: 0.5rem 0;
-}
-
-.chart-area {
-  position: relative;
-  height: 200px;
-}
-
-.btn-group .btn {
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.btn-group .btn.active {
-  background-color: #3f5f4f;
-  border-color: #3f5f4f;
-  color: #fff;
-  box-shadow: 0 2px 8px rgba(63, 95, 79, 0.3);
-}
-
-.btn-group .btn:not(.active):hover {
-  background-color: #dff3e4;
-  border-color: #4f6f5f;
-}
-</style>

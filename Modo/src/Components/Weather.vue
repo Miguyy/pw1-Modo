@@ -89,27 +89,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-.refresh-btn {
-  background: transparent;
-  border: none;
-  color: inherit;
-  padding: 6px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.refresh-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.weather img {
-  max-width: 80px;
-  height: auto;
-  display: block;
-  margin: 8px auto;
-}
-</style>

@@ -6,6 +6,7 @@ import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 import 'bootstrap'
+import './css/styles.css'
 
 /* Font Awesome */
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -40,6 +41,7 @@ import {
   faBars,
   faCircleQuestion,
   faRightFromBracket,
+  faTrophy,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -71,7 +73,8 @@ library.add(
   faCircleNotch,
   faBars,
   faCircleQuestion,
-  faRightFromBracket
+  faRightFromBracket,
+  faTrophy
 )
 
 const app = createApp(App)
