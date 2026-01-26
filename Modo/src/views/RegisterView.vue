@@ -38,14 +38,6 @@
       </p>
     </div>
 
-    <footer>
-      <div class="footer-grid">
-        <img src="/src/images/modoIcon.png" alt="logo" style="filter: brightness(0) invert(90%); height: 30px; margin: 0px;">
-        <p>The best tracker to change who you are.</p>
-        <p>MODO 2026 | ESMAD</p>
-      </div>
-    </footer>
-    
     <!-- Toast notification -->
     <Transition name="toast-slide">
       <div v-if="toast.visible" class="toast-notification">

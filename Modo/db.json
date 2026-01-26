@@ -260,9 +260,10 @@
       "email": "testeresponsividade@gmail.com",
       "password": "M1guelito!",
       "avatar": null,
+      "avatarDecoration": "/src/images/avatar_decoration/garden.png",
+      "createdAt": "2026-01-07T16:20:31.756Z",
       "points": 315,
       "priority": 1,
-      "createdAt": "2026-01-07T16:20:31.756Z",
       "habits": [
         "7aa3",
         "a03c",
@@ -512,6 +513,17 @@
       "points": 0,
       "priority": 1,
       "createdAt": "2026-01-25T18:50:56.999Z",
+      "habits": []
+    },
+    {
+      "id": "9ca5",
+      "name": "testefinal2",
+      "email": "testefinal2@gmail.com",
+      "password": "M1guelito!",
+      "avatar": null,
+      "points": 0,
+      "priority": 1,
+      "createdAt": "2026-01-26T00:17:06.325Z",
       "habits": []
     }
   ],
