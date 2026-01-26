@@ -77,7 +77,7 @@ npm run test:unit
 ## Project features
 
 - Create and manage user accounts
-- Create, edit and delete habits
+- Create, edit and delete avatar decorations
 - Mark habit completions with date tracking
 - Dashboard view with habit overview
 - Habit statistics charting component

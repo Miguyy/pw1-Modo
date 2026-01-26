@@ -34,15 +34,26 @@
           <div class="card-wrapper">
             <button class="card-button btn-avatar-exit" @click="closeDecoration">✕</button>
             <ul
-              class="card-list swiper-wrapper" :style="{ transform: `translateX(-${currentIndex * slideWidth}px)` }"
+              class="card-list swiper-wrapper"
+              :style="{ transform: `translateX(-${currentIndex * slideWidth}px)` }"
             >
               <li
                 v-for="item in decorations"
                 :key="item.name"
                 class="card-item swiper-slide"
+                :class="{ 'decoration-locked': userLevel < (item.requiredLevel ?? 0) }"
               >
-                <button class="card-button btn-avatar-check" @click="selectDecoration(item.src)">✓</button>
+                <button 
+                  class="card-button btn-avatar-check" 
+                  @click="selectDecoration(item.src)"
+                  :class="{ 'btn-locked': userLevel < (item.requiredLevel ?? 0) }"
+                >
+                  <FontAwesomeIcon :icon="userLevel < (item.requiredLevel ?? 0) ? 'lock' : 'check'" />
+                </button>
                 <img :src="item.src" :alt="item.name" />
+                <span class="decoration-level-badge" :class="{ 'unlocked': userLevel >= (item.requiredLevel ?? 0) }">
+                  Lv. {{ item.requiredLevel ?? 0 }}
+                </span>
               </li>
             </ul>
 
@@ -57,110 +68,154 @@
 
         <div class="profile-info">
           <h2>Welcome back, {{ user.name }}</h2>
-          <p>{{user.email}}</p>
+          <p>{{ user.email }}</p>
         </div>
         <button class="change-picture" @click="promptAvatar">Change picture</button>
       </header>
 
       <div class="settings-content">
         <aside class="sidebar">
-          <div class="nav-item" id="notification-btn"><span>Notifications</span> →</div>
-          <div class="nav-item" id="help-btn"><span>Help</span> →</div>
-          <div class="nav-item" id="about-btn"><span>About</span> →</div>
-          <div class="nav-item danger" id="logout-btn" @click="handleLogout">Logout</div>
-          <div class="nav-item danger" id="delete-btn" @click="handleDeleteAccount">Delete account</div>
+          <div class="nav-item" :class="{ active: activeSection === 'account' || activeSection === null }" id="account-btn" @click="toggleSection('account')">
+            <span><FontAwesomeIcon icon="user" /> Account Info</span> →
+          </div>
+          <div class="nav-item" :class="{ active: activeSection === 'notifications' }" id="notification-btn" @click="toggleSection('notifications')">
+            <span><FontAwesomeIcon icon="bell" /> Notifications</span>
+            <span v-if="notifications.length > 0" class="notification-badge">{{ notifications.length }}</span>
+            <span v-else>→</span>
+          </div>
+          <div class="nav-item" :class="{ active: activeSection === 'help' }" id="help-btn" @click="toggleSection('help')">
+            <span><FontAwesomeIcon icon="circle-question" /> Help</span> →
+          </div>
+          <div class="nav-item" :class="{ active: activeSection === 'about' }" id="about-btn" @click="toggleSection('about')">
+            <span><FontAwesomeIcon icon="info-circle" /> About</span> →
+          </div>
+          <div class="nav-item danger" id="logout-btn" @click="handleLogout">
+            <FontAwesomeIcon icon="right-from-bracket" /> Logout
+          </div>
+          <div class="nav-item danger" id="delete-btn" @click="handleDeleteAccount">
+            <FontAwesomeIcon icon="trash" /> Delete account
+          </div>
         </aside>
 
-        <div class="form-section">
-          <div class="field-group">
-            <label>Name</label>
-            <div class="inline">
-              <input 
-                type="text" 
-                v-model="userName"
-                :readonly="!isEditingName"
-                :style="{ opacity: isEditingName ? 1 : 0.5 }"
-              />
-              <button 
-                id="toggle-name" 
-                type="button" 
-                class="btn-change change-name" 
-                @click="toggleEditName"
-              >
-                {{ isEditingName ? 'Ok' : 'Change' }}
-              </button>
+        <div class="content-card">
+          <!-- Account Info Section -->
+          <div class="form-section" v-show="activeSection === 'account' || activeSection === null">
+            <h3 class="section-title"><FontAwesomeIcon icon="user" /> Account Information</h3>
+            <div class="field-group">
+              <label>Name</label>
+              <div class="inline">
+                <input 
+                  type="text" 
+                  v-model="userName"
+                  :readonly="!isEditingName"
+                  :style="{ opacity: isEditingName ? 1 : 0.5 }"
+                />
+                <button 
+                  id="toggle-name" 
+                  type="button" 
+                  class="btn-change change-name" 
+                  @click="toggleEditName"
+                >
+                  {{ isEditingName ? 'Ok' : 'Change' }}
+                </button>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label><FontAwesomeIcon icon="envelope" /> Email address</label>
+              <div class="inline">
+                <input 
+                  id="change-email" 
+                  type="email" 
+                  v-model="userEmail" 
+                  :readonly="!isEditingEmail" 
+                  :style="{ opacity: isEditingEmail ? 1 : 0.5 }"
+                />
+
+                <button 
+                  id="toggle-email" 
+                  type="button" 
+                  class="btn-change change-email" 
+                  @click="toggleEditEmail"
+                >
+                  {{ isEditingEmail ? 'Ok' : 'Change' }}
+                </button>
+              </div>
+            </div>
+
+            <div class="field-group">
+              <label><FontAwesomeIcon icon="lock" /> Password</label>
+              <div class="inline">
+                <input 
+                  :type="isEditingPassword ? 'text' : 'password'" 
+                  v-model="userPassword"
+                  :readonly="!isEditingPassword"
+                  :style="{ opacity: isEditingPassword ? 1 : 0.5 }"
+                />
+                <button 
+                  id="toggle-password" 
+                  type="button" 
+                  class="btn-change change-password" 
+                  @click="toggleEditPassword"
+                >
+                  {{ isEditingPassword ? 'Ok' : 'Change' }}
+                </button>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn-primary" @click="saveChanges">Save changes</button>
             </div>
           </div>
 
-          <div class="field-group">
-            <label><FontAwesomeIcon icon="envelope" /> Email address</label>
-            <div class="inline">
-              <input 
-                id="change-email" 
-                type="email" 
-                v-model="userEmail" 
-                :readonly="!isEditingEmail" 
-                :style="{ opacity: isEditingEmail ? 1 : 0.5 }"
-              />
-
-              <button 
-                id="toggle-email" 
-                type="button" 
-                class="btn-change change-email" 
-                @click="toggleEditEmail"
-              >
-                {{ isEditingEmail ? 'Ok' : 'Change' }}
-              </button>
+          <!-- Notifications Section -->
+          <div class="form-section" id="notification-section" v-show="activeSection === 'notifications'">
+            <h3 class="section-title"><FontAwesomeIcon icon="bell" /> Notifications</h3>
+            <div v-if="notifications.length === 0" class="no-notifications">
+              <p>No notifications yet!</p>
             </div>
-          </div>
-
-          <div class="field-group">
-            <label><FontAwesomeIcon icon="lock" /> Password</label>
-            <div class="inline">
-              <input 
-                :type="isEditingPassword ? 'text' : 'password'" 
-                v-model="userPassword"
-                :readonly="!isEditingPassword"
-                :style="{ opacity: isEditingPassword ? 1 : 0.5 }"
-              />
-              <button 
-                id="toggle-password" 
-                type="button" 
-                class="btn-change change-password" 
-                @click="toggleEditPassword"
-              >
-                {{ isEditingPassword ? 'Ok' : 'Change' }}
-              </button>
+            <div 
+              v-for="(notification, index) in notifications" 
+              :key="index" 
+              class="notification-card"
+            >
+              <h3 class="notification-title">{{ notification.title }}</h3>
+              <p class="notification-content">
+                {{ notification.message }}
+              </p>
+              <small class="notification-date">{{ formatNotificationDate(notification.date) }}</small>
+              <button class="clear-notification-btn" @click="dismissNotification(index)">Dismiss</button>
             </div>
+            <button v-if="notifications.length > 0" class="btn-clear-all" @click="clearAllNotifications">Clear All</button>
           </div>
 
-          <div class="form-actions">
-            <button class="btn-primary" @click="saveChanges">Save changes</button>
-          </div>
-        </div>
-
-        <div class="form-section" id="notification-section" hidden>
-          <div class="notification-card" id="notification">
-            <h3 class="notification-title">Wellcome to MODO!</h3>
-            <p class="notification-content">
-              🎉 Welcome aboard, {{userName}}! We're thrilled to have you in MODO with us.
+          <!-- Help Section -->
+          <div class="form-section" id="help-section" v-show="activeSection === 'help'">
+            <h3 class="section-title"><FontAwesomeIcon icon="circle-question" /> Need Help?</h3>
+            <p>
+              <strong>Getting Started:</strong> Create your first habit by navigating to the Habit Manager page. Click "Create new habit" and fill in the details.
             </p>
-            <button class="clear-notification-btn" id="clear-notification">Clear</button>
+            <p>
+              <strong>Tracking Progress:</strong> Mark habits as complete daily to earn points and level up. Each completed habit awards you 10 points!
+            </p>
+            <p>
+              <strong>Avatar Decorations:</strong> Unlock new avatar decorations every 5 levels. Visit Settings to customize your profile.
+            </p>
+            <p>
+              <strong>Contact Support:</strong> For further assistance, email us at support@modo.app
+            </p>
           </div>
-        </div>
 
-        <div class="form-section" id="help-section" hidden>
-
-        </div>
-
-        <div class="form-section" id="about-section" hidden>
-          <h3>What about MODO?</h3>
-          <p>
-            MODO is a minimalist and powerful habit tracker built to help you take control of your daily routine. Whether you're trying to develop healthier habits, stay focused on personal goals, or simply bring more structure to your day, MODO keeps you on track with clarity and ease.
-            Designed with simplicity in mind, MODO lets you create habits, track your progress, and celebrate your streaks—all in a clean, distraction-free interface. Smart reminders and visual insights help you stay motivated, showing you how small, consistent actions lead to meaningful change.
-            MODO isn't just about checking off tasks. It's about building momentum, staying intentional, and becoming the best version of yourself, one habit at a time.
-            Live with purpose. Grow with consistency. Move with MODO.
-          </p>
+          <!-- About Section -->
+          <div class="form-section" id="about-section" v-show="activeSection === 'about'">
+            <h3 class="section-title"><FontAwesomeIcon icon="info-circle" /> What about MODO?</h3>
+            <p>
+              MODO is a minimalist and powerful habit tracker built to help you take control of your daily routine. Whether you're trying to develop healthier habits, stay focused on personal goals, or simply bring more structure to your day, MODO keeps you on track with clarity and ease.
+              Designed with simplicity in mind, MODO lets you create habits, track your progress, and celebrate your streaks—all in a clean, distraction-free interface. Smart reminders and visual insights help you stay motivated, showing you how small, consistent actions lead to meaningful change.
+              MODO isn't just about checking off tasks. It's about building momentum, staying intentional, and becoming the best version of yourself, one habit at a time.
+              Live with purpose. Grow with consistency. Move with MODO.
+            </p>
+          </div>
         </div>
       </div>
     </section>
@@ -199,7 +254,11 @@
         <p>{{ confirmModal.message }}</p>
         <div class="modal-actions">
           <button class="btn-cancel" @click="cancelConfirm">Cancel</button>
-          <button class="btn-confirm" :class="{ 'btn-danger': confirmModal.isDanger }" @click="acceptConfirm">
+          <button
+            class="btn-confirm"
+            :class="{ 'btn-danger': confirmModal.isDanger }"
+            @click="acceptConfirm"
+          >
             {{ confirmModal.confirmText || 'Confirm' }}
           </button>
         </div>
@@ -210,7 +269,7 @@
 
 <script setup>
 import { useUserStore } from '../stores/userStore'
-import { computed, ref, onMounted } from 'vue'
+import { computed, ref, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import NavBar from '@/Components/NavBar.vue'
 
@@ -221,6 +280,121 @@ defineOptions({
 const userStore = useUserStore()
 const router = useRouter()
 const user = computed(() => userStore.currentUser)
+
+// Active section for sidebar navigation
+const activeSection = ref(null)
+
+function toggleSection(section) {
+  activeSection.value = activeSection.value === section ? null : section
+}
+
+// Notifications system
+const notifications = ref([])
+
+function loadNotifications() {
+  const userId = user.value?.id
+  if (!userId) return
+  const saved = localStorage.getItem(`notifications_${userId}`)
+  if (saved) {
+    try {
+      notifications.value = JSON.parse(saved)
+    } catch {
+      notifications.value = []
+    }
+  }
+}
+
+function saveNotifications() {
+  const userId = user.value?.id
+  if (!userId) return
+  localStorage.setItem(`notifications_${userId}`, JSON.stringify(notifications.value))
+}
+
+function addNotification(title, message) {
+  notifications.value.unshift({
+    title,
+    message,
+    date: new Date().toISOString()
+  })
+  saveNotifications()
+}
+
+function dismissNotification(index) {
+  notifications.value.splice(index, 1)
+  saveNotifications()
+  showToast('Notification dismissed', '', 'success')
+}
+
+function clearAllNotifications() {
+  notifications.value = []
+  saveNotifications()
+  showToast('All notifications cleared', '', 'success')
+}
+
+function formatNotificationDate(dateStr) {
+  const date = new Date(dateStr)
+  return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+}
+
+// Check for newly unlocked decorations based on user level
+function checkDecorationUnlocks() {
+  const userId = user.value?.id
+  if (!userId) return
+  
+  const level = Math.floor((user.value.points || 0) / 100)
+  const unlockedKey = `unlockedDecorations_${userId}`
+  const savedUnlocked = localStorage.getItem(unlockedKey)
+  let previouslyUnlocked = []
+  
+  if (savedUnlocked) {
+    try {
+      previouslyUnlocked = JSON.parse(savedUnlocked)
+    } catch {
+      previouslyUnlocked = []
+    }
+  }
+  
+  // Load decorations
+  const saved = localStorage.getItem('avatarDecorations')
+  let decorationsList = []
+  if (saved) {
+    try {
+      decorationsList = JSON.parse(saved)
+    } catch {
+      decorationsList = []
+    }
+  }
+  
+  // Default decorations fallback
+  if (decorationsList.length === 0) {
+    decorationsList = [
+      { name: 'solarSystem', requiredLevel: 0 },
+      { name: 'garden', requiredLevel: 5 },
+      { name: 'olives', requiredLevel: 10 },
+      { name: 'cat', requiredLevel: 15 },
+      { name: 'summer', requiredLevel: 20 },
+      { name: 'zoo', requiredLevel: 25 }
+    ]
+  }
+  
+  // Check for newly unlocked decorations
+  const newlyUnlocked = decorationsList.filter(d => {
+    const requiredLevel = d.requiredLevel ?? 0
+    return level >= requiredLevel && !previouslyUnlocked.includes(d.name)
+  })
+  
+  // Add notifications for newly unlocked decorations
+  newlyUnlocked.forEach(d => {
+    addNotification(
+      '🎉 New Decoration Unlocked!',
+      `Congratulations! You've unlocked the "${d.name}" avatar decoration at Level ${d.requiredLevel ?? 0}!`
+    )
+    previouslyUnlocked.push(d.name)
+  })
+  
+  // Save updated unlocked list
+  localStorage.setItem(unlockedKey, JSON.stringify(previouslyUnlocked))
+}
 
 // Toast notification state
 const toast = ref({
@@ -280,22 +454,27 @@ function cancelConfirm() {
 const isEditingName = ref(false)
 const userName = ref(user.value?.name || '')
 
-const toggleEditName = () => {
+const toggleEditName = async () => {
   if (isEditingName.value) {
     if (userName.value !== user.value.name) {
-      
       // Verifica se já existe o nome para outro utilizador
-      const nameExists = userStore.users.find(u => 
-        u.name === userName.value && u.id !== user.value.id
+      const nameExists = userStore.users.find(
+        (u) => u.name === userName.value && u.id !== user.value.id,
       )
 
       if (nameExists) {
         showToast('Name unavailable', `The name "${userName.value}" is already taken.`, 'error')
         return
       }
-      
-      // Se não existe, atualiza
-      user.value.name = userName.value
+
+      // Se não existe, atualiza e persiste
+      try {
+        await userStore.updateUserProfile({ name: userName.value })
+        showToast('Success', 'Name updated successfully!', 'success')
+      } catch (e) {
+        showToast('Error', 'Failed to update name: ' + e.message, 'error')
+        return
+      }
     }
 
     isEditingName.value = false
@@ -307,26 +486,29 @@ const toggleEditName = () => {
 
 // email
 const isEditingEmail = ref(false)
-const userEmail = ref(user.value?.email || '') 
+const userEmail = ref(user.value?.email || '')
 
 const toggleEditEmail = () => {
   if (isEditingEmail.value) {
     if (userEmail.value !== user.value.email) {
-
       // Verifica se já existe o email para outro utilizador
-      const emailExists = userStore.users.find(u => 
-        u.email === userEmail.value && u.id !== user.value.id
+      const emailExists = userStore.users.find(
+        (u) => u.email === userEmail.value && u.id !== user.value.id,
       )
 
       if (emailExists) {
-        showToast('Email unavailable', `The email "${userEmail.value}" is already registered.`, 'error')
+        showToast(
+          'Email unavailable',
+          `The email "${userEmail.value}" is already registered.`,
+          'error',
+        )
         return
       }
 
       // Se não existe, atualiza
       user.value.email = userEmail.value
     }
-    
+
     isEditingEmail.value = false
     console.log('Email atualizado com sucesso.')
   } else {
@@ -341,7 +523,6 @@ const userPassword = ref(user.value?.password || '********') // Valor inicial ou
 
 const toggleEditPassword = () => {
   if (isEditingPassword.value) {
-    
     if (user.value) user.value.password = userPassword.value
     isEditingPassword.value = false
   } else {
@@ -368,7 +549,7 @@ const defaultDecorations = [
   { name: 'olives', src: '/src/images/avatar_decoration/olives.png' },
   { name: 'cat', src: '/src/images/avatar_decoration/cat.png' },
   { name: 'summer', src: '/src/images/avatar_decoration/summer.png' },
-  { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png' }
+  { name: 'zoo', src: '/src/images/avatar_decoration/zoo.png' },
 ]
 
 // Load decorations from localStorage (synced with Admin Panel)
@@ -456,26 +637,53 @@ const prevSlide = () => {
   }
 }
 
-const selectDecoration = (src) => {
+// Compute user level based on points
+const userLevel = computed(() => {
+  if (!user.value || Number.isNaN(Number(user.value.points))) return 0
+  return Math.floor((user.value.points || 0) / 100)
+})
+
+// Find decoration by src to get its required level
+const getDecorationBySource = (src) => {
+  return decorations.value.find(d => d.src === src)
+}
+
+const selectDecoration = async (src) => {
+  const decoration = getDecorationBySource(src)
+  const requiredLevel = decoration?.requiredLevel ?? 0
+  
+  // Check if user has sufficient level
+  if (userLevel.value < requiredLevel) {
+    showToast(
+      'Level Required',
+      `You need to be Level ${requiredLevel} to use this decoration. You are currently Level ${userLevel.value}.`,
+      'warning',
+      4000
+    )
+    return
+  }
+  
   selectedDecoration.value = src
   showAvatar.value = true
-  // Save to user profile
+  // Save to user profile using updateUserProfile for proper persistence
   if (user.value) {
-    user.value.avatarDecoration = src
-    userStore.saveToLocalStorage()
+    try {
+      await userStore.updateUserProfile({ avatarDecoration: src })
+    } catch (e) {
+      // Fallback: save directly
+      user.value.avatarDecoration = src
+      userStore.saveToLocalStorage()
+    }
   }
+  showToast('Decoration Applied', `"${decoration?.name || 'Decoration'}" has been equipped!`, 'success')
 }
 
 // Logout function
 const handleLogout = () => {
-  showConfirm(
-    'Logout',
-    'Are you sure you want to logout?',
-    () => {
-      userStore.logout()
-      router.push('/login')
-    }
-  )
+  showConfirm('Logout', 'Are you sure you want to logout?', () => {
+    userStore.logout()
+    router.push('/login')
+  })
 }
 
 // Delete account function
@@ -491,7 +699,7 @@ const handleDeleteAccount = () => {
         showToast('Error', 'Failed to delete account: ' + e.message, 'error')
       }
     },
-    { confirmText: 'Delete', isDanger: true }
+    { confirmText: 'Delete', isDanger: true },
   )
 }
 
@@ -514,254 +722,279 @@ const saveChanges = async () => {
 
 <style src="../css/styles.css"></style>
 <style>
-  :root {
-      --bg: #f3f3f1;
-      --green-dark: #3f5f4f;
-      --green: #4f6f5f;
-      --green-light: #dff3e4;
-      --card: #466555;
-      --text-light: #e9efe9;
-      --text-muted: #b9c7bf;
-      --danger: #b4554d;
-      --radius: 18px;
-    }
+:root {
+  --bg: #f3f3f1;
+  --green-dark: #3f5f4f;
+  --green: #4f6f5f;
+  --green-light: #dff3e4;
+  --card: #466555;
+  --text-light: #e9efe9;
+  --text-muted: #b9c7bf;
+  --danger: #b4554d;
+  --radius: 18px;
+}
 
-    * { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-    body {
-      font-family: 'Heebo', sans-serif;
-      background: var(--bg);
-      color: #1e1e1e;
-    }
+body {
+  font-family: 'Heebo', sans-serif;
+  background: var(--bg);
+  color: #1e1e1e;
+}
 
-    .page {
-      max-width: 1140px;
-      padding: 0px 30px 0px 30px;
-      margin: 0 auto;
-      padding-top: 30px;
-    }
+.page {
+  max-width: 1140px;
+  padding: 0px 30px 0px 30px;
+  margin: 0 auto;
+  padding-top: 30px;
+}
 
+/* Card */
+.settings-card {
+  max-width: 1080px;
+  margin: 0 auto 0 auto;
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  color: var(--text-light);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
 
-    /* Card */
-    .settings-card {
-      max-width: 1080px;
-      margin: 0 auto 0 auto;
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 24px;
-      color: var(--text-light);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    }
+/* Header */
+.profile-header {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding-bottom: 24px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
+}
 
-    /* Header */
-    .profile-header {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      padding-bottom: 24px;
-      border-bottom: 1px dashed rgba(255,255,255,0.25);
-    }
+.avatar {
+  position: relative;
+  display: flex;
+  width: 96px;
+  height: 96px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
 
-    .avatar {
-      position: relative;
-      display: flex;
-      width: 96px;
-      height: 96px;
-      flex-shrink: 0;
-      transition: transform 0.3s ease;
-    }
+.avatar:hover {
+  transform: scale(1.05);
+}
 
-    .avatar:hover {
-      transform: scale(1.05);
-    }
+.avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
 
-    .avatar img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-    }
+.avatar-fallback {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #355d4c, #4f6f5f);
+  color: #fff;
+  font-weight: 700;
+  font-size: 28px;
+  border: 3px solid rgba(243, 246, 244, 0.9);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
 
-    .profile-info h2 {
-      margin: 0;
-      font-size: 22px;
-      font-weight: 500;
-    }
+.profile-info h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 500;
+}
 
-    .profile-info p {
-      margin: 4px 0 0;
-      font-size: 14px;
-      color: var(--text-muted);
-    }
+.profile-info p {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--text-muted);
+}
 
-    .change-picture {
-      margin-left: auto;
-      background: rgba(255,255,255,0.15);
-      border: none;
-      color: #fff;
-      padding: 8px 14px;
-      border-radius: 999px;
-      cursor: pointer;
-      font-size: 13px;
-      transition: all 0.3s ease;
-    }
+.change-picture {
+  margin-left: auto;
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.3s ease;
+}
 
-    .change-picture:hover {
-      background: rgba(255,255,255,0.25);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
+.change-picture:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
 
-    /* Content */
-    .settings-content {
-      display: grid;
-      grid-template-columns: 260px 1fr;
-      gap: 24px;
-      margin-top: 24px;
-    }
+/* Content */
+.settings-content {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  gap: 24px;
+  margin-top: 24px;
+}
 
-    /* Sidebar */
-    .sidebar {
-      background: rgba(255,255,255,0.08);
-      border-radius: 14px;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+/* Sidebar */
+.sidebar {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
 
-    .nav-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 12px 14px;
-      border-radius: 10px;
-      background: rgba(255,255,255,0.12);
-      cursor: pointer;
-      font-size: 14px;
-      transition: all 0.3s ease;
-      gap: 10px;
-    }
+.nav-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  gap: 10px;
+}
 
-    .nav-item svg {
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-    }
+.nav-item svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
 
-    .nav-item:hover {
-      background: rgba(255,255,255,0.18);
-      transform: translateX(4px);
-    }
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateX(4px);
+}
 
-    .nav-item span { opacity: 0.85; }
+.nav-item span {
+  opacity: 0.85;
+}
 
-    .danger {
-      background: var(--danger);
-      color: #fff;
-    }
+.danger {
+  background: var(--danger);
+  color: #fff;
+}
 
-    /* Form */
-    .form-section {
-      right: 0px;
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
-    }
+.nav-item.active {
+  background: var(--green);
+  color: #fff;
+}
 
-    .field-group {
-      border-bottom: 1px dashed rgba(255,255,255,0.25);
-      padding-bottom: 20px;
-    }
+.nav-item.active span {
+  opacity: 1;
+}
 
-    .field-group:last-child { border-bottom: none; }
+.notification-badge {
+  background: var(--danger);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  min-width: 20px;
+  text-align: center;
+}
 
-    label {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 8px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
+/* Content Card */
+.content-card {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 24px;
+  min-height: 300px;
+}
 
-    label svg {
-      font-size: 14px;
-    }
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 
-    .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      width: 100%;
-    }
+/* Form */
+.form-section {
+  right: 0px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
 
-    .row input {
-      min-width: 0;
-    }
+.field-group {
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.25);
+  padding-bottom: 20px;
+}
 
-    input {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: none;
-      outline: none;
-      background: #e7efe9;
-      font-size: 14px;
-      transition: all 0.3s ease;
-    }
+.field-group:last-child {
+  border-bottom: none;
+}
 
-    input:hover {
-      background: #f5f9f7;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+label {
+  display: block;
+  font-size: 13px;
+  margin-bottom: 8px;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
-    input:focus {
-      background: #fff;
-      box-shadow: 0 0 0 3px rgba(79, 111, 95, 0.1);
-    }
+label svg {
+  font-size: 14px;
+}
 
-    .inline {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  width: 100%;
+}
 
-    .inline input {
-      flex: 1;
-      max-width: 650px;
-    }
+.row input {
+  min-width: 0;
+}
 
-    .btn-change {
-      padding: 10px 16px;
-      border-radius: 999px;
-      border: none;
-      background: rgba(255,255,255,0.18);
-      color: #fff;
-      cursor: pointer;
-      font-size: 13px;
-      transition: all 0.3s ease;
-      white-space: nowrap;
-    }
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: #e7efe9;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
 
-    .btn-change:hover {
-      background: rgba(255,255,255,0.28);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    }
+input:hover {
+  background: #f5f9f7;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
 
-    .btn-change:active {
-      transform: translateY(0);
-    }
+input:focus {
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(79, 111, 95, 0.1);
+}
 
-    /* Footer */
-    footer {
-      margin-top: 80px;
-      padding: 40px 24px;
-      background: var(--green-dark);
-      color: var(--text-light);
-    }
+.inline {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
 
     .footer-grid {
       justify-content: space-between;
@@ -771,466 +1004,736 @@ const saveChanges = async () => {
       gap: 24px;
     }
 
-    footer p { font-size: 14px; opacity: 0.85; }
+.btn-change {
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
 
     .form-actions {
       display: flex;
       justify-content: flex-end;
     }
 
-    .btn-primary {
-      padding: 12px 18px;
-      border: none;
-      border-radius: 999px;
-      background: #2f4f40;
-      color: #fff;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-weight: 500;
-    }
-
-    .btn-primary:hover {
-      background: #1f3f30;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
-    }
-
-    .btn-primary:active {
-      transform: translateY(0);
-    }
-
-    @media (max-width: 900px) {
-      .settings-content {
-        grid-template-columns: 1fr;
-      }
-
-      .row {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-
-    /* Changes */
-
-    .page-title {
-      width: 100%;
-      max-width: 1080px;
-      margin: 10px auto 50px auto;
-      padding-top: 10px;
-      border-top: 2px dotted #355D4C;
-    }
-
-    .page-title h2 {
-      color: #355D4C;
-      letter-spacing: 0.3em;
-    }
-
-    .swiper {
-      display: flex;
-      width: 96px;
-      height: 96px;
-      overflow: hidden;
-    }
-
-    .swiper img {
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-    }
-
-    .card-list img {
-      width: 96px;
-      height: 96px;
-    }
-
-    .card-wrapper {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      padding: 0px;
-    }
-
-    .swiper-wrapper {
-      display: flex;
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      transition: transform 0.3s ease;
-    }
-
-    .btn-avatar-exit {
-      width: 30px;
-      height: 30px;
-      position: absolute;
-      top: 0px;
-      left: 0px;
-      z-index: 2;
-      color: #fff;
-
-      border-radius: 50%;
-
-      /* estilo glass */
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px); /* pra Safari */
-
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .btn-avatar-exit:hover {
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-    }
-
-    .btn-avatar-check {
-      width: 30px;
-      height: 30px;
-      position: absolute;
-      top: 0px;
-      right: 0px;
-      z-index: 2;
-      color: #fff;
-
-      border-radius: 50%;
-
-      /* estilo glass */
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px); /* pra Safari */
-
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .btn-avatar-check:hover {
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-    }
-
-    .swiper-button-prev {
-      width: 30px;
-      height: 30px;
-      position: absolute;
-      bottom: 0px;
-      left: 0px;
-      z-index: 2;
-      color: #fff;
-
-      border-radius: 50%;
-
-      /* estilo glass */
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px); /* pra Safari */
-
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .swiper-button-prev:hover {
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-    }
-
-    .swiper-button-next{
-      width: 30px;
-      height: 30px;
-      position: absolute;
-      bottom: 0px;
-      right: 0px;
-      z-index: 2;
-      color: #fff;
-
-      border-radius: 50%;
-
-      /* estilo glass */
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px); /* pra Safari */
-
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .swiper-button-next:hover {
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-    }
-
-    .swiper-slide {
-      width: 96px;
-      height: 96px;
-      position: relative;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .btn-avatar-edit {
-      width: 30px;
-      height: 30px;
-      position: absolute;
-      bottom: -10px;
-      right: -10px;
-      z-index: 2;
-      color: #fff;
-
-      border-radius: 50%;
-
-      /* estilo glass */
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px); /* pra Safari */
-
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .btn-avatar-edit:hover {
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-      transform: scale(1.1);
-    }
-
-    .avatar-decoration {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      transform: scale(1.3);
-      transform-origin: center;
-    }
-
-    .notification-card{
-      width: 100%;
-      height: 80px;
-      padding: 10px 15px 10px 15px;
-      position: relative;
-      border: 1px solid var(--green);
-      border-radius: 20px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .notification-card h3 {
-      font-size: 20px;
-      transition: all 0.4s ease;
-      cursor: pointer;
-      transform-origin: center;
-    }
-
-    .notification-card h3:hover {
-      transform: scale(1.1);
-    }
-
-    .clear-notification-btn {
-      width: 50px;
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 2;
-      color: #fff;
-
-      border-radius: 10px;
-
-      /* estilo glass */
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px); /* pra Safari */
-
-      border: 1px solid rgba(255, 255, 255, 0.3);
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .clear-notification-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 6px 10px rgba(0,0,0,0.15);
-      transform: scale(1.1);
-    }
-
-    /* Toast Notifications */
-    .toast-notification {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: linear-gradient(135deg, #355d4c, #4f6f5f);
-      color: #fff;
-      padding: 14px 18px;
-      border-radius: 14px;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
-      min-width: 280px;
-      max-width: 380px;
-    }
-
-    .toast-notification.error {
-      background: linear-gradient(135deg, #b4554d, #d46a5f);
-    }
-
-    .toast-notification.warning {
-      background: linear-gradient(135deg, #c4842d, #e5a03d);
-    }
-
-    .toast-icon {
-      font-size: 22px;
-      line-height: 1;
-    }
-
-    .toast-content {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .toast-content strong {
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .toast-content small {
-      font-size: 12px;
-      opacity: 0.9;
-    }
-
-    /* Toast Animation */
-    .toast-slide-enter-active,
-    .toast-slide-leave-active {
-      transition: all 0.35s ease;
-    }
-
-    .toast-slide-enter-from {
-      opacity: 0;
-      transform: translateY(-20px) translateX(20px);
-    }
-
-    .toast-slide-leave-to {
-      opacity: 0;
-      transform: translateY(-10px) translateX(20px);
-    }
-
-    /* Confirmation Modal */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(4px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 10000;
-    }
-
-    .confirm-modal {
-      background: #fff;
-      border-radius: 18px;
-      padding: 28px;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
-    }
-
-    .confirm-modal h3 {
-      margin: 0 0 12px 0;
-      color: var(--green-dark);
-      font-size: 20px;
-    }
-
-    .confirm-modal p {
-      margin: 0 0 24px 0;
-      color: #555;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .modal-actions {
-      display: flex;
-      gap: 12px;
-      justify-content: flex-end;
-    }
-
-    .btn-cancel {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 999px;
-      background: #e5e7eb;
-      color: #333;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .btn-cancel:hover {
-      background: #d1d5db;
-    }
-
-    .btn-confirm {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 999px;
-      background: var(--green);
-      color: #fff;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .btn-confirm:hover {
-      background: var(--green-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn-confirm.btn-danger {
-      background: var(--danger);
-    }
-
-    .btn-confirm.btn-danger:hover {
-      background: #943f38;
-    }
-
-    /* Modal Animation */
-    .modal-fade-enter-active,
-    .modal-fade-leave-active {
-      transition: all 0.3s ease;
-    }
-
-    .modal-fade-enter-from,
-    .modal-fade-leave-to {
-      opacity: 0;
-    }
-
-    .modal-fade-enter-from .confirm-modal,
-    .modal-fade-leave-to .confirm-modal {
-      transform: scale(0.9);
-    }
-
+footer p {
+  font-size: 14px;
+  opacity: 0.85;
+}
+
+footer h4 {
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+footer a {
+  display: block;
+  font-size: 13px;
+  color: var(--text-muted);
+  text-decoration: none;
+  margin-bottom: 6px;
+  transition: all 0.3s ease;
+}
+
+footer a:hover {
+  color: var(--text-light);
+  transform: translateX(4px);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-primary {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 999px;
+  background: #2f4f40;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+}
+
+.btn-primary:hover {
+  background: #1f3f30;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 900px) {
+  .settings-content {
+    grid-template-columns: 1fr;
+  }
+
+  .row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Changes */
+
+.page-title {
+  width: 100%;
+  max-width: 1080px;
+  margin: 10px auto 50px auto;
+  padding-top: 10px;
+  border-top: 2px dotted #355d4c;
+}
+
+.page-title h2 {
+  color: #355d4c;
+  letter-spacing: 0.3em;
+}
+
+.swiper {
+  display: flex;
+  width: 96px;
+  height: 96px;
+  overflow: hidden;
+}
+
+.swiper img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.card-list img {
+  width: 96px;
+  height: 96px;
+}
+
+.card-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+}
+
+.swiper-wrapper {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  transition: transform 0.3s ease;
+}
+
+.btn-avatar-exit {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 2;
+  color: #fff;
+
+  border-radius: 50%;
+
+  /* estilo glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-avatar-exit:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.btn-avatar-check {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  z-index: 2;
+  color: #fff;
+
+  border-radius: 50%;
+
+  /* estilo glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-avatar-check:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.swiper-button-prev {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  bottom: 0px;
+  left: 0px;
+  z-index: 2;
+  color: #fff;
+
+  border-radius: 50%;
+
+  /* estilo glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.swiper-button-prev:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.swiper-button-next {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  z-index: 2;
+  color: #fff;
+
+  border-radius: 50%;
+
+  /* estilo glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.swiper-button-next:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.swiper-slide {
+  width: 96px;
+  height: 96px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-preview {
+  width: 96px;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.swiper-preview img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.btn-avatar-edit {
+  width: 30px;
+  height: 30px;
+  position: absolute;
+  bottom: -10px;
+  right: -10px;
+  z-index: 2;
+  color: #fff;
+
+  border-radius: 50%;
+
+  /* estilo glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-avatar-edit:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  transform: scale(1.1);
+}
+
+.avatar-decoration {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: scale(1.3);
+  transform-origin: center;
+}
+
+.notification-card {
+  width: 100%;
+  height: 80px;
+  padding: 10px 15px 10px 15px;
+  position: relative;
+  border: 1px solid var(--green);
+  border-radius: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.notification-card h3 {
+  font-size: 20px;
+  transition: all 0.4s ease;
+  cursor: pointer;
+  transform-origin: center;
+}
+
+
+/* Decoration Level Badge Styles */
+.decoration-level-badge {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(180, 85, 77, 0.9);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+}
+
+.decoration-level-badge.unlocked {
+  background: rgba(53, 93, 76, 0.9);
+}
+
+.decoration-locked {
+  opacity: 0.5;
+  filter: grayscale(50%);
+}
+
+.decoration-locked img {
+  filter: brightness(0.7);
+}
+
+.btn-locked {
+  background: rgba(180, 85, 77, 0.8) !important;
+}
+
+.btn-locked:hover {
+  background: rgba(180, 85, 77, 1) !important;
+}
+
+.btn-avatar-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-notification-btn {
+  width: 60px;
+  height: 30px;
+  padding: 5px 10px;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  z-index: 2;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+
+  border-radius: 10px;
+
+  /* estilo glass */
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px); /* pra Safari */
+
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clear-notification-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  transform: scale(1.1);
+}
+
+/* Toast Notifications */
+.toast-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: linear-gradient(135deg, #355d4c, #4f6f5f);
+  color: #fff;
+  padding: 14px 18px;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+  min-width: 280px;
+  max-width: 380px;
+}
+
+.toast-notification.error {
+  background: linear-gradient(135deg, #b4554d, #d46a5f);
+}
+
+.toast-notification.warning {
+  background: linear-gradient(135deg, #c4842d, #e5a03d);
+}
+
+.toast-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.toast-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.toast-content strong {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.toast-content small {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Toast Animation */
+.toast-slide-enter-active,
+.toast-slide-leave-active {
+  transition: all 0.35s ease;
+}
+
+.toast-slide-enter-from {
+  opacity: 0;
+  transform: translateY(-20px) translateX(20px);
+}
+
+.toast-slide-leave-to {
+  opacity: 0;
+  transform: translateY(-10px) translateX(20px);
+}
+
+/* Confirmation Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.confirm-modal {
+  background: #fff;
+  border-radius: 18px;
+  padding: 28px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+.confirm-modal h3 {
+  margin: 0 0 12px 0;
+  color: var(--green-dark);
+  font-size: 20px;
+}
+
+.confirm-modal p {
+  margin: 0 0 24px 0;
+  color: #555;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  background: #e5e7eb;
+  color: #333;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+  background: #d1d5db;
+}
+
+.btn-confirm {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 999px;
+  background: var(--green);
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-confirm:hover {
+  background: var(--green-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-confirm.btn-danger {
+  background: var(--danger);
+}
+
+.btn-confirm.btn-danger:hover {
+  background: #943f38;
+}
+
+/* Modal Animation */
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+.modal-fade-enter-from .confirm-modal,
+.modal-fade-leave-to .confirm-modal {
+  transform: scale(0.9);
+}
+
+/* Notification Section Styles */
+.no-notifications {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--text-muted);
+}
+
+.btn-clear-all {
+  width: 100%;
+  margin-top: 12px;
+  padding: 10px;
+  background: var(--danger);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-clear-all:hover {
+  background: #943f38;
+  transform: translateY(-2px);
+}
+
+/* Responsive Design */
+@media (max-width: 900px) {
+  .settings-content {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nav-item {
+    flex: 1 1 auto;
+    min-width: 120px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .nav-item span {
+    margin-right: 4px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page {
+    padding: 20px 15px;
+  }
+
+  .settings-card {
+    padding: 20px;
+  }
+
+  .profile-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+
+  .avatar {
+    margin: 0 auto;
+  }
+
+  .profile-info {
+    text-align: center;
+  }
+
+  .profile-info h2 {
+    font-size: 18px;
+  }
+
+  .change-picture {
+    margin: 0 auto;
+  }
+
+  .field-group .inline {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .field-group .inline input {
+    width: 100%;
+  }
+
+  .btn-change {
+    width: 100%;
+  }
+
+  .sidebar {
+    flex-direction: column;
+  }
+
+  .nav-item {
+    min-width: unset;
+    justify-content: space-between;
+  }
+
+  .notification-card {
+    height: auto;
+    min-height: 80px;
+    padding: 12px 70px 12px 15px;
+  }
+
+  .clear-notification-btn {
+    width: 55px;
+    height: 28px;
+    font-size: 11px;
+    right: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title h2 {
+    font-size: 20px;
+    letter-spacing: 0.15em;
+  }
+
+  .settings-card {
+    padding: 15px;
+    border-radius: 16px;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .avatar img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .profile-info h2 {
+    font-size: 16px;
+  }
+
+  .form-section h3 {
+    font-size: 16px;
+  }
+
+  .footer-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .notification-card {
+    height: auto;
+    min-height: 70px;
+    padding: 10px 65px 10px 12px;
+  }
+
+  .notification-title {
+    font-size: 16px;
+  }
+
+  .notification-content {
+    font-size: 12px;
+  }
+
+  .clear-notification-btn {
+    width: 50px;
+    height: 26px;
+    font-size: 10px;
+    padding: 4px 6px;
+    right: 6px;
+  }
+}
 </style>
+<style src="../css/styles.css"></style>

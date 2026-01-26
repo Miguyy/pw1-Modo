@@ -1,11 +1,11 @@
 <template>
   <NavBar />
-  <div class="container">
+  <div class="containerBox">
     <div class="page-title">
       <h2>HABITS MANAGER</h2>
     </div>
     <!-- Main Content Container -->
-    <div class="row mt-2 g-3 align-items-stretch">
+    <div class="content row mt-2 g-3 align-items-stretch">
       <div class="col-12 col-md-4 col-lg-3">
         <div class="weather-box shadow p-3 h-100">
           <!-- Weather Component Box -->
@@ -19,20 +19,27 @@
         </div>
       </div>
       <div class="col-12 col-md-4 col-lg-4">
-        <div class="profile-card p-3 d-flex align-items-center gap-3 h-100">
-          <div class="avatar-wrapper">
-            <img
-              v-if="currentUser?.avatar"
-              :src="currentUser.avatar"
-              alt="Profile"
-              class="avatar-img"
-            />
-            <div v-else class="avatar-fallback">{{ userInitials }}</div>
-          </div>
-          <div class="flex-grow-1">
-            <h5 class="mb-1 text-capitalize">{{ currentUser?.name || 'Guest' }}</h5>
-            <p class="mb-2 text-muted small">{{ currentUser?.email || 'Not signed in' }}</p>
-            <div class="d-flex flex-wrap gap-2 align-items-center">
+        <div class="profile-card p-3 h-100">
+          <div class="profile-card-content">
+            <div class="avatar-wrapper">
+              <img
+                v-if="currentUser?.avatar"
+                :src="currentUser.avatar"
+                alt="Profile"
+                class="avatar-img"
+              />
+              <div v-else class="avatar-fallback">{{ userInitials }}</div>
+              <img
+                v-if="currentUser?.avatarDecoration"
+                :src="currentUser.avatarDecoration"
+                class="avatar-decoration"
+                alt=""
+              />
+            </div>
+
+            <h2 class="user-name">{{ currentUser?.name || 'Guest' }}</h2>
+
+            <div class="user-stats">
               <span class="badge bg-success-soft">Points: {{ currentUser?.points ?? 0 }}</span>
               <span class="badge bg-primary-soft">Level: {{ userLevel }}</span>
             </div>
@@ -47,11 +54,11 @@
           <form @submit.prevent="handleAdd">
             <!-- Prevent default form submission -->
             <div class="row g-2">
-              <div class="col-md-6">
+              <div class="col-md-5">
                 <label>Description</label>
                 <input v-model="form.description" class="form-control" required />
               </div>
-              <div class="col-md-1">
+              <div class="col-md-2">
                 <label>Priority</label>
                 <select v-model="form.priority" class="form-select">
                   <option value="low">Low</option>
@@ -75,12 +82,6 @@
                   <option value="inside">Inside</option>
                   <option value="outside">Outside</option>
                 </select>
-              </div>
-
-              <div class="col-md-12 text-end d-flex align-items-end">
-                <button class="btn btn-primary w-100" type="submit">
-                  <FontAwesomeIcon icon="plus" /> Create new habit
-                </button>
               </div>
 
               <!-- COUNT EXTRA FIELDS -->
@@ -113,6 +114,13 @@
                     />
                   </div>
                 </div>
+              </div>
+
+              <!-- CREATE BUTTON - Always at the bottom -->
+              <div class="col-12 mt-3">
+                <button class="btn btn-primary w-100" type="submit">
+                  <FontAwesomeIcon icon="plus" /> Create new habit
+                </button>
               </div>
             </div>
           </form>
@@ -213,9 +221,10 @@
                   <div
                     class="check-status"
                     :class="{ 'check-completed': habit.current_progress.checked }"
+                    @click="toggleCheck(habit.id)"
                   >
                     <FontAwesomeIcon
-                      :icon="habit.current_progress.checked ? 'check-circle' : 'circle'"
+                      icon="check-circle"
                       class="check-icon"
                     />
                   </div>
@@ -228,12 +237,24 @@
                 </div>
 
                 <div class="check-actions d-flex gap-2 mt-auto">
-                  <button class="btn btn-sm btn-success flex-fill" @click="toggleCheck(habit.id)">
-                    <FontAwesomeIcon :icon="habit.current_progress.checked ? 'undo' : 'check'" />
-                    {{ habit.current_progress.checked ? 'Uncheck' : 'Mark Done' }}
+                  <button 
+                    v-if="habit.current_progress.checked" 
+                    class="btn btn-sm btn-success flex-fill" 
+                    @click="completeAndRemoveHabit(habit.id)"
+                  >
+                    <FontAwesomeIcon icon="trophy" />
+                    Complete & Earn Points
+                  </button>
+                  <button 
+                    v-else
+                    class="btn btn-sm btn-outline-success flex-fill" 
+                    @click="toggleCheck(habit.id)"
+                  >
+                    <FontAwesomeIcon icon="check" />
+                    Mark Done
                   </button>
                   <button
-                    class="btn btn-sm btn-outline-danger flex-fill"
+                    class="btn btn-sm btn-outline-danger"
                     @click="deleteHabit(habit.id)"
                   >
                     <FontAwesomeIcon icon="trash" />
@@ -276,19 +297,28 @@
                 </div>
 
                 <div class="d-flex gap-2 mt-auto">
-                  <button class="btn btn-sm btn-success flex-fill" @click="complete(habit.id)">
-                    <FontAwesomeIcon icon="check" /> Complete
+                  <button 
+                    v-if="countPercent(habit) >= 100"
+                    class="btn btn-sm btn-success flex-fill" 
+                    @click="completeAndRemoveHabit(habit.id)"
+                  >
+                    <FontAwesomeIcon icon="trophy" /> Complete & Earn Points
+                  </button>
+                  <button 
+                    v-else
+                    class="btn btn-sm btn-outline-success flex-fill" 
+                    @click="complete(habit.id)"
+                  >
+                    <FontAwesomeIcon icon="check" /> Mark Complete
                   </button>
                   <button
-                    class="btn btn-sm btn-outline-danger flex-fill"
+                    class="btn btn-sm btn-outline-danger"
                     @click="deleteHabit(habit.id)"
                   >
-                    <FontAwesomeIcon icon="trash" /> Delete
+                    <FontAwesomeIcon icon="trash" />
                   </button>
                 </div>
               </div>
-
-              <!-- TIME TYPE -->
               <div
                 v-if="habit.type === 'time'"
                 class="habit-content flex-grow-1 d-flex flex-column"
@@ -327,14 +357,25 @@
                   >
                     <FontAwesomeIcon icon="clock" /> Timer
                   </button>
-                  <button class="btn btn-sm btn-success flex-fill" @click="complete(habit.id)">
-                    <FontAwesomeIcon icon="check" /> Complete
+                  <button 
+                    v-if="timePercent(habit) >= 100"
+                    class="btn btn-sm btn-success flex-fill" 
+                    @click="completeAndRemoveHabit(habit.id)"
+                  >
+                    <FontAwesomeIcon icon="trophy" /> Complete & Earn Points
+                  </button>
+                  <button 
+                    v-else
+                    class="btn btn-sm btn-outline-success flex-fill" 
+                    @click="complete(habit.id)"
+                  >
+                    <FontAwesomeIcon icon="check" /> Mark Complete
                   </button>
                   <button
-                    class="btn btn-sm btn-outline-danger flex-fill"
+                    class="btn btn-sm btn-outline-danger"
                     @click="deleteHabit(habit.id)"
                   >
-                    <FontAwesomeIcon icon="trash" /> Delete
+                    <FontAwesomeIcon icon="trash" />
                   </button>
                 </div>
               </div>
@@ -368,8 +409,8 @@
               <button class="btn btn-secondary" @click="pauseTimerButton" :disabled="!timerIsRunning">
                 <FontAwesomeIcon icon="pause" /> Pause
               </button>
-              <button class="btn btn-success" @click="complete(activeTimerHabit.id)">
-                <FontAwesomeIcon icon="check" /> Complete
+              <button class="btn btn-success" @click="completeTimerHabit">
+                <FontAwesomeIcon icon="trophy" /> Complete & Earn Points
               </button>
             </div>
           </div>
@@ -637,6 +678,45 @@ function toggleCheck(id) {
 function complete(id) {
   habitStore.completeHabit(id)
 }
+function completeAndRemoveHabit(id) {
+  // Increment completed count in localStorage
+  const userId = userStore.currentUser?.id
+  if (userId) {
+    const key = `completedHabits_${userId}`
+    const current = parseInt(localStorage.getItem(key) || '0', 10)
+    localStorage.setItem(key, String(current + 1))
+  }
+  
+  habitStore.completeHabit(id)
+  habitStore.deleteHabit(id)
+  showToast('Success', 'Habit completed! Points awarded.', 'success')
+  
+  // Dispatch event for chart update
+  window.dispatchEvent(new Event('habitCompleted'))
+}
+
+function completeTimerHabit() {
+  if (activeTimerHabit.value) {
+    const id = activeTimerHabit.value.id
+    pauseTimerButton()
+    timerInstance.value?.hide()
+    
+    // Increment completed count in localStorage
+    const userId = userStore.currentUser?.id
+    if (userId) {
+      const key = `completedHabits_${userId}`
+      const current = parseInt(localStorage.getItem(key) || '0', 10)
+      localStorage.setItem(key, String(current + 1))
+    }
+    
+    habitStore.completeHabit(id)
+    habitStore.deleteHabit(id)
+    showToast('Success', 'Habit completed! Points awarded.', 'success')
+    
+    // Dispatch event for chart update
+    window.dispatchEvent(new Event('habitCompleted'))
+  }
+}
 
 // Compute percent complete for time-based habits (using seconds)
 function timePercent(h) {
@@ -823,11 +903,15 @@ function onCloseTimerModal() {
   box-sizing: border-box;
 }
 
-.container {
-  width: 1080px;
-  max-width: 1080px;
+.containerBox {
+  max-width: 1140px;
   margin: 0 auto;
-  padding: 30px 0px 0px;
+  padding: 30px 30px 0px 30px;
+}
+
+.content {
+  max-width: 1140px;
+  justify-content: space-between;
 }
 
 .weather-box {
@@ -910,53 +994,112 @@ function onCloseTimerModal() {
 }
 
 .profile-card {
+  display: flex;
   background: #fff;
   border-radius: var(--radius);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  min-height: 170px;
+  min-height: 220px;
   border: 1px solid #e7ece9;
+  padding: 20px !important;
+  transition: all 0.3s ease;
 }
 
-.avatar-wrapper {
-  width: 82px;
-  height: 82px;
-  border-radius: 16px;
-  overflow: hidden;
+.profile-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
+}
+
+.profile-card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 16px;
+  padding-top: 20px;
+}
+
+.user-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+  margin-top: 10px;
+  text-transform: capitalize;
+  text-align: center;
+}
+
+.user-stats {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-card .avatar-wrapper {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  min-width: 140px;
+  min-height: 140px;
+  border-radius: 50%;
+  overflow: visible !important;
   background: linear-gradient(135deg, #355d4c, #4f6f5f);
   display: flex;
   align-items: center;
   justify-content: center;
   color: #fff;
   font-weight: 700;
-  font-size: 24px;
+  font-size: 32px;
   border: 3px solid #f3f6f4;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  flex-shrink: 0;
 }
 
-.avatar-img {
+.profile-card .avatar-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  border-radius: 50%;
+  position: relative;
+  z-index: 1;
 }
 
-.avatar-fallback {
+.profile-card .avatar-fallback {
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
+}
+
+.profile-card .avatar-decoration {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 200px !important;
+  height: 200px !important;
+  pointer-events: none;
+  z-index: 10 !important;
 }
 
 .bg-success-soft {
-  background: #e6f4ec;
-  color: #2f6f4f;
+  background: #2f8f5f;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 6px 12px;
 }
 
 .bg-primary-soft {
-  background: #e8f0ff;
-  color: #2c4f7f;
+  background: #3a6fd8;
+  color: #ffffff;
+  font-weight: 600;
+  padding: 6px 12px;
 }
 
 /* FORM CARD */
@@ -1083,18 +1226,18 @@ function onCloseTimerModal() {
 }
 
 .priority-low {
-  background: #d4edda;
-  color: #155724;
+  background: #28a745;
+  color: #ffffff;
 }
 
 .priority-medium {
-  background: #fff3cd;
-  color: #856404;
+  background: #ffc107;
+  color: #212529;
 }
 
 .priority-high {
-  background: #f8d7da;
-  color: #721c24;
+  background: #dc3545;
+  color: #ffffff;
 }
 
 .badge-type {
@@ -1102,8 +1245,8 @@ function onCloseTimerModal() {
   padding: 4px 8px;
   font-weight: 600;
   border-radius: 6px;
-  background: #e7f3f7;
-  color: #0c5460;
+  background: #17a2b8;
+  color: #ffffff;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -1344,18 +1487,6 @@ function onCloseTimerModal() {
   padding: 24px;
 }
 
-/* CONTAINER */
-.container {
-  max-width: 1200px;
-}
-
-/* HEADING */
-.container h5,
-.container h3 {
-  color: var(--green-dark);
-  font-weight: 700;
-}
-
 /* Filters toolbar */
 .filters-card {
   border: none;
@@ -1397,13 +1528,23 @@ function onCloseTimerModal() {
 
 .check-status {
   font-size: 48px;
-  color: var(--text-muted);
+  color: #c0c0c0;
   transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.check-status:hover {
+  color: #a0a0a0;
+  transform: scale(1.05);
 }
 
 .check-status.check-completed {
   color: #28a745;
   transform: scale(1.1);
+}
+
+.check-status.check-completed:hover {
+  color: #218838;
 }
 
 .check-icon {

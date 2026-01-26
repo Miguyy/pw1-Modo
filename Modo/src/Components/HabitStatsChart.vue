@@ -29,11 +29,17 @@
     <div class="chart-area">
       <canvas ref="canvas"></canvas>
     </div>
+    <div class="stats-summary mt-2 text-center">
+      <small class="text-muted">
+        <span class="me-3">🎯 Active: {{ activeHabits }}</span>
+        <span>✅ Completed: {{ completedCount }}</span>
+      </small>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, watch, onBeforeUnmount } from 'vue'
+import { ref, computed, onMounted, watch, onBeforeUnmount } from 'vue'
 import Chart from 'chart.js/auto'
 import { useHabitStore } from '@/stores/habitStore'
 import { useUserStore } from '@/stores/userStore'
@@ -44,20 +50,31 @@ const habitStore = useHabitStore()
 const userStore = useUserStore()
 const chartType = ref('doughnut')
 
-function counts() {
+// Get completed count from localStorage
+function getCompletedCount() {
+  const userId = userStore.currentUser?.id
+  if (!userId) return 0
+  const key = `completedHabits_${userId}`
+  return parseInt(localStorage.getItem(key) || '0', 10)
+}
+
+const completedCount = ref(getCompletedCount())
+
+const activeHabits = computed(() => {
   const user = userStore.currentUser
-  if (!user) return [0, 0]
-  const list = habitStore.getHabitsByUser(user.id) || []
-  const completed = list.filter((h) => !!h.completed).length
-  const notCompleted = list.length - completed
-  return [notCompleted, completed]
+  if (!user) return 0
+  return (habitStore.getHabitsByUser(user.id) || []).length
+})
+
+function counts() {
+  return [activeHabits.value, completedCount.value]
 }
 
 function getChartConfig() {
   const data = counts()
   const baseConfig = {
     data: {
-      labels: ['Not completed', 'Completed'],
+      labels: ['Active Habits', 'Completed'],
       datasets: [
         {
           data,
@@ -102,10 +119,6 @@ function updateChartType() {
   }
 }
 
-onMounted(() => {
-  createChart()
-})
-
 // update when chart type changes
 watch(chartType, () => {
   updateChartType()
@@ -115,6 +128,7 @@ watch(chartType, () => {
 watch(
   () => [userStore.currentUser, habitStore.habits.length],
   () => {
+    completedCount.value = getCompletedCount()
     const data = counts()
     if (chart) {
       chart.data.datasets[0].data = data
@@ -124,8 +138,26 @@ watch(
   { deep: true },
 )
 
+// Also listen for localStorage changes (for completed count updates)
+function handleStorageChange() {
+  completedCount.value = getCompletedCount()
+  const data = counts()
+  if (chart) {
+    chart.data.datasets[0].data = data
+    chart.update()
+  }
+}
+
+onMounted(() => {
+  createChart()
+  window.addEventListener('storage', handleStorageChange)
+  window.addEventListener('habitCompleted', handleStorageChange)
+})
+
 onBeforeUnmount(() => {
   if (chart) chart.destroy()
+  window.removeEventListener('storage', handleStorageChange)
+  window.removeEventListener('habitCompleted', handleStorageChange)
 })
 </script>
 
