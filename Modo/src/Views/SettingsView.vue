@@ -17,8 +17,10 @@
 
       <header class="profile-header">
         <div class="avatar" id="avatar" v-show="showAvatar">
-          <img v-if="profilePic || user?.avatar" :src="profilePic || user?.avatar" alt="Profile" />
-          <div v-else class="avatar-fallback">{{ userInitials }}</div>
+          <img
+            :src="profilePic || 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400'"
+            alt="Profile"
+          />
           <button class="card-button btn-avatar-edit" @click="openDecoration">✎</button>
           <img
             v-if="selectedDecoration"
@@ -57,14 +59,10 @@
 
             <button class="swiper-button-prev" @click="prevSlide">←</button>
             <button class="swiper-button-next" @click="nextSlide">→</button>
-            <div class="swiper-preview">
-              <img
-                v-if="profilePic || user?.avatar"
-                :src="profilePic || user?.avatar"
-                alt="Profile"
-              />
-              <div v-else class="avatar-fallback">{{ userInitials }}</div>
-            </div>
+            <img
+            :src="profilePic || 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=400'"
+            alt="Profile"
+            />
           </div>
         </div>
 
@@ -544,17 +542,6 @@ const selectedDecoration = ref(null)
 const fileInput = ref(null)
 const profilePic = ref(user.value?.avatar || null)
 
-const userInitials = computed(() => {
-  const name = user.value?.name || ''
-  const initials = name
-    .split(' ')
-    .filter((n) => n)
-    .map((n) => n[0])
-    .join('')
-    .slice(0, 2)
-  return initials ? initials.toUpperCase() : '?'
-})
-
 // Default decorations (fallback)
 const defaultDecorations = [
   { name: 'solarSystem', src: '/src/images/avatar_decoration/solarSystem.png' },
@@ -578,12 +565,7 @@ function loadDecorations() {
   return [...defaultDecorations]
 }
 
-const decorationsRaw = ref(loadDecorations())
-
-// Sort decorations by required level
-const decorations = computed(() => {
-  return [...decorationsRaw.value].sort((a, b) => (a.requiredLevel ?? 0) - (b.requiredLevel ?? 0))
-})
+const decorations = ref(loadDecorations())
 
 // Load saved decoration and profile pic on mount
 onMounted(() => {
@@ -593,21 +575,7 @@ onMounted(() => {
   if (user.value?.avatar) {
     profilePic.value = user.value.avatar
   }
-  // Load notifications
-  loadNotifications()
-  // Check for newly unlocked decorations
-  checkDecorationUnlocks()
 })
-
-// Watch for user points changes to check for new decoration unlocks
-watch(
-  () => user.value?.points,
-  (newPoints, oldPoints) => {
-    if (newPoints !== oldPoints && newPoints !== undefined) {
-      checkDecorationUnlocks()
-    }
-  }
-)
 
 // Handle profile picture upload
 const promptAvatar = () => {
@@ -743,7 +711,7 @@ const saveChanges = async () => {
       email: userEmail.value,
       password: userPassword.value,
       avatar: profilePic.value,
-      avatarDecoration: selectedDecoration.value,
+      avatarDecoration: selectedDecoration.value
     })
     showToast('Success', 'Changes saved successfully!', 'success')
   } catch (e) {
@@ -1028,10 +996,13 @@ input:focus {
   align-items: center;
 }
 
-.inline input {
-  flex: 1;
-  max-width: 650px;
-}
+    .footer-grid {
+      justify-content: space-between;
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      gap: 24px;
+    }
 
 .btn-change {
   padding: 10px 16px;
@@ -1045,31 +1016,10 @@ input:focus {
   white-space: nowrap;
 }
 
-.btn-change:hover {
-  background: rgba(255, 255, 255, 0.28);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.btn-change:active {
-  transform: translateY(0);
-}
-
-/* Footer */
-footer {
-  margin-top: 80px;
-  padding: 40px 24px;
-  background: var(--green-dark);
-  color: var(--text-light);
-}
-
-.footer-grid {
-  max-width: 1200px;
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 24px;
-}
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
 
 footer p {
   font-size: 14px;
