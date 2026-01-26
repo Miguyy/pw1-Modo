@@ -651,7 +651,20 @@ onMounted(() => {
   if (user.value?.avatar) {
     profilePic.value = user.value.avatar
   }
+  // load notifications and check for unlocked decorations on mount
+  loadNotifications()
+  checkDecorationUnlocks()
 })
+
+// Re-check unlocks when user points change
+watch(
+  () => user.value?.points,
+  (newPoints, oldPoints) => {
+    if (newPoints !== oldPoints && newPoints !== undefined) {
+      checkDecorationUnlocks()
+    }
+  },
+)
 
 // Handle profile picture upload
 const promptAvatar = () => {
@@ -745,7 +758,7 @@ const selectDecoration = async (src) => {
   if (user.value) {
     try {
       await userStore.updateUserProfile({ avatarDecoration: src })
-    } catch (e) {
+    } catch {
       // Fallback: save directly
       user.value.avatarDecoration = src
       userStore.saveToLocalStorage()
